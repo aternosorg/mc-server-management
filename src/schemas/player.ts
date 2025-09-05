@@ -27,6 +27,7 @@ export class Player {
     /**
      * @param id Unique identifier of the player (UUID format).
      * @param name Username of the player.
+     * @internal Use static methods {@link withId} or {@link withName} to create instances.
      */
     constructor(id?: string, name?: string) {
         this.id = id;

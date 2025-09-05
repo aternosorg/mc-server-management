@@ -7,35 +7,37 @@ class Ban {
     /**
      * Reason for the ban.
      */
-    reason?: string;
+    reason: string | null;
     /**
      * Source of the ban (effectively a comment field).
      */
-    source?: string;
+    source: string | null;
     /**
      * Expiration date of the ban in ISO 8601 format. If omitted, the ban is permanent.
-     * Use {@link Ban.setExpires} to set this field using a Date or bigint.
+     * Use {@link setExpires} to set this field using a Date or bigint.
      */
-    expires?: string;
+    expires: string | null = null;
 
     /**
      * @param reason reason for the ban
      * @param source source of the ban
      * @param expires expiration date of the ban as a Date or string in ISO 8601 format. If omitted, the ban is permanent.
      */
-    constructor(reason?: string, source?: string, expires?: Date|string) {
+    constructor(
+        reason: string | null = null,
+        source: string | null = null,
+        expires: Date | string | null = null,
+    ) {
         this.reason = reason;
         this.source = source;
-        if (expires !== undefined && expires !== null) {
-            this.setExpires(expires);
-        }
+        this.setExpires(expires);
     }
 
     /**
      * Sets the reason for the ban.
      * @param reason
      */
-    setReason(reason?: string): this {
+    setReason(reason: string | null = null): this {
         this.reason = reason;
         return this;
     }
@@ -44,7 +46,7 @@ class Ban {
      * Sets the source of the ban.
      * @param source
      */
-    setSource(source?: string): this {
+    setSource(source: string | null = null): this {
         this.source = source;
         return this;
     }
@@ -53,7 +55,7 @@ class Ban {
      * Sets the expiration date of the ban.
      * @param expires The expiration date as a Date or string in ISO 8601 format.
      */
-    setExpires(expires?: Date|string): this {
+    setExpires(expires: Date | string | null): this {
         if (expires instanceof Date) {
             if (isNaN(expires.getTime())) {
                 throw new Error("Invalid date.");
@@ -62,11 +64,11 @@ class Ban {
             expires = expires.toISOString();
         }
 
-        if (!["undefined", "null", "string"].includes(typeof expires)) {
-            throw new Error("Expires must be a Date, string in ISO 8601 format, null or undefined.");
+        if (typeof expires != "string" && expires !== null) {
+            throw new Error("Expires must be a Date, string in ISO 8601 format or null.");
         }
 
-        this.expires = expires?.toString();
+        this.expires = expires?.toString() ?? null;
         return this;
     }
 
@@ -95,11 +97,28 @@ export class IncomingIPBan extends Ban {
     /**
      * IP address to ban.
      */
-    ip?: string;
+    ip: string | null = null;
     /**
      * Active player who should be banned by their IP address.
      */
-    player?: Player;
+    player: Player | null = null;
+
+    /**
+     * Creates a new IncomingIPBan instance with the specified IP address.
+     * @param ip
+     */
+    static withIp(ip: string): IncomingIPBan {
+        return new IncomingIPBan(ip);
+    }
+
+    /**
+     * Creates a new IncomingIPBan instance for the specified active player.
+     * If the player is not online they can't be banned by their IP address.
+     * @param player
+     */
+    static withOnlinePlayer(player: Player): IncomingIPBan {
+        return new IncomingIPBan(undefined, player);
+    }
 
     /**
      * @param ip IP address to ban
@@ -107,8 +126,15 @@ export class IncomingIPBan extends Ban {
      * @param reason reason for the ban
      * @param source source of the ban
      * @param expires expiration date of the ban as a Date or string in ISO 8601 format. If omitted, the ban is permanent.
+     * @internal Use {@link withIp} or {@link withOnlinePlayer} and setters instead.
      */
-    constructor(ip?: string, player?: Player, reason?: string, source?: string, expires?: Date|string) {
+    constructor(
+        ip: string | null = null,
+        player: Player | null = null,
+        reason: string | null = null,
+        source: string | null = null,
+        expires: Date | string | null = null,
+    ) {
         super(reason, source, expires);
         this.ip = ip;
         this.player = player;
@@ -118,7 +144,7 @@ export class IncomingIPBan extends Ban {
      * Sets the IP address to ban.
      * @param ip
      */
-    setIp(ip?: string): this {
+    setIp(ip: string | null = null): this {
         this.ip = ip;
         return this;
     }
@@ -127,7 +153,7 @@ export class IncomingIPBan extends Ban {
      * Sets the active player who should be banned by their IP address.
      * @param player
      */
-    setPlayer(player?: Player): this {
+    setPlayer(player: Player | null = null): this {
         this.player = player;
         return this;
     }
@@ -148,7 +174,12 @@ export class IPBan extends Ban {
      * @param source source of the ban
      * @param expires expiration date of the ban as a Date or string in ISO 8601 format. If omitted, the ban is permanent.
      */
-    constructor(ip: string, reason?: string, source?: string, expires?: Date|string) {
+    constructor(
+        ip: string,
+        reason: string | null = null,
+        source: string | null = null,
+        expires: Date | string | null = null,
+    ) {
         super(reason, source, expires);
         this.ip = ip;
     }
@@ -175,7 +206,12 @@ export class UserBan extends Ban {
      * @param source source of the ban
      * @param expires expiration date of the ban as a Date or string in ISO 8601 format. If omitted, the ban is permanent.
      */
-    constructor(player: Player, reason?: string, source?: string, expires?: Date|string) {
+    constructor(
+        player: Player,
+        reason: string | null = null,
+        source: string | null = null,
+        expires: Date | string | null = null,
+    ) {
         super(reason, source, expires);
         this.player = player;
     }
