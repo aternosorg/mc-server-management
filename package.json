@@ -1,0 +1,25 @@
+{
+    "name": "mc-server-managment",
+    "version": "0.1.0",
+    "description": "A library for the Minecraft server management protocol added in 25w35a",
+    "keywords": [
+        "minecraft",
+        "server",
+        "management",
+        "protocol"
+    ],
+    "license": "MIT",
+    "author": "Julian Vennen <julian@aternos.org>",
+    "main": "src/index.ts",
+    "type": "module",
+    "scripts": {
+        "spec": "./spec.sh update-spec",
+        "server": "./spec.sh run-server"
+    },
+    "dependencies": {
+        "rpc-websockets": "^9.1.3"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    }
+}

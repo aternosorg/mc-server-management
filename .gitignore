@@ -1,0 +1,6 @@
+node_modules
+build
+.idea
+server
+test.ts
+json-rpc-api-schema.json
