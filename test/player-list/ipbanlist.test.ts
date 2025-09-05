@@ -1,4 +1,4 @@
-import {getClient} from "../utils.js";
+import {getServer} from "../utils.js";
 import {beforeEach, expect, test} from "vitest";
 import {IncomingIPBan, IPBan} from "../../src/schemas/ban.js";
 import TestConnection from "../TestConnection.js";
@@ -6,19 +6,19 @@ import IncorrectTypeError from "../../src/error/IncorrectTypeError.js";
 import IPBanList from "../../src/player-list/IPBanList.js";
 import MissingPropertyError from "../../src/error/MissingPropertyError.js";
 
-const client = await getClient();
+const server = await getServer();
 
 beforeEach(async () => {
-    await client.ipBanList().clear();
+    await server.ipBanList().clear();
 })
 
 test('Get IP banlist items', async () => {
-    const ipBanList = client.ipBanList();
+    const ipBanList = server.ipBanList();
     expect(await ipBanList.get()).toStrictEqual([]);
 });
 
 test('Add one item to IP banlist', async () => {
-    const ipBanList = client.ipBanList();
+    const ipBanList = server.ipBanList();
     expect(await ipBanList.get()).toStrictEqual([]);
     expect(await ipBanList.add(IncomingIPBan.withIp("1.1.1.1"))).toBe(ipBanList);
     expect(await ipBanList.get()).toStrictEqual([new IPBan("1.1.1.1")
@@ -27,7 +27,7 @@ test('Add one item to IP banlist', async () => {
 });
 
 test('Add item with source to IP banlist', async () => {
-    const ipBanList = client.ipBanList();
+    const ipBanList = server.ipBanList();
     expect(await ipBanList.get()).toStrictEqual([]);
     expect(await ipBanList.add(
         IncomingIPBan.withIp("1.1.1.1").setSource("Unit Tests")
@@ -38,7 +38,7 @@ test('Add item with source to IP banlist', async () => {
 });
 
 test('Add item with reason to IP banlist', async () => {
-    const ipBanList = client.ipBanList();
+    const ipBanList = server.ipBanList();
     expect(await ipBanList.get()).toStrictEqual([]);
     expect(await ipBanList.add(
         IncomingIPBan.withIp("1.1.1.1").setReason("Test")
@@ -50,7 +50,7 @@ test('Add item with reason to IP banlist', async () => {
 });
 
 test('Add item with expire time to IP banlist', async () => {
-    const ipBanList = client.ipBanList();
+    const ipBanList = server.ipBanList();
     expect(await ipBanList.get()).toStrictEqual([]);
     expect(await ipBanList.add(
         IncomingIPBan.withIp("1.1.1.1").setExpires(new Date(4102444800_000))
@@ -71,7 +71,7 @@ test('Add item with expire time to IP banlist', async () => {
 });
 
 test('Add multiple items to IP banlist', async () => {
-    const ipBanList = client.ipBanList();
+    const ipBanList = server.ipBanList();
     expect(await ipBanList.get()).toStrictEqual([]);
     expect(await ipBanList.add([
         IncomingIPBan.withIp("1.1.1.1"),

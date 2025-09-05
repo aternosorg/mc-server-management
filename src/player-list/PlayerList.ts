@@ -6,7 +6,7 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
     protected items?: ItemType[];
 
     /**
-     * Create a player list API wrapper. Use {@link ManagementClient.allowlist} or similar methods instead.
+     * Create a player list API wrapper. Use {@link MinecraftServer.allowlist} or similar methods instead.
      * @param connection
      * @internal
      */

@@ -4,8 +4,10 @@ import AllowList from "./player-list/AllowList.js";
 import IPBanList from "./player-list/IPBanList.js";
 import IncorrectTypeError from "./error/IncorrectTypeError.js";
 import BanList from "./player-list/BanList.js";
+import {Player} from "./schemas/player.js";
+import {KickPlayer} from "./schemas/kick.js";
 
-export default class ManagementClient {
+export default class MinecraftServer {
     #connection: Connection;
     #allowlist?: AllowList;
     #ipBanList?: IPBanList;
@@ -16,27 +18,43 @@ export default class ManagementClient {
     }
 
     /**
-     * Get an API wrapper for the server's allowlist.
-     * @returns {PlayerList}
+     * @returns {PlayerList} API wrapper for the server's allowlist
      */
     public allowlist(): AllowList {
         return this.#allowlist ??= new AllowList(this.#connection);
     }
 
     /**
-     * Get an API wrapper for the server's IP ban list.
-     * @returns {IPBanList}
+     * @returns {IPBanList} API wrapper for the server's IP ban list
      */
     public ipBanList(): IPBanList {
         return this.#ipBanList ??= new IPBanList(this.#connection);
     }
 
     /**
-     * Get an API wrapper for the server's player ban list.
-     * @returns {IPBanList}
+     * @returns {IPBanList} API wrapper for the server's player ban list
      */
     public banList(): BanList {
         return this.#banList ??= new BanList(this.#connection);
+    }
+
+    /**
+     * @returns {Promise<Player[]>} Array of players currently connected to the server.
+     */
+    public async getConnectedPlayers(): Promise<Player[]> {
+        const response = await this.#connection.call('minecraft:players', []);
+        return Player.parseList(response);
+    }
+
+    /**
+     * Kicks one or more players from the server.
+     * @param player The player or players to kick.
+     * @returns {Promise<Player[]>} A promise that resolves to an array of kicked players.
+     */
+    public async kickPlayers(player: KickPlayer): Promise<Player[]>
+    {
+        const response = await this.#connection.call('minecraft:players/kick', [player]);
+        return Player.parseList(response);
     }
 
     /**

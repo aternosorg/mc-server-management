@@ -134,7 +134,7 @@ export class IncomingIPBan extends Ban {
      */
     ip: string | null = null;
     /**
-     * Active player who should be banned by their IP address.
+     * Connected player who should be banned by their IP address.
      */
     player: Player | null = null;
 
@@ -147,21 +147,21 @@ export class IncomingIPBan extends Ban {
     }
 
     /**
-     * Creates a new IncomingIPBan instance for the specified active player.
-     * If the player is not online they can't be banned by their IP address.
+     * Creates a new IncomingIPBan instance for the specified player.
+     * If the player is not currently connected to the server, they can't be banned by their IP address.
      * @param player
      */
-    static withOnlinePlayer(player: Player): IncomingIPBan {
+    static withConnectedPlayer(player: Player): IncomingIPBan {
         return new IncomingIPBan(undefined, player);
     }
 
     /**
      * @param ip IP address to ban
-     * @param player active player who should be banned by their IP address
+     * @param player connected player who should be banned by their IP address
      * @param reason reason for the ban
      * @param source source of the ban
      * @param expires expiration date of the ban as a Date or string in ISO 8601 format. If omitted, the ban is permanent.
-     * @internal Use {@link withIp} or {@link withOnlinePlayer} and setters instead.
+     * @internal Use {@link withIp} or {@link withConnectedPlayer} and setters instead.
      */
     constructor(
         ip: string | null = null,
@@ -185,7 +185,7 @@ export class IncomingIPBan extends Ban {
     }
 
     /**
-     * Sets the active player who should be banned by their IP address.
+     * Sets the connected player who should be banned by their IP address.
      * @param player
      */
     setPlayer(player: Player | null = null): this {
@@ -231,7 +231,7 @@ export class IPBan extends Ban {
 
 export class UserBan extends Ban {
     /**
-     * Active player who should be banned by their IP address.
+     * Player who should be banned.
      */
     player: Player;
 

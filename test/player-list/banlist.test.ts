@@ -1,4 +1,4 @@
-import {ATERNOS, EXAROTON, getClient} from "../utils.js";
+import {ATERNOS, EXAROTON, getServer} from "../utils.js";
 import {beforeEach, expect, test} from "vitest";
 import TestConnection from "../TestConnection.js";
 import IncorrectTypeError from "../../src/error/IncorrectTypeError.js";
@@ -7,20 +7,20 @@ import {UserBan} from "../../src/schemas/ban.js";
 import {Player} from "../../src/schemas/player.js";
 import BanList from "../../src/player-list/BanList.js";
 
-const client = await getClient();
+const server = await getServer();
 
 beforeEach(async () => {
     // https://bugs.mojang.com/browse/MC/issues/MC-301891 - The clear method does not work correctly.
-    await client.banList().set([]);
+    await server.banList().set([]);
 })
 
 test('Get banlist items', async () => {
-    const banList = client.banList();
+    const banList = server.banList();
     expect(await banList.get()).toStrictEqual([]);
 });
 
 test('Add one item to banlist', async () => {
-    const banList = client.banList();
+    const banList = server.banList();
     expect(await banList.get()).toStrictEqual([]);
     expect(await banList.add(new UserBan(Player.withName(ATERNOS.name!)))).toBe(banList);
     expect(await banList.get()).toStrictEqual([new UserBan(ATERNOS)
@@ -29,7 +29,7 @@ test('Add one item to banlist', async () => {
 });
 
 test('Add item with source to banlist', async () => {
-    const banList = client.banList();
+    const banList = server.banList();
     expect(await banList.get()).toStrictEqual([]);
     expect(await banList.add(
         new UserBan(Player.withName(ATERNOS.name!)).setSource("Unit Tests")
@@ -40,7 +40,7 @@ test('Add item with source to banlist', async () => {
 });
 
 test('Add item with reason to banlist', async () => {
-    const banList = client.banList();
+    const banList = server.banList();
     expect(await banList.get()).toStrictEqual([]);
     expect(await banList.add(
         new UserBan(Player.withName(ATERNOS.name!)).setReason("Test")
@@ -52,7 +52,7 @@ test('Add item with reason to banlist', async () => {
 });
 
 test('Add item with expire time to banlist', async () => {
-    const banList = client.banList();
+    const banList = server.banList();
     expect(await banList.get()).toStrictEqual([]);
     expect(await banList.add(
         new UserBan(Player.withName(ATERNOS.name!)).setExpires(new Date(4102444800_000))
@@ -73,7 +73,7 @@ test('Add item with expire time to banlist', async () => {
 });
 
 test('Add multiple items to banlist', async () => {
-    const banList = client.banList();
+    const banList = server.banList();
     expect(await banList.get()).toStrictEqual([]);
     expect(await banList.add([
         new UserBan(Player.withName(ATERNOS.name!)),

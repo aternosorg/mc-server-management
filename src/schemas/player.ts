@@ -27,6 +27,18 @@ export class Player {
         return new Player().setName(name);
     }
 
+    static parseList(data: unknown, response: unknown = data, path: string = ''): Player[] {
+        if (!Array.isArray(data)) {
+            throw new IncorrectTypeError("array", typeof data, response, path);
+        }
+
+        const players = [];
+        for (const [index, entry] of data.entries()) {
+            players.push(Player.parse(entry, path ? `${path}.${data}` : index.toString(), response))
+        }
+        return players;
+    }
+
     /**
      * Parse a Player instance from a raw object.
      * @param data Raw object to parse.

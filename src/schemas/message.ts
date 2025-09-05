@@ -33,6 +33,13 @@ export class Message {
             .setTranslatableParams(translatableParams);
     }
 
+    /**
+     * Creates a new Message instance.
+     * @param literal
+     * @param translatable
+     * @param translatableParams
+     * @internal Use static methods {@link Message.literal()} or {@link Message.translatable()} instead.
+     */
     constructor(literal?: string, translatable?: string, translatableParams?: Array<string>) {
         this.literal = literal;
         this.translatable = translatable;

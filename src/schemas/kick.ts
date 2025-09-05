@@ -18,7 +18,10 @@ export class KickPlayer {
      * @param players players to kick
      * @param message message displayed to the player when they are kicked
      */
-    constructor(players: Array<Player>, message?: Message) {
+    constructor(players: Player|Array<Player>, message?: Message) {
+        if (!Array.isArray(players)) {
+            players = [players];
+        }
         this.players = players;
         this.message = message;
     }

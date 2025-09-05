@@ -1,5 +1,5 @@
 import {beforeEach, expect, test} from "vitest";
-import {ATERNOS, EXAROTON, getClient} from "../utils.js";
+import {ATERNOS, EXAROTON, getServer} from "../utils.js";
 import {Player} from "../../src/schemas/player.js";
 import AllowList from "../../src/player-list/AllowList.js";
 import IncorrectTypeError from "../../src/error/IncorrectTypeError.js";
@@ -7,33 +7,33 @@ import TestConnection from "../TestConnection.js";
 import MissingPropertyError from "../../src/error/MissingPropertyError.js";
 
 
-const client = await getClient();
+const server = await getServer();
 
 beforeEach(async () => {
-    await client.allowlist().clear();
+    await server.allowlist().clear();
 })
 
 test('Get allowlist items', async () => {
-    const allowlist = client.allowlist();
+    const allowlist = server.allowlist();
     expect(await allowlist.get()).toStrictEqual([]);
 })
 
 test('Add one item to allowlist', async () => {
-    const allowlist = client.allowlist();
+    const allowlist = server.allowlist();
     expect(await allowlist.get()).toStrictEqual([]);
     expect(await allowlist.add(Player.withName(ATERNOS.name!))).toBe(allowlist);
     expect(await allowlist.get()).toStrictEqual([ATERNOS]);
 })
 
 test('Add multiple items to allowlist', async () => {
-    const allowlist = client.allowlist();
+    const allowlist = server.allowlist();
     expect(await allowlist.get()).toStrictEqual([]);
     expect(await allowlist.add([Player.withName(ATERNOS.name!), Player.withId(EXAROTON.id!)])).toBe(allowlist);
     expect(await allowlist.get()).toStrictEqual([ATERNOS, EXAROTON]);
 })
 
 test('Set allowlist items', async () => {
-    const allowlist = client.allowlist();
+    const allowlist = server.allowlist();
     expect(await allowlist.get()).toStrictEqual([]);
 
     expect(await allowlist.set([Player.withName(ATERNOS.name!)])).toBe(allowlist);
@@ -44,7 +44,7 @@ test('Set allowlist items', async () => {
 })
 
 test('Remove allowlist items', async () => {
-    const allowlist = client.allowlist();
+    const allowlist = server.allowlist();
     expect(await allowlist.get()).toStrictEqual([]);
     expect(await allowlist.set([Player.withName(ATERNOS.name!), Player.withId(EXAROTON.id!)])).toBe(allowlist);
     expect(await allowlist.get()).toStrictEqual([ATERNOS, EXAROTON]);

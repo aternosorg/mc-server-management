@@ -2,7 +2,7 @@ import {Player} from "./player.js";
 
 export class ServerState {
     /**
-     * List of players that are currently online.
+     * List of players that are currently connected to the server.
      */
     readonly players: Array<Player>;
     /**
