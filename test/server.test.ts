@@ -16,7 +16,7 @@ test('Get connected players', async () => {
 test('Get mocked connected players', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
-    connection.addResult([ATERNOS, EXAROTON]);
+    connection.addResponse([ATERNOS, EXAROTON]);
 
     const players = await server.getConnectedPlayers();
     expect(players).toStrictEqual([ATERNOS, EXAROTON]);
@@ -45,7 +45,7 @@ test('Kick player with message', async () => {
 test('Test kick players with result', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
-    connection.addResult([ATERNOS, EXAROTON]);
+    connection.addResponse([ATERNOS, EXAROTON]);
 
     const response = await server.kickPlayers(new KickPlayer(
         [Player.withName(ATERNOS.name!), Player.withId(EXAROTON.id!)],

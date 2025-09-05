@@ -6,11 +6,11 @@ export type RequestHistoryEntry = {
 }
 
 export default class TestConnection implements Connection {
-    private resultQueue: unknown[] = [];
+    private responseQueue: unknown[] = [];
     private requestHistory: RequestHistoryEntry[] = [];
 
-    public addResult<T>(result: T): T {
-        this.resultQueue.push(result);
+    public addResponse<T>(result: T): T {
+        this.responseQueue.push(result);
         return result;
     }
 
@@ -20,11 +20,11 @@ export default class TestConnection implements Connection {
 
     async call(method: string, parameters: object | Array<unknown>): Promise<unknown> {
         this.requestHistory.push({method, parameters});
-        if (this.resultQueue.length === 0) {
+        if (this.responseQueue.length === 0) {
             throw new Error("No more results in queue");
         }
 
-        return this.resultQueue.shift();
+        return this.responseQueue.shift();
     }
 
     close(): void {

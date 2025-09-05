@@ -56,7 +56,7 @@ test('Remove allowlist items', async () => {
 test('Invalid response not array', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    connection.addResult(true);
+    connection.addResponse(true);
 
     await expect(allowlist.get()).rejects.toThrow(new IncorrectTypeError("array", "boolean", true));
 });
@@ -64,7 +64,7 @@ test('Invalid response not array', async () => {
 test('Invalid response clear', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    connection.addResult("test");
+    connection.addResponse("test");
 
     await expect(allowlist.clear()).rejects.toThrow(new IncorrectTypeError("true", "string", "test"));
 });
@@ -72,7 +72,7 @@ test('Invalid response clear', async () => {
 test('Invalid response item not object', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    const result = connection.addResult([true]);
+    const result = connection.addResponse([true]);
 
     await expect(allowlist.get()).rejects.toThrow(new IncorrectTypeError("object", "boolean", result, "0"));
 });
@@ -80,7 +80,7 @@ test('Invalid response item not object', async () => {
 test('Invalid response item missing id', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    const result = connection.addResult([{"name": ATERNOS.name}]);
+    const result = connection.addResponse([{"name": ATERNOS.name}]);
 
     await expect(allowlist.get()).rejects.toThrow(new MissingPropertyError("id", result, "0"));
 });
@@ -88,7 +88,7 @@ test('Invalid response item missing id', async () => {
 test('Invalid response item missing name', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    const result = connection.addResult([{"id": ATERNOS.id}]);
+    const result = connection.addResponse([{"id": ATERNOS.id}]);
 
     await expect(allowlist.get()).rejects.toThrow(new MissingPropertyError("name", result, "0"));
 });
@@ -96,16 +96,16 @@ test('Invalid response item missing name', async () => {
 test('Validate that all methods use cached list', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    connection.addResult([ATERNOS]);
+    connection.addResponse([ATERNOS]);
 
     expect(await allowlist.get()).toStrictEqual([ATERNOS]);
-    connection.addResult([ATERNOS, EXAROTON]);
+    connection.addResponse([ATERNOS, EXAROTON]);
     expect(await allowlist.add(Player.withName(EXAROTON.name!))).toBe(allowlist);
     expect(await allowlist.get()).toStrictEqual([ATERNOS, EXAROTON]);
-    connection.addResult([ATERNOS]);
+    connection.addResponse([ATERNOS]);
     expect(await allowlist.remove(Player.withName(EXAROTON.name!))).toBe(allowlist);
     expect(await allowlist.get()).toStrictEqual([ATERNOS]);
-    connection.addResult(true);
+    connection.addResponse(true);
     expect(await allowlist.clear()).toBe(allowlist);
     expect(await allowlist.get()).toStrictEqual([]);
 });

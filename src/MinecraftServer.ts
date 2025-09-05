@@ -6,12 +6,14 @@ import IncorrectTypeError from "./error/IncorrectTypeError.js";
 import BanList from "./player-list/BanList.js";
 import {Player} from "./schemas/player.js";
 import {KickPlayer} from "./schemas/kick.js";
+import OperatorList from "./player-list/OperatorList.js";
 
 export default class MinecraftServer {
     #connection: Connection;
     #allowlist?: AllowList;
     #ipBanList?: IPBanList;
     #banList?: BanList;
+    #operatorList?: OperatorList;
 
     constructor(connection: Connection) {
         this.#connection = connection;
@@ -36,6 +38,13 @@ export default class MinecraftServer {
      */
     public banList(): BanList {
         return this.#banList ??= new BanList(this.#connection);
+    }
+
+    /**
+     * @returns {OperatorList} API wrapper for the server's operator list
+     */
+    public operatorList(): OperatorList {
+        return this.#operatorList ??= new OperatorList(this.#connection);
     }
 
     /**
