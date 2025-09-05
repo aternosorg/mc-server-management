@@ -19,7 +19,7 @@ export default class AllowList extends PlayerList<Player, Player, Player> {
             if (typeof entry.name !== 'string') {
                 throw new InvalidResponseError("string", typeof entry.name, entry, `${index}.name`);
             }
-            players.push(new Player(entry.uuid, entry.name))
+            players.push(new Player(entry.id, entry.name))
         }
         return players;
     }

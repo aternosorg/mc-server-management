@@ -4,6 +4,11 @@ import {Client, type IWSClientAdditionalOptions} from "rpc-websockets";
 export default class WebSocketConnection implements Connection {
     protected impl: Client;
 
+    /**
+     * Connect to a WebSocket server and return a WebSocketConnection instance.
+     * @param url The WebSocket server URL.
+     * @param options Additional options for the WebSocket client.
+     */
     static async connect(url: string, options?: IWSClientAdditionalOptions): Promise<WebSocketConnection> {
         const client = new Client(url, options);
         await new Promise<void>((resolve, reject) => {
@@ -13,6 +18,10 @@ export default class WebSocketConnection implements Connection {
         return new WebSocketConnection(client);
     }
 
+    /**
+     * Manually create a WebSocket connection. Use {@link WebSocketConnection.connect} instead.
+     * @param impl
+     */
     constructor(impl: Client) {
         this.impl = impl;
     }
@@ -21,7 +30,7 @@ export default class WebSocketConnection implements Connection {
         return this.impl.call(method, parameters);
     }
 
-    disconnect() {
+    close() {
         this.impl.close();
     }
 }

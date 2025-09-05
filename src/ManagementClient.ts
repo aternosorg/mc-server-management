@@ -1,11 +1,11 @@
 import type Connection from "./connection/Connection.js";
 import {SystemMessage} from "./schemas/message.js";
-import AllowList from "./PlayerList/AllowList.js";
-import IPBanList from "./PlayerList/IPBanList.js";
+import AllowList from "./player-list/AllowList.js";
+import IPBanList from "./player-list/IPBanList.js";
 import InvalidResponseError from "./InvalidResponseError.js";
 
 export default class ManagementClient {
-    protected connection: Connection;
+    readonly connection: Connection;
 
     constructor(connection: Connection) {
         this.connection = connection;

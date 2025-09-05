@@ -1,6 +1,13 @@
+# Node JS / TypeScript / Vitest
 node_modules
 build
+coverage
+
+# IDEs
 .idea
+.vscode
+
+# Custom stuff
 server
 test.ts
 json-rpc-api-schema.json
