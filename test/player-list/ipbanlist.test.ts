@@ -2,8 +2,9 @@ import {getClient} from "../utils.js";
 import {beforeEach, expect, test} from "vitest";
 import {IncomingIPBan, IPBan} from "../../src/schemas/ban.js";
 import TestConnection from "../TestConnection.js";
-import InvalidResponseError from "../../src/InvalidResponseError.js";
+import IncorrectTypeError from "../../src/error/IncorrectTypeError.js";
 import IPBanList from "../../src/player-list/IPBanList.js";
+import MissingPropertyError from "../../src/error/MissingPropertyError.js";
 
 const client = await getClient();
 
@@ -81,42 +82,47 @@ test('Add multiple items to IP banlist', async () => {
 test('Invalid response item not object', async () => {
     const connection = new TestConnection();
     const ipBanList = new IPBanList(connection);
-    connection.addResult([true]);
+    const result = connection.addResult([true]);
 
-    await expect(ipBanList.get()).rejects.toThrow(new InvalidResponseError("object", "boolean", true, "0"));
+    await expect(ipBanList.get()).rejects.toThrow(new IncorrectTypeError("object", "boolean", result, "0"));
 });
 
 test('Invalid response missing ip', async () => {
     const connection = new TestConnection();
     const ipBanList = new IPBanList(connection);
-    connection.addResult([{}]);
+    const result = connection.addResult([{}]);
 
-    await expect(ipBanList.get()).rejects.toThrow(new InvalidResponseError("string", "undefined", {}, "0.ip"));
+    await expect(ipBanList.get()).rejects.toThrow(new MissingPropertyError("ip", result, "0"));
+});
+
+test('Invalid response wrong type for ip', async () => {
+    const connection = new TestConnection();
+    const ipBanList = new IPBanList(connection);
+    const result = connection.addResult([{ip: true}]);
+
+    await expect(ipBanList.get()).rejects.toThrow(new IncorrectTypeError("string", "boolean", result, "0.ip"));
 });
 
 test('Invalid response wrong type for reason', async () => {
     const connection = new TestConnection();
     const ipBanList = new IPBanList(connection);
-    const result = {ip: '1.1.1.1', reason: true};
-    connection.addResult([result]);
+    const result = connection.addResult([{ip: '1.1.1.1', reason: true}]);
 
-    await expect(ipBanList.get()).rejects.toThrow(new InvalidResponseError("string", "boolean", result, "0.reason"));
+    await expect(ipBanList.get()).rejects.toThrow(new IncorrectTypeError("string", "boolean", result, "0.reason"));
 });
 
 test('Invalid response wrong type for source', async () => {
     const connection = new TestConnection();
     const ipBanList = new IPBanList(connection);
-    const result = {ip: '1.1.1.1', source: true};
-    connection.addResult([result]);
+    const result = connection.addResult([{ip: '1.1.1.1', source: true}]);
 
-    await expect(ipBanList.get()).rejects.toThrow(new InvalidResponseError("string", "boolean", result, "0.source"));
+    await expect(ipBanList.get()).rejects.toThrow(new IncorrectTypeError("string", "boolean", result, "0.source"));
 });
 
 test('Invalid response wrong type for expires', async () => {
     const connection = new TestConnection();
     const ipBanList = new IPBanList(connection);
-    const result = {ip: '1.1.1.1', expires: true};
-    connection.addResult([result]);
+    const result = connection.addResult([{ip: '1.1.1.1', expires: true}]);
 
-    await expect(ipBanList.get()).rejects.toThrow(new InvalidResponseError("string", "boolean", result, "0.expires"));
+    await expect(ipBanList.get()).rejects.toThrow(new IncorrectTypeError("string", "boolean", result, "0.expires"));
 });

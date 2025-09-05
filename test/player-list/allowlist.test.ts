@@ -1,12 +1,11 @@
 import {beforeEach, expect, test} from "vitest";
-import {getClient} from "../utils.js";
+import {ATERNOS, EXAROTON, getClient} from "../utils.js";
 import {Player} from "../../src/schemas/player.js";
 import AllowList from "../../src/player-list/AllowList.js";
-import InvalidResponseError from "../../src/InvalidResponseError.js";
+import IncorrectTypeError from "../../src/error/IncorrectTypeError.js";
 import TestConnection from "../TestConnection.js";
+import MissingPropertyError from "../../src/error/MissingPropertyError.js";
 
-const ATERNOS = new Player("d6a91995-04bf-4f11-823f-5b18d412062a", "Aternos");
-const EXAROTON = new Player("22c777bb-e823-4ab8-b17b-acd3eef0b597", "exaroton");
 
 const client = await getClient();
 
@@ -59,7 +58,7 @@ test('Invalid response not array', async () => {
     const allowlist = new AllowList(connection);
     connection.addResult(true);
 
-    await expect(allowlist.get()).rejects.toThrow(new InvalidResponseError("array", "boolean", true));
+    await expect(allowlist.get()).rejects.toThrow(new IncorrectTypeError("array", "boolean", true));
 });
 
 test('Invalid response clear', async () => {
@@ -67,33 +66,31 @@ test('Invalid response clear', async () => {
     const allowlist = new AllowList(connection);
     connection.addResult("test");
 
-    await expect(allowlist.clear()).rejects.toThrow(new InvalidResponseError("true", "string", "test"));
+    await expect(allowlist.clear()).rejects.toThrow(new IncorrectTypeError("true", "string", "test"));
 });
 
 test('Invalid response item not object', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    connection.addResult([true]);
+    const result = connection.addResult([true]);
 
-    await expect(allowlist.get()).rejects.toThrow(new InvalidResponseError("object", "boolean", true, "0"));
+    await expect(allowlist.get()).rejects.toThrow(new IncorrectTypeError("object", "boolean", result, "0"));
 });
 
 test('Invalid response item missing id', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    const result = {"name": ATERNOS.name};
-    connection.addResult([result]);
+    const result = connection.addResult([{"name": ATERNOS.name}]);
 
-    await expect(allowlist.get()).rejects.toThrow(new InvalidResponseError("string", "undefined", result, "0.id"));
+    await expect(allowlist.get()).rejects.toThrow(new MissingPropertyError("id", result, "0"));
 });
 
 test('Invalid response item missing name', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    const result = {"id": ATERNOS.id};
-    connection.addResult([result]);
+    const result = connection.addResult([{"id": ATERNOS.id}]);
 
-    await expect(allowlist.get()).rejects.toThrow(new InvalidResponseError("string", "undefined", result, "0.name"));
+    await expect(allowlist.get()).rejects.toThrow(new MissingPropertyError("name", result, "0"));
 });
 
 test('Validate that all methods use cached list', async () => {
@@ -114,13 +111,13 @@ test('Validate that all methods use cached list', async () => {
 });
 
 class TestPlayerList extends AllowList {
-    protected async callAndParse(action?: string, params: any[] = []): Promise<this> {
+    protected async callAndParse(action?: string, params: unknown[] = []): Promise<this> {
         // Noop to create invalid state where items is not updated
         return this;
     }
 }
 
 test('Invalid allowlist add not updated', async () => {
-    const allowlist = new TestPlayerList(client.connection);
+    const allowlist = new TestPlayerList(new TestConnection());
     await expect(allowlist.get()).rejects.toThrow("Invalid player list.");
 });

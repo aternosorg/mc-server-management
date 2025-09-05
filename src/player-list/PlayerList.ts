@@ -1,5 +1,5 @@
 import type Connection from "../connection/Connection.js";
-import InvalidResponseError from "../InvalidResponseError.js";
+import IncorrectTypeError from "../error/IncorrectTypeError.js";
 
 export default abstract class PlayerList<ItemType, AddType, RemoveType> {
     protected connection: Connection;
@@ -68,7 +68,7 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
     public async clear(): Promise<this> {
         const response = await this.call('clear');
         if (response !== true) {
-            throw new InvalidResponseError("true", typeof response, response);
+            throw new IncorrectTypeError("true", typeof response, response);
         }
         this.items = [];
         return this;
@@ -81,7 +81,7 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
      * @returns This PlayerList instance.
      * @protected
      */
-    protected async call(action?: string, params: any[] = []): Promise<any> {
+    protected async call(action?: string, params: unknown[] = []): Promise<unknown> {
         let method = this.getName();
         if (action) {
             method += "/" + action
@@ -96,10 +96,10 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
      * @returns This PlayerList instance.
      * @protected
      */
-    protected async callAndParse(action?: string, params: any[] = []): Promise<this> {
+    protected async callAndParse(action?: string, params: unknown[] = []): Promise<this> {
         const result = await this.call(action, params);
         if (!Array.isArray(result)) {
-            throw new InvalidResponseError("array", typeof result, result);
+            throw new IncorrectTypeError("array", typeof result, result);
         }
 
         this.items = this.parseResult(result);
@@ -118,5 +118,5 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
      * @param result
      * @protected
      */
-    protected abstract parseResult(result: any[]): ItemType[];
+    protected abstract parseResult(result: unknown[]): ItemType[];
 }

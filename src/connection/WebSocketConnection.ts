@@ -26,7 +26,7 @@ export default class WebSocketConnection implements Connection {
         this.impl = impl;
     }
 
-    call(method: string, parameters: object | Array<any>): Promise<unknown> {
+    call(method: string, parameters: object | Array<unknown>): Promise<unknown> {
         return this.impl.call(method, parameters);
     }
 

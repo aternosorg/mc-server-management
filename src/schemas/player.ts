@@ -1,3 +1,6 @@
+import IncorrectTypeError from "../error/IncorrectTypeError.js";
+import MissingPropertyError from "../error/MissingPropertyError.js";
+
 export class Player {
     /**
      * Unique identifier of the player (UUID format).
@@ -22,6 +25,39 @@ export class Player {
      */
     static withName(name: string): Player {
         return new Player().setName(name);
+    }
+
+    /**
+     * Parse a Player instance from a raw object.
+     * @param data Raw object to parse.
+     * @param path Path to the data in the original response, used for errors.
+     * @param response Full response received from the server, used for errors.
+     * @returns Parsed Player instance.
+     * @throws {IncorrectTypeError} If the data is not a valid Player object.
+     * @internal
+     */
+    static parse(data: unknown, path: string, response: unknown): Player {
+        if (typeof data !== 'object' || data === null) {
+            throw new IncorrectTypeError("object", typeof data, response, path);
+        }
+
+        if (!("id" in data)) {
+            throw new MissingPropertyError("id", response, path);
+        }
+
+        if (typeof data.id !== 'string') {
+            throw new IncorrectTypeError("string", typeof data.id, response, path + '.id');
+        }
+
+        if (!("name" in data)) {
+            throw new MissingPropertyError("name", response, path);
+        }
+
+        if (typeof data.name !== 'string') {
+            throw new IncorrectTypeError("string", typeof data.name, response, path + '.name');
+        }
+
+        return new Player(data.id, data.name);
     }
 
     /**

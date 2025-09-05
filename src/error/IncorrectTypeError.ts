@@ -1,8 +1,6 @@
-export default class InvalidResponseError extends Error {
-    /**
-     * The path in the response that was invalid.
-     */
-    readonly path: string;
+import InvalidResponseError from "./InvalidResponseError.js";
+
+export default class IncorrectTypeError extends InvalidResponseError {
     /**
      * The expected type of the response.
      */
@@ -11,10 +9,6 @@ export default class InvalidResponseError extends Error {
      * The actual type of the response.
      */
     readonly foundType: string;
-    /**
-     * The full response received from the server.
-     */
-    readonly response: any;
 
     /**
      * Creates a new InvalidResponseError.
@@ -23,11 +17,9 @@ export default class InvalidResponseError extends Error {
      * @param foundType The actual type of the response.
      * @param response The full response received from the server.
      */
-    constructor(expectedType: string, foundType: string, response: any, path: string = '') {
-        super("Invalid response from server at '" + path + "'. Expected " + expectedType + ", received " + foundType + ".");
+    constructor(expectedType: string, foundType: string, response: unknown, path: string = '') {
+        super("Expected " + expectedType + ", received " + foundType + ".", response, path);
         this.expectedType = expectedType;
         this.foundType = foundType;
-        this.response = response;
-        this.path = path;
     }
 }

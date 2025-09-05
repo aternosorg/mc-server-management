@@ -9,7 +9,7 @@ export default interface Connection {
      * @param parameters The parameters to pass to the method.
      * @returns A promise that resolves to the result of the method call.
      */
-    call(method: string, parameters: object | Array<any>): Promise<unknown>;
+    call(method: string, parameters: object | Array<unknown>): Promise<unknown>;
 
     /**
      * Close the connection.

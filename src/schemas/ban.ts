@@ -1,4 +1,5 @@
 import {Player} from "./player.js";
+import IncorrectTypeError from "../error/IncorrectTypeError.js";
 
 /**
  * Base class for all ban related classes.
@@ -87,6 +88,40 @@ class Ban {
         }
 
         return date;
+    }
+
+    /**
+     * Parse and apply options from a raw response object.
+     * @param data Raw object to parse.
+     * @param path Path to the data in the original response, used for errors.
+     * @param result The original response object, used for errors.
+     * @returns The current UserBan instance.
+     * @throws {IncorrectTypeError} If the data is not a valid options object.
+     * @internal
+     */
+    parseAndApplyOptions(data: object, path: string, result: unknown): this {
+        if ("reason" in data) {
+            if (typeof data.reason !== 'string') {
+                throw new IncorrectTypeError("string", typeof data.reason, result, `${path}.reason`);
+            }
+            this.reason = data.reason;
+        }
+
+        if ("source" in data) {
+            if (typeof data.source !== 'string') {
+                throw new IncorrectTypeError("string", typeof data.source, result, `${path}.source`);
+            }
+            this.source = data.source;
+        }
+
+        if ("expires" in data) {
+            if (typeof data.expires !== 'string') {
+                throw new IncorrectTypeError("string", typeof data.expires, result, `${path}.expires`);
+            }
+            this.expires = data.expires;
+        }
+
+        return this;
     }
 }
 
