@@ -1,3 +1,6 @@
+import IncorrectTypeError from "../error/IncorrectTypeError.js";
+import MissingPropertyError from "../error/MissingPropertyError.js";
+
 export enum GameRuleType {
     BOOLEAN = "boolean",
     INTEGER = "integer",
@@ -50,6 +53,44 @@ export class TypedGameRule<T extends GameRuleType> extends GameRule<GameRuleValu
      * @see GameRuleType
      */
     type: T;
+
+    /**
+     * @param data
+     * @param result
+     * @param path
+     * @internal
+     */
+    static parse(data: unknown, result: unknown, ...path: string[]): TypedGameRule<GameRuleType> {
+        if (typeof data !== 'object' || data === null) {
+            throw new IncorrectTypeError("object", typeof data, result, ...path);
+        }
+
+        if (!('key' in data)) {
+            throw new MissingPropertyError("key", result, ...path);
+        }
+
+        if (!('value' in data)) {
+            throw new MissingPropertyError("value", result, ...path);
+        }
+
+        if (!('type' in data)) {
+            throw new MissingPropertyError("type", result, ...path);
+        }
+
+        if (typeof data.key !== 'string') {
+            throw new IncorrectTypeError("string", typeof data.key, result, ...path,  'key');
+        }
+
+        if (typeof data.value !== 'string') {
+            throw new IncorrectTypeError("string", typeof data.value, result, ...path, 'value');
+        }
+
+        if (typeof data.type !== 'string') {
+            throw new IncorrectTypeError("string", typeof data.type, result, ...path, 'type');
+        }
+
+        return new TypedGameRule(data.type as GameRuleType, data.key, JSON.parse(data.value))
+    }
 
     /**
      * @param type Type of the game rule.

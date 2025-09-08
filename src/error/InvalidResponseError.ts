@@ -1,4 +1,4 @@
-export default class InvalidResponseError extends Error {
+export default abstract class InvalidResponseError extends Error {
     /**
      * The full response received from the server.
      */
@@ -6,10 +6,10 @@ export default class InvalidResponseError extends Error {
     /**
      * The path in the response that was invalid.
      */
-    readonly path: string;
+    readonly path: string[];
 
-    constructor(message: string, response: unknown, path: string = '') {
-        super("Invalid response from server at '" + path + "'. " + message);
+    protected constructor(message: string, response: unknown, path: string[]) {
+        super("Invalid response from server at '" + path.join(".") + "'. " + message);
         this.response = response;
         this.path = path;
     }

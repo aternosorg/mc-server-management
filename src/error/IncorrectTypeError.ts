@@ -16,8 +16,9 @@ export default class IncorrectTypeError extends InvalidResponseError {
      * @param expectedType The expected type of the response.
      * @param foundType The actual type of the response.
      * @param response The full response received from the server.
+     * @internal
      */
-    constructor(expectedType: string, foundType: string, response: unknown, path: string = '') {
+    constructor(expectedType: string, foundType: string, response: unknown, ...path: string[]) {
         super("Expected " + expectedType + ", received " + foundType + ".", response, path);
         this.expectedType = expectedType;
         this.foundType = foundType;
