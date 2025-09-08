@@ -5,7 +5,7 @@ export type RequestHistoryEntry = {
     parameters: object | Array<unknown>,
 }
 
-export default class TestConnection implements Connection {
+export default class TestConnection extends Connection {
     private responseQueue: unknown[] = [];
     private requestHistory: RequestHistoryEntry[] = [];
 
@@ -18,7 +18,7 @@ export default class TestConnection implements Connection {
         return this.requestHistory.shift() ?? null;
     }
 
-    async call(method: string, parameters: object | Array<unknown>): Promise<unknown> {
+    async callRaw(method: string, parameters: object | Array<unknown>): Promise<unknown> {
         this.requestHistory.push({method, parameters});
         if (this.responseQueue.length === 0) {
             throw new Error("No more results in queue");

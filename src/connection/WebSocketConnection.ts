@@ -1,7 +1,7 @@
-import type Connection from './Connection.js';
+import Connection from './Connection.js';
 import {Client, type IWSClientAdditionalOptions} from "rpc-websockets";
 
-export default class WebSocketConnection implements Connection {
+export default class WebSocketConnection extends Connection {
     protected impl: Client;
 
     /**
@@ -23,10 +23,11 @@ export default class WebSocketConnection implements Connection {
      * @param impl
      */
     constructor(impl: Client) {
+        super();
         this.impl = impl;
     }
 
-    call(method: string, parameters: object | Array<unknown>): Promise<unknown> {
+    callRaw(method: string, parameters: object | Array<unknown>): Promise<unknown> {
         return this.impl.call(method, parameters);
     }
 
