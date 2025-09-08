@@ -1,5 +1,5 @@
 import PlayerList from "./PlayerList.js";
-import {IncomingIPBan, IPBan, UserBan} from "../schemas/ban.js";
+import {UserBan} from "../schemas/ban.js";
 import IncorrectTypeError from "../error/IncorrectTypeError.js";
 import {Player} from "../schemas/player.js";
 import MissingPropertyError from "../error/MissingPropertyError.js";
@@ -13,14 +13,16 @@ export default class IPBanList extends PlayerList<UserBan, UserBan, Player> {
         const bans: UserBan[] = [];
         for (const [index, entry] of result.entries()) {
             if (typeof entry !== 'object' || entry === null) {
-                throw new IncorrectTypeError("object", typeof entry, result, `${index}`);
+                throw new IncorrectTypeError("object", typeof entry, result, index.toString());
             }
 
             if (!("player" in entry)) {
                 throw new MissingPropertyError("player", result, index.toString());
             }
 
-            bans.push(new UserBan(Player.parse(entry.player, index + ".player", result)).parseAndApplyOptions(entry, index.toString(), result))
+            const ban = new UserBan(Player.parse(entry.player, result, index.toString(), "player"));
+            ban.parseAndApplyOptions(entry, result, index.toString());
+            bans.push(ban);
         }
         return bans;
     }

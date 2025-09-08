@@ -97,7 +97,7 @@ test('Invalid response wrong type for player', async () => {
     const ops = new OperatorList(connection);
     const result = connection.addResponse([{player: true}]);
 
-    await expect(ops.get()).rejects.toThrow(new IncorrectTypeError("object", "boolean", result, "0.player"));
+    await expect(ops.get()).rejects.toThrow(new IncorrectTypeError("object", "boolean", result, "0", "player"));
 });
 
 test('Invalid response wrong type for permissionLevel', async () => {
@@ -105,7 +105,7 @@ test('Invalid response wrong type for permissionLevel', async () => {
     const ops = new OperatorList(connection);
     const result = connection.addResponse([{player: {id: EXAROTON.id, name: EXAROTON.name}, permissionLevel: "4"}]);
 
-    await expect(ops.get()).rejects.toThrow(new IncorrectTypeError("number", "string", result, "0.permissionLevel"));
+    await expect(ops.get()).rejects.toThrow(new IncorrectTypeError("number", "string", result, "0", "permissionLevel"));
 });
 
 test('Invalid response wrong type for bypassesPlayerLimit', async () => {
@@ -113,5 +113,5 @@ test('Invalid response wrong type for bypassesPlayerLimit', async () => {
     const ops = new OperatorList(connection);
     const result = connection.addResponse([{player: {id: EXAROTON.id, name: EXAROTON.name}, bypassesPlayerLimit: "false"}]);
 
-    await expect(ops.get()).rejects.toThrow(new IncorrectTypeError("boolean", "string", result, "0.bypassesPlayerLimit"));
+    await expect(ops.get()).rejects.toThrow(new IncorrectTypeError("boolean", "string", result, "0", "bypassesPlayerLimit"));
 });

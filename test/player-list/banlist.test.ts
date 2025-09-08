@@ -131,7 +131,9 @@ test('Invalid response wrong type for player', async () => {
     const banList = new BanList(connection);
     const result = connection.addResponse([{player: true}]);
 
-    await expect(banList.get()).rejects.toThrow(new IncorrectTypeError("object", "boolean", result, "0.player"));
+    await expect(banList.get()).rejects.toThrow(
+        new IncorrectTypeError("object", "boolean", result, "0", "player")
+    );
 });
 
 test('Invalid response wrong type for reason', async () => {
@@ -139,7 +141,9 @@ test('Invalid response wrong type for reason', async () => {
     const banList = new BanList(connection);
     const result = connection.addResponse([{player: ATERNOS, reason: true}]);
 
-    await expect(banList.get()).rejects.toThrow(new IncorrectTypeError("string", "boolean", result, "0.reason"));
+    await expect(banList.get()).rejects.toThrow(
+        new IncorrectTypeError("string", "boolean", result, "0", "reason")
+    );
 });
 
 test('Invalid response wrong type for source', async () => {
@@ -147,7 +151,9 @@ test('Invalid response wrong type for source', async () => {
     const banList = new BanList(connection);
     const result = connection.addResponse([{player: ATERNOS, source: true}]);
 
-    await expect(banList.get()).rejects.toThrow(new IncorrectTypeError("string", "boolean", result, "0.source"));
+    await expect(banList.get()).rejects.toThrow(
+        new IncorrectTypeError("string", "boolean", result, "0", "source")
+    );
 });
 
 test('Invalid response wrong type for expires', async () => {
@@ -155,5 +161,7 @@ test('Invalid response wrong type for expires', async () => {
     const banList = new BanList(connection);
     const result = connection.addResponse([{player: ATERNOS, expires: true}]);
 
-    await expect(banList.get()).rejects.toThrow(new IncorrectTypeError("string", "boolean", result, "0.expires"));
+    await expect(banList.get()).rejects.toThrow(
+        new IncorrectTypeError("string", "boolean", result, "0", "expires")
+    );
 });

@@ -65,12 +65,16 @@ export class Message {
     }
 
     /**
-     * Add a parameter for the translated message.
-     * @param param
+     * Add parameters for the translated message.
+     * @param params one or more parameters to add
      */
-    addTranslatableParam(param: string): this {
+    addTranslatableParam(params: string | string[]): this {
         this.translatableParams ??= [];
-        this.translatableParams.push(param);
+        if (Array.isArray(params)) {
+            this.translatableParams.push(...params);
+        } else {
+            this.translatableParams.push(params);
+        }
         return this;
     }
 
@@ -134,6 +138,20 @@ export class SystemMessage {
      */
     setReceivingPlayers(receivingPlayers?: Array<Player>): this {
         this.receivingPlayers = receivingPlayers;
+        return this;
+    }
+
+    /**
+     * Adds one or more players to the list of players to receive the message.
+     * @param player one or more players to add
+     */
+    addReceivingPlayer(player: Player | Player[]): this {
+        this.receivingPlayers ??= [];
+        if (Array.isArray(player)) {
+            this.receivingPlayers.push(...player);
+        } else {
+            this.receivingPlayers.push(player);
+        }
         return this;
     }
 }

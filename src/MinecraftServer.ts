@@ -1,7 +1,7 @@
 import type Connection from "./connection/Connection.js";
 import {SystemMessage} from "./schemas/message.js";
 import AllowList from "./player-list/AllowList.js";
-import {IPBanList} from "./player-list/IPBanList.js";
+import IPBanList from "./player-list/IPBanList.js";
 import IncorrectTypeError from "./error/IncorrectTypeError.js";
 import BanList from "./player-list/BanList.js";
 import {Player} from "./schemas/player.js";

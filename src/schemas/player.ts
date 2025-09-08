@@ -27,46 +27,54 @@ export class Player {
         return new Player().setName(name);
     }
 
-    static parseList(data: unknown, response: unknown = data, path: string = ''): Player[] {
+    /**
+     * Parse a list of Player instances from a raw array.
+     * @param data
+     * @param response
+     * @param path
+     * @internal
+     */
+    static parseList(data: unknown, response: unknown = data, ...path: string[]): Player[] {
         if (!Array.isArray(data)) {
-            throw new IncorrectTypeError("array", typeof data, response, path);
+            throw new IncorrectTypeError("array", typeof data, response, ...path);
         }
 
         const players = [];
         for (const [index, entry] of data.entries()) {
-            players.push(Player.parse(entry, path ? `${path}.${data}` : index.toString(), response))
+            players.push(Player.parse(entry, response, ...path, index.toString()))
         }
+
         return players;
     }
 
     /**
      * Parse a Player instance from a raw object.
      * @param data Raw object to parse.
-     * @param path Path to the data in the original response, used for errors.
      * @param response Full response received from the server, used for errors.
+     * @param path Path to the data in the original response, used for errors.
      * @returns Parsed Player instance.
      * @throws {IncorrectTypeError} If the data is not a valid Player object.
      * @internal
      */
-    static parse(data: unknown, path: string, response: unknown): Player {
+    static parse(data: unknown, response: unknown, ...path: string[]): Player {
         if (typeof data !== 'object' || data === null) {
-            throw new IncorrectTypeError("object", typeof data, response, path);
+            throw new IncorrectTypeError("object", typeof data, response, ...path);
         }
 
         if (!("id" in data)) {
-            throw new MissingPropertyError("id", response, path);
-        }
-
-        if (typeof data.id !== 'string') {
-            throw new IncorrectTypeError("string", typeof data.id, response, path + '.id');
+            throw new MissingPropertyError("id", response, ...path);
         }
 
         if (!("name" in data)) {
-            throw new MissingPropertyError("name", response, path);
+            throw new MissingPropertyError("name", response, ...path);
+        }
+
+        if (typeof data.id !== 'string') {
+            throw new IncorrectTypeError("string", typeof data.id, response, ...path, 'id');
         }
 
         if (typeof data.name !== 'string') {
-            throw new IncorrectTypeError("string", typeof data.name, response, path + '.name');
+            throw new IncorrectTypeError("string", typeof data.name, response, ...path, 'name');
         }
 
         return new Player(data.id, data.name);

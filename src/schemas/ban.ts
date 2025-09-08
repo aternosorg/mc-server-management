@@ -99,24 +99,24 @@ class Ban {
      * @throws {IncorrectTypeError} If the data is not a valid options object.
      * @internal
      */
-    parseAndApplyOptions(data: object, path: string, result: unknown): this {
+    parseAndApplyOptions(data: object, result: unknown, ...path: string[]): this {
         if ("reason" in data) {
             if (typeof data.reason !== 'string') {
-                throw new IncorrectTypeError("string", typeof data.reason, result, `${path}.reason`);
+                throw new IncorrectTypeError("string", typeof data.reason, result, ...path, 'reason');
             }
             this.reason = data.reason;
         }
 
         if ("source" in data) {
             if (typeof data.source !== 'string') {
-                throw new IncorrectTypeError("string", typeof data.source, result, `${path}.source`);
+                throw new IncorrectTypeError("string", typeof data.source, result, ...path, 'source');
             }
             this.source = data.source;
         }
 
         if ("expires" in data) {
             if (typeof data.expires !== 'string') {
-                throw new IncorrectTypeError("string", typeof data.expires, result, `${path}.expires`);
+                throw new IncorrectTypeError("string", typeof data.expires, result, ...path, 'expires');
             }
             this.expires = data.expires;
         }

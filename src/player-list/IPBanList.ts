@@ -12,7 +12,7 @@ export default class IPBanList extends PlayerList<IPBan, IncomingIPBan, string> 
         const bans: IPBan[] = [];
         for (const [index, entry] of result.entries()) {
             if (typeof entry !== 'object' || entry === null) {
-                throw new IncorrectTypeError("object", typeof entry, result, `${index}`);
+                throw new IncorrectTypeError("object", typeof entry, result, index.toString());
             }
 
             if (!("ip" in entry)) {
@@ -20,10 +20,10 @@ export default class IPBanList extends PlayerList<IPBan, IncomingIPBan, string> 
             }
 
             if (typeof entry.ip !== 'string') {
-                throw new IncorrectTypeError("string", typeof entry.ip, result, `${index}.ip`);
+                throw new IncorrectTypeError("string", typeof entry.ip, result, index.toString(), `ip`);
             }
 
-            bans.push(new IPBan(entry.ip).parseAndApplyOptions(entry, index.toString(), result))
+            bans.push(new IPBan(entry.ip).parseAndApplyOptions(entry, result, index.toString()))
         }
         return bans;
     }
