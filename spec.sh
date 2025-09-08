@@ -31,6 +31,8 @@ function run-server() {
     mkdir -p "$SERVER_DIR"
     update-properties
     docker run \
+        --rm \
+        --name "mc-management-protocol-server" \
         -v "./$SERVER_DIR:/data" \
         -e EULA=true \
         -e VERSION="$MINECRAFT_VERSION" \
@@ -39,6 +41,10 @@ function run-server() {
         -e EXTRA_ARGS="$EXTRA_ARGS" \
         -e JVM_OPTS="$JVM_OPTS" \
         ghcr.io/itzg/minecraft-server
+}
+
+function stop-server() {
+    docker stop "mc-management-protocol-server" || true
 }
 
 function update-spec() {
