@@ -2,8 +2,8 @@ import type Connection from "../connection/Connection.js";
 import IncorrectTypeError from "../error/IncorrectTypeError.js";
 
 export default abstract class PlayerList<ItemType, AddType, RemoveType> {
-    protected connection: Connection;
-    protected items?: ItemType[];
+    #connection: Connection;
+    #items?: ItemType[];
 
     /**
      * Create a player list API wrapper. Use {@link MinecraftServer.allowlist} or similar methods instead.
@@ -11,7 +11,7 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
      * @internal
      */
     constructor(connection: Connection) {
-        this.connection = connection;
+        this.#connection = connection;
     }
 
     /**
@@ -19,13 +19,13 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
      * @param force Always request the list from the server, even if it was already fetched.
      */
     public async get(force: boolean = false): Promise<ItemType[]> {
-        if (!this.items || force) {
+        if (!this.#items || force) {
             await this.callAndParse();
         }
-        if (!this.items) {
+        if (!this.#items) {
             throw new Error("Invalid player list.");
         }
-        return this.items;
+        return this.#items;
     }
 
     /**
@@ -70,7 +70,7 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
         if (response !== true) {
             throw new IncorrectTypeError("true", typeof response, response);
         }
-        this.items = [];
+        this.#items = [];
         return this;
     }
 
@@ -86,7 +86,7 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
         if (action) {
             method += "/" + action
         }
-        return await this.connection.call(method, params);
+        return await this.#connection.call(method, params);
     }
 
     /**
@@ -102,7 +102,7 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
             throw new IncorrectTypeError("array", typeof result, result);
         }
 
-        this.items = this.parseResult(result);
+        this.#items = this.parseResult(result);
         return this;
     }
 
