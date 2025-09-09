@@ -1,4 +1,4 @@
-import {ChildProcess, spawn } from 'child_process';
+import {ChildProcess, spawn} from 'child_process';
 import {getConnection, wait} from "./utils.js";
 
 let server: ChildProcess | null = null;
@@ -27,11 +27,13 @@ export async function setup() {
     const timeout = setTimeout(() => {
         console.error("Server did not start in time");
         server?.kill();
-    }, 120_000);
+        process.exit(1);
+    },  15 * 60 * 1_000);
 
     while (true) {
         if (server.exitCode !== null) {
-            throw new Error("Server process exited unexpectedly");
+            console.error("Server process exited unexpectedly");
+            process.exit(1);
         }
         if (await checkIfServerRunning()) {
             break;
