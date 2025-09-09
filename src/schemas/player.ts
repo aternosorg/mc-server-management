@@ -56,7 +56,7 @@ export class Player {
      * @throws {IncorrectTypeError} If the data is not a valid Player object.
      * @internal
      */
-    static parse(data: unknown, response: unknown, ...path: string[]): Player {
+    static parse(data: unknown, response: unknown = data, ...path: string[]): Player {
         if (typeof data !== 'object' || data === null) {
             throw new IncorrectTypeError("object", typeof data, response, ...path);
         }
@@ -122,6 +122,54 @@ export class Operator {
      * Whether the operator bypasses the player limit.
      */
     bypassesPlayerLimit?: boolean;
+
+    /**
+     * Parse an Operator instance from a raw object.
+     * @param data Raw object to parse.
+     * @param response Full response received from the server, used for errors.
+     * @param path Path to the data in the original response, used for errors.
+     * @returns Parsed Operator instance.
+     * @throws {IncorrectTypeError} If the data is not a valid Operator object.
+     * @internal
+     */
+    static parse(data: unknown, response: unknown = data, ...path: string[]): Operator {
+        if (typeof data !== 'object' || data === null) {
+            throw new IncorrectTypeError("object", typeof data, response, ...path);
+        }
+
+        if (!("player" in data)) {
+            throw new MissingPropertyError("player", response, ...path);
+        }
+
+        const operator = new Operator(Player.parse(data.player, response, ...path, "player"));
+        if ("permissionLevel" in data) {
+            if (typeof data.permissionLevel !== 'number') {
+                throw new IncorrectTypeError(
+                    "number",
+                    typeof data.permissionLevel,
+                    response,
+                    ...path,
+                    'permissionLevel'
+                );
+            }
+            operator.permissionLevel = data.permissionLevel;
+        }
+
+        if ("bypassesPlayerLimit" in data) {
+            if (typeof data.bypassesPlayerLimit !== 'boolean') {
+                throw new IncorrectTypeError(
+                    "boolean",
+                    typeof data.bypassesPlayerLimit,
+                    response,
+                    ...path,
+                    'bypassesPlayerLimit',
+                );
+            }
+            operator.bypassesPlayerLimit = data.bypassesPlayerLimit;
+        }
+
+        return operator;
+    }
 
     /**
      * @param player The player who is being made an operator.

@@ -60,7 +60,7 @@ export class TypedGameRule<T extends GameRuleType> extends GameRule<GameRuleValu
      * @param path
      * @internal
      */
-    static parse(data: unknown, result: unknown, ...path: string[]): TypedGameRule<GameRuleType> {
+    static parse(data: unknown, result: unknown = data, ...path: string[]): TypedGameRule<GameRuleType> {
         if (typeof data !== 'object' || data === null) {
             throw new IncorrectTypeError("object", typeof data, result, ...path);
         }

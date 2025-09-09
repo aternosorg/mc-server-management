@@ -1,5 +1,6 @@
 import {Player} from "./player.js";
 import IncorrectTypeError from "../error/IncorrectTypeError.js";
+import MissingPropertyError from "../error/MissingPropertyError.js";
 
 /**
  * Base class for all ban related classes.
@@ -204,6 +205,31 @@ export class IPBan extends Ban {
     ip: string;
 
     /**
+     * Parse an IPBan instance from a raw object.
+     * @param data Raw object to parse.
+     * @param response Full response received from the server, used for errors.
+     * @param path Path to the data in the original response, used for errors.
+     * @returns Parsed IPBan instance.
+     * @throws {IncorrectTypeError} If the data is not a valid IPBan object.
+     * @internal
+     */
+    static parse(data: unknown, response: unknown = data, ...path: string[]): IPBan {
+        if (typeof data !== 'object' || data === null) {
+            throw new IncorrectTypeError("object", typeof data, response, ...path);
+        }
+
+        if (!("ip" in data)) {
+            throw new MissingPropertyError("ip", response, ...path);
+        }
+
+        if (typeof data.ip !== 'string') {
+            throw new IncorrectTypeError("string", typeof data.ip, response, ...path, `ip`);
+        }
+
+        return new IPBan(data.ip).parseAndApplyOptions(data, response, ...path);
+    }
+
+    /**
      * @param ip banned IP address
      * @param reason reason for the ban
      * @param source source of the ban
@@ -234,6 +260,28 @@ export class UserBan extends Ban {
      * Player who should be banned.
      */
     player: Player;
+
+    /**
+     * Parse an UserBan instance from a raw object.
+     * @param data Raw object to parse.
+     * @param response Full response received from the server, used for errors.
+     * @param path Path to the data in the original response, used for errors.
+     * @returns Parsed UserBan instance.
+     * @throws {IncorrectTypeError} If the data is not a valid UserBan object.
+     * @internal
+     */
+    static parse(data: unknown, response: unknown = data, ...path: string[]): UserBan {
+        if (typeof data !== 'object' || data === null) {
+            throw new IncorrectTypeError("object", typeof data, response, ...path);
+        }
+
+        if (!("player" in data)) {
+            throw new MissingPropertyError("player", response, ...path);
+        }
+
+        const ban = new UserBan(Player.parse(data.player, response, ...path, "player"));
+        return ban.parseAndApplyOptions(data, response, ...path);
+    }
 
     /**
      * @param player the player to ban
