@@ -6,7 +6,14 @@ SERVER_DIR="server"
 MINECRAFT_VERSION="snapshot"
 MC_PORT="${MC_PORT:-25565}"
 MANAGEMENT_PORT="${MANAGEMENT_PORT:-25585}"
-PROPERTIES=("server-port=25565" "management-server-enabled=true" "management-server-port=25585" "management-server-host=0.0.0.0")
+PROPERTIES=(
+ "server-port=25565"
+ "management-server-enabled=true"
+ "management-server-port=25585"
+ "management-server-host=0.0.0.0"
+ "management-server-tls-enabled=false"
+ "management-server-secret=jrpXKVsPgpCFF3JVVbQUDsEcvDw378gvezbcKqnK"
+)
 
 function update-properties() {
     echo "Updating server properties in $SERVER_DIR/server.properties"

@@ -10,8 +10,7 @@ import BanList from "../../src/player-list/BanList.js";
 const server = await getServer();
 
 beforeEach(async () => {
-    // https://bugs.mojang.com/browse/MC/issues/MC-301891 - The clear method does not work correctly.
-    await server.banList().set([]);
+    await server.banList().clear();
 })
 
 test('Get banlist items', async () => {

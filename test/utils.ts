@@ -10,7 +10,7 @@ export async function getServer() {
 }
 
 export function getConnection() {
-    return WebSocketConnection.connect("ws://localhost:25585");
+    return WebSocketConnection.connect("ws://localhost:25585", "jrpXKVsPgpCFF3JVVbQUDsEcvDw378gvezbcKqnK");
 }
 
 export function wait(ms: number) {

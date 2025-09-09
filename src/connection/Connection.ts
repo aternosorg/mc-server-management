@@ -1,10 +1,12 @@
 import JsonRPCError from "../error/JsonRPCError.js";
+import {EventEmitter} from "eventemitter3";
+import {EventData} from "../MinecraftServer.js";
 
 /**
  * Library independent connection interface.
  * Can be used to proxy calls to different libraries or through intermediate APIs.
  */
-export default abstract class Connection {
+export default abstract class Connection extends EventEmitter<keyof EventData | "open" | "close" | "error"> {
     /**
      * Call a method on the server with the given parameters.
      * @param method The method name to call.

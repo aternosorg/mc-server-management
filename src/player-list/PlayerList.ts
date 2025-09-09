@@ -42,7 +42,7 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
      * This method updates the cached with the resulting list from the server. Use `get()` to retrieve it.
      * @param items
      */
-    public add(items: AddType|AddType[]): Promise<this> {
+    public add(items: AddType | AddType[]): Promise<this> {
         if (!Array.isArray(items)) {
             items = [items];
         }
@@ -54,7 +54,7 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
      * This method updates the cached with the resulting list from the server. Use `get()` to retrieve it.
      * @param items
      */
-    public remove(items: RemoveType|RemoveType[]): Promise<this> {
+    public remove(items: RemoveType | RemoveType[]): Promise<this> {
         if (!Array.isArray(items)) {
             items = [items];
         }
@@ -66,11 +66,30 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
      * This method updates the cached with the resulting list from the server. Use `get()` to retrieve it.
      */
     public async clear(): Promise<this> {
-        const response = await this.call('clear');
-        if (response !== true) {
-            throw new IncorrectTypeError("true", typeof response, response);
+        return this.callAndParse('clear', []);
+    }
+
+    /**
+     * Add an item to the cached list. Does not update the server.
+     * @param item
+     * @internal
+     */
+    public addItem(item: ItemType): this {
+        this.#items?.push(item);
+        return this;
+    }
+
+    /**
+     * Remove all items matching this callback from the cached list. Does not update the server.
+     * If the cached list is not available, this method does nothing.
+     * @param filter
+     */
+    public removeMatching(filter: (item: ItemType) => boolean): this {
+        if (!this.#items) {
+            return this;
         }
-        this.#items = [];
+
+        this.#items = this.#items.filter(item => !filter(item));
         return this;
     }
 

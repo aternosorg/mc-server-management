@@ -4,18 +4,59 @@ import AllowList from "./player-list/AllowList.js";
 import IPBanList from "./player-list/IPBanList.js";
 import IncorrectTypeError from "./error/IncorrectTypeError.js";
 import BanList from "./player-list/BanList.js";
-import {Player} from "./schemas/player.js";
+import {Operator, Player} from "./schemas/player.js";
 import {KickPlayer} from "./schemas/kick.js";
 import OperatorList from "./player-list/OperatorList.js";
 import {ServerState} from "./schemas/server.js";
 import ServerSettings from "./ServerSettings.js";
 import {GameRuleType, TypedGameRule, UntypedGameRule} from "./schemas/gamerule.js";
+import {IPBan, UserBan} from "./schemas/ban.js";
+import {EventEmitter} from "eventemitter3";
+
+export enum Notifications {
+    SERVER_STARTED = 'notification:server/started',
+    SERVER_STOPPING = 'notification:server/stopping',
+    SERVER_SAVING = 'notification:server/saving',
+    SERVER_SAVED = 'notification:server/saved',
+    PLAYER_JOINED = 'notification:players/joined',
+    PLAYER_LEFT = 'notification:players/left',
+    OPERATOR_ADDED = 'notification:operators/added',
+    OPERATOR_REMOVED = 'notification:operators/removed',
+    ALLOWLIST_ADDED = 'notification:allowlist/added',
+    ALLOWLIST_REMOVED = 'notification:allowlist/removed',
+    IP_BAN_ADDED = 'notification:ip_bans/added',
+    IP_BAN_REMOVED = 'notification:ip_bans/removed',
+    BAN_ADDED = 'notification:bans/added',
+    BAN_REMOVED = 'notification:bans/removed',
+    GAME_RULE_UPDATED = 'notification:gamerules/updated',
+    SERVER_STATUS = 'notification:server/status',
+}
+
+export type EventData = {
+    'error': [Error],
+    [Notifications.SERVER_STARTED]: [],
+    [Notifications.SERVER_STOPPING]: [],
+    [Notifications.SERVER_SAVING]: [],
+    [Notifications.SERVER_SAVED]: [],
+    [Notifications.PLAYER_JOINED]: [Player],
+    [Notifications.PLAYER_LEFT]: [Player],
+    [Notifications.OPERATOR_ADDED]: [Operator],
+    [Notifications.OPERATOR_REMOVED]: [Operator],
+    [Notifications.ALLOWLIST_ADDED]: [Player],
+    [Notifications.ALLOWLIST_REMOVED]: [Player],
+    [Notifications.IP_BAN_ADDED]: [IPBan],
+    [Notifications.IP_BAN_REMOVED]: [string],
+    [Notifications.BAN_ADDED]: [UserBan],
+    [Notifications.BAN_REMOVED]: [Player],
+    [Notifications.GAME_RULE_UPDATED]: [TypedGameRule<GameRuleType>],
+    [Notifications.SERVER_STATUS]: [ServerState],
+}
 
 /**
  * This is the main entrypoint for interacting with the Minecraft server management protocol.
  * It provides methods for retrieving server status, managing players, and accessing various server settings and lists.
  */
-export default class MinecraftServer {
+export default class MinecraftServer extends EventEmitter<EventData> {
     #connection: Connection;
     #allowlist?: AllowList;
     #ipBanList?: IPBanList;
@@ -30,7 +71,84 @@ export default class MinecraftServer {
      * @param connection The connection to use for communicating with the server.
      */
     constructor(connection: Connection) {
+        super();
         this.#connection = connection;
+
+        this.#connection.on(Notifications.SERVER_STARTED, () => this.emit(Notifications.SERVER_STARTED));
+        this.#connection.on(Notifications.SERVER_STOPPING, () => this.emit(Notifications.SERVER_STOPPING));
+        this.#connection.on(Notifications.SERVER_SAVING, () => this.emit(Notifications.SERVER_SAVING));
+        this.#connection.on(Notifications.SERVER_SAVED, () => this.emit(Notifications.SERVER_SAVED));
+        this.#connection.on(Notifications.PLAYER_JOINED, (data: unknown) => {
+            const [path, param] = this.#getByNameOrPos(data, "player");
+            this.emit(Notifications.PLAYER_JOINED, Player.parse(param, data, ...path))
+        });
+        this.#connection.on(Notifications.PLAYER_LEFT, (data: unknown) => {
+            const [path, param] = this.#getByNameOrPos(data, "player");
+            this.emit(Notifications.PLAYER_LEFT, Player.parse(param, data, ...path))
+        });
+        this.#connection.on(Notifications.OPERATOR_ADDED, (data: unknown) => {
+            const [path, param] = this.#getByNameOrPos(data, "player");
+            const op = Operator.parse(param, data, ...path);
+            this.emit(Notifications.OPERATOR_ADDED, op);
+            this.#operatorList?.addItem(op);
+        });
+        this.#connection.on(Notifications.OPERATOR_REMOVED, (data: unknown) => {
+            const [path, param] = this.#getByNameOrPos(data, "player");
+            const op = Operator.parse(param, data, ...path);
+            this.emit(Notifications.OPERATOR_REMOVED, op);
+            this.#operatorList?.removeMatching(item => item.player.id === op.player.id);
+        });
+        this.#connection.on(Notifications.ALLOWLIST_ADDED, (data: unknown) => {
+            const [path, param] = this.#getByNameOrPos(data, "player");
+            const player = Player.parse(param, data, ...path);
+            this.emit(Notifications.ALLOWLIST_ADDED, player);
+            this.#allowlist?.addItem(player);
+        });
+        this.#connection.on(Notifications.ALLOWLIST_REMOVED, (data: unknown) => {
+            const [path, param] = this.#getByNameOrPos(data, "player");
+            const player = Player.parse(param, data, ...path);
+            this.emit(Notifications.ALLOWLIST_REMOVED, player);
+            this.#allowlist?.removeMatching(item => item.id === player.id);
+        });
+        this.#connection.on(Notifications.IP_BAN_ADDED, (data: unknown) => {
+            const [path, param] = this.#getByNameOrPos(data, "player");
+            const ban = IPBan.parse(param, data, ...path);
+            this.emit(Notifications.IP_BAN_ADDED, ban);
+            this.#ipBanList?.addItem(ban);
+        });
+        this.#connection.on(Notifications.IP_BAN_REMOVED, (data: unknown) => {
+            const [path, ip] = this.#getByNameOrPos(data, "player");
+
+            if (typeof ip !== 'string') {
+                throw new IncorrectTypeError("string", typeof ip, data, ...path);
+            }
+
+            this.emit(Notifications.IP_BAN_REMOVED, ip);
+            this.#ipBanList?.removeMatching(item => item.ip === ip);
+        });
+        this.#connection.on(Notifications.BAN_ADDED, (data: unknown) => {
+            const [path, param] = this.#getByNameOrPos(data, "player");
+            const ban = UserBan.parse(param, data, ...path);
+            this.emit(Notifications.BAN_ADDED, ban);
+            this.#banList?.addItem(ban);
+        });
+        this.#connection.on(Notifications.BAN_REMOVED, (data: unknown) => {
+            const [path, param] = this.#getByNameOrPos(data, "player");
+            const player = Player.parse(param, data, ...path);
+            this.emit(Notifications.BAN_REMOVED, player);
+            this.#banList?.removeMatching(item => item.player.id === player.id);
+        });
+        this.#connection.on(Notifications.GAME_RULE_UPDATED, (data: unknown) => {
+            const [path, param] = this.#getByNameOrPos(data, "gamerule");
+            const rule = TypedGameRule.parse(param, data, ...path);
+            this.emit(Notifications.GAME_RULE_UPDATED, rule);
+            this.#gameRules?.set(rule.key, rule);
+        });
+        this.#connection.on(Notifications.SERVER_STATUS, (data: unknown) => {
+            const [path, param] = this.#getByNameOrPos(data, "status");
+            this.#state = ServerState.parse(param, data, ...path);
+            this.emit(Notifications.SERVER_STATUS, this.#state);
+        });
     }
 
     /**
@@ -171,5 +289,25 @@ export default class MinecraftServer {
      */
     public settings(): ServerSettings {
         return new ServerSettings(this.#connection);
+    }
+
+    /**
+     * Get parameter by name or position.
+     * @param data The data to get the parameter from.
+     * @param name The name of the parameter.
+     * @param pos The position of the parameter.
+     * @return [path: string[], value: unknown] The parameter value and the path used to retrieve it.
+     * @private
+     */
+    #getByNameOrPos(data: unknown, name: string, pos: number = 0): [string[], unknown] {
+        if (Array.isArray(data) && data.length > pos) {
+            return [[pos.toString()], data[pos]];
+        }
+
+        if (typeof data === 'object' && data !== null && name in data) {
+            return [[name], (data as Record<string, unknown>)[name]];
+        }
+
+        throw new Error(`Could not get parameter '${name}' (${pos}) from notification data: ${JSON.stringify(data)}`);
     }
 }

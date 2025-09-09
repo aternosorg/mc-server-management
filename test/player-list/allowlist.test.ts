@@ -61,14 +61,6 @@ test('Invalid response not array', async () => {
     await expect(allowlist.get()).rejects.toThrow(new IncorrectTypeError("array", "boolean", true));
 });
 
-test('Invalid response clear', async () => {
-    const connection = new TestConnection();
-    const allowlist = new AllowList(connection);
-    connection.addResponse("test");
-
-    await expect(allowlist.clear()).rejects.toThrow(new IncorrectTypeError("true", "string", "test"));
-});
-
 test('Invalid response item not object', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
@@ -105,7 +97,7 @@ test('Validate that all methods use cached list', async () => {
     connection.addResponse([ATERNOS]);
     expect(await allowlist.remove(Player.withName(EXAROTON.name!))).toBe(allowlist);
     expect(await allowlist.get()).toStrictEqual([ATERNOS]);
-    connection.addResponse(true);
+    connection.addResponse([]);
     expect(await allowlist.clear()).toBe(allowlist);
     expect(await allowlist.get()).toStrictEqual([]);
 });

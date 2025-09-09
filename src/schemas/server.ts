@@ -18,30 +18,32 @@ export class ServerState {
 
     /**
      * @param data
+     * @param response
+     * @param path
      * @internal
      */
-    static parse(data: unknown): ServerState {
+    static parse(data: unknown, response: unknown = data, ...path: string[]): ServerState {
         if (typeof data !== 'object' || data === null) {
-            throw new IncorrectTypeError("object", typeof data, data);
+            throw new IncorrectTypeError("object", typeof data, response, ...path);
         }
 
         if (!("started" in data)) {
-            throw new MissingPropertyError("started", data);
+            throw new MissingPropertyError("started", response, ...path);
         }
 
         if (typeof data.started !== 'boolean') {
-            throw new IncorrectTypeError("boolean", typeof data.started, data, "started");
+            throw new IncorrectTypeError("boolean", typeof data.started, response, ...path, "started");
         }
 
         let players: Player[] = [];
         if ("players" in data) {
-            players = Player.parseList(data.players, data, "players");
+            players = Player.parseList(data.players, response, ...path, "players");
         }
 
         if (!("version" in data)) {
-            throw new MissingPropertyError("version", data);
+            throw new MissingPropertyError("version", response, ...path);
         }
-        const version = Version.parse(data.version, data, "version");
+        const version = Version.parse(data.version, response, ...path, "version");
 
         return new ServerState(players, data.started, version);
     }
