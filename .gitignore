@@ -1,6 +1,6 @@
 # Node JS / TypeScript / Vitest
 node_modules
-build
+dist
 coverage
 
 # IDEs
