@@ -1,0 +1,21 @@
+# Node JS / TypeScript / Vitest
+node_modules
+coverage
+src
+test
+tsconfig.json
+tsdown.config.mts
+vitest.config.ts
+
+# CI
+.github
+
+# IDEs
+.idea
+.vscode
+
+# Custom stuff
+server
+test.ts
+json-rpc-api-schema.json
+spec.sh
