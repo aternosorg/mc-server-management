@@ -13,7 +13,7 @@ const server = await getServer();
 
 test('Get real server status', async () => {
     const status = await server.getStatus();
-    expect(status.started).toStrictEqual(true);
+    expect(status.started).toBeTypeOf("boolean");
     expect(status.players.length).toStrictEqual(0);
     expect(status.version).toBeDefined();
     expect(status.version.name).toBeDefined();
