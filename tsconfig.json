@@ -2,8 +2,8 @@
     "compilerOptions": {
         "outDir": "dist",
         "target": "es2022",
-        "module": "node16",
-        "moduleResolution": "node16",
+        "module": "ESNext",
+        "moduleResolution": "node",
         "verbatimModuleSyntax": false,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,

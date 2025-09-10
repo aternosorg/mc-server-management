@@ -34,6 +34,7 @@ export async function setup() {
     const timeout = setTimeout(() => {
         console.error("Server did not start in time");
         server?.kill();
+        console.log(log);
         process.exit(1);
     },  15 * 60 * 1_000);
 

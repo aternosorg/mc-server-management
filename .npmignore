@@ -4,7 +4,7 @@ coverage
 src
 test
 tsconfig.json
-tsdown.config.mts
+tsdown.config.ts
 vitest.config.ts
 
 # CI

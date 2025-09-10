@@ -1,7 +1,7 @@
 import Connection from './Connection.js';
 import {Client, type IWSClientAdditionalOptions} from "rpc-websockets";
 import {Notifications} from "../MinecraftServer.js";
-import type {WebSocket} from "ws";
+import type {ClientOptions} from "ws";
 
 export default class WebSocketConnection extends Connection {
     protected impl: Client;
@@ -12,7 +12,7 @@ export default class WebSocketConnection extends Connection {
      * @param token authorization token for the WebSocket connection.
      * @param options Additional options for the WebSocket client.
      */
-    static async connect(url: string, token: string, options?: IWSClientAdditionalOptions & WebSocket.ClientOptions): Promise<WebSocketConnection> {
+    static async connect(url: string, token: string, options?: IWSClientAdditionalOptions & ClientOptions): Promise<WebSocketConnection> {
         options ??= {};
         options.headers ??= {};
         options.headers['Authorization'] ??= `Bearer ${token}`;
