@@ -23,6 +23,13 @@ export async function setup() {
 
     console.log("Starting Minecraft server...");
     server = spawn('./spec.sh', ['run-server']);
+    let log = '';
+    server.stdout?.on('data', (data) => {
+        log += data.toString();
+    });
+    server.stderr?.on('data', (data) => {
+        log += data.toString();
+    });
 
     const timeout = setTimeout(() => {
         console.error("Server did not start in time");
@@ -32,7 +39,8 @@ export async function setup() {
 
     while (true) {
         if (server.exitCode !== null) {
-            console.error("Server process exited unexpectedly");
+            console.error("Server process exited unexpectedly: {}", server.exitCode);
+            console.log(log);
             process.exit(1);
         }
         if (await checkIfServerRunning()) {
