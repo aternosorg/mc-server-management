@@ -11,7 +11,7 @@ import MissingPropertyError from "../src/error/MissingPropertyError.js";
 
 const server = await getServer();
 
-test('Get server status', async () => {
+test('Get real server status', async () => {
     const status = await server.getStatus();
     expect(status.started).toStrictEqual(true);
     expect(status.players.length).toStrictEqual(0);
@@ -20,7 +20,7 @@ test('Get server status', async () => {
     expect(status.version.protocol).toBeGreaterThan(772);
 });
 
-test('Get server status', async () => {
+test('Get test server status', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
     connection.addResponse({
