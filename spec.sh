@@ -15,6 +15,28 @@ PROPERTIES=(
  "management-server-secret=jrpXKVsPgpCFF3JVVbQUDsEcvDw378gvezbcKqnK"
 )
 
+function error() {
+    echo "Error: $1" >&2
+}
+
+function show-help() {
+    echo "Usage: ./spec.sh {command}"
+    echo ""
+    echo "Commands:"
+    echo "  update-properties               Update server.properties with required properties"
+    echo "  run-server                      Run the Minecraft server with management protocol enabled"
+    echo "  stop-server                     Stop the Minecraft server"
+    echo "  update-spec                     Update the JSON-RPC API schema file"
+    echo ""
+    echo "Environment variables:"
+    echo "  MC_PORT                         Port for Minecraft server (default: 25565)"
+    echo "  MANAGEMENT_PORT                 Port for management protocol server (default: 25585)"
+    echo "  EXTRA_ARGS                      Extra arguments to pass to the Minecraft server"
+    echo "  JVM_OPTS                        Extra JVM options to pass to the Minecraft server"
+    echo ""
+}
+
+
 function update-properties() {
     echo "Updating server properties in $SERVER_DIR/server.properties"
     # Create server.properties if it doesn't exist
