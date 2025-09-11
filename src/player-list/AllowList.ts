@@ -1,5 +1,5 @@
 import PlayerList from "./PlayerList.js";
-import {Player} from "../schemas/player.js";
+import Player from "../schemas/player/Player";
 
 export default class AllowList extends PlayerList<Player, Player, Player> {
     protected getName(): string {

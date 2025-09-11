@@ -1,6 +1,7 @@
-import Connection from "./connection/Connection.js";
-import IncorrectTypeError from "./error/IncorrectTypeError.js";
-import {Difficulty, GameMode} from "./schemas/server.js";
+import Connection from "../connection/Connection";
+import IncorrectTypeError from "../error/IncorrectTypeError";
+import Difficulty from "../schemas/server/Difficulty";
+import GameMode from "../schemas/server/GameMode";
 
 /**
  * An API wrapper for the settings of the Minecraft server.

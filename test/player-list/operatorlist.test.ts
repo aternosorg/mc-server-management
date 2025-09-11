@@ -1,10 +1,7 @@
 import {beforeEach, expect, test} from "vitest";
 import {ATERNOS, EXAROTON, getServer} from "../utils.js";
-import {Operator, Player} from "../../src/schemas/player.js";
+import {IncorrectTypeError, MissingPropertyError, Operator, OperatorList, Player} from "../../src";
 import TestConnection from "../TestConnection.js";
-import OperatorList from "../../src/player-list/OperatorList.js";
-import IncorrectTypeError from "../../src/error/IncorrectTypeError.js";
-import MissingPropertyError from "../../src/error/MissingPropertyError.js";
 
 const server = await getServer();
 

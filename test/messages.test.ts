@@ -1,10 +1,7 @@
 import {ATERNOS, EXAROTON, getServer} from "./utils.js";
 import TestConnection from "./TestConnection.js";
-import MinecraftServer from "../src/MinecraftServer.js";
 import {expect, test} from "vitest";
-import {Message, SystemMessage} from "../src/schemas/message.js";
-import {Player} from "../src/schemas/player.js";
-import IncorrectTypeError from "../src/error/IncorrectTypeError.js";
+import {IncorrectTypeError, Message, MinecraftServer, Player, SystemMessage} from "../src";
 
 for (let server of [null, await getServer()]) {
     let testConnection: TestConnection|null = null;

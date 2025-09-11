@@ -1,7 +1,6 @@
 import {expect, test} from "vitest";
-import {Operator, Player} from "../../src/schemas/player.js";
+import {IncorrectTypeError, Operator, Player} from "../../src";
 import {ATERNOS, EXAROTON} from "../utils.js";
-import IncorrectTypeError from "../../src/error/IncorrectTypeError.js";
 
 test('Operator', () => {
     const operator = new Operator(ATERNOS);

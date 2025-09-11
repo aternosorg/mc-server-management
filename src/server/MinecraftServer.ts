@@ -1,56 +1,24 @@
-import type Connection from "./connection/Connection.js";
-import {SystemMessage} from "./schemas/message.js";
-import AllowList from "./player-list/AllowList.js";
-import IPBanList from "./player-list/IPBanList.js";
-import IncorrectTypeError from "./error/IncorrectTypeError.js";
-import BanList from "./player-list/BanList.js";
-import {Operator, Player} from "./schemas/player.js";
-import {KickPlayer} from "./schemas/kick.js";
-import OperatorList from "./player-list/OperatorList.js";
-import {ServerState} from "./schemas/server.js";
-import ServerSettings from "./ServerSettings.js";
-import {GameRuleType, TypedGameRule, UntypedGameRule} from "./schemas/gamerule.js";
-import {IPBan, UserBan} from "./schemas/ban.js";
+import type Connection from "../connection/Connection";
+import AllowList from "../player-list/AllowList";
+import IPBanList from "../player-list/IPBanList";
+import IncorrectTypeError from "../error/IncorrectTypeError";
+import BanList from "../player-list/BanList";
+import Player from "../schemas/player/Player";
+import KickPlayer from "../schemas/player/KickPlayer";
+import OperatorList from "../player-list/OperatorList";
+import ServerSettings from "./ServerSettings";
 import {EventEmitter} from "eventemitter3";
-
-export enum Notifications {
-    SERVER_STARTED = 'notification:server/started',
-    SERVER_STOPPING = 'notification:server/stopping',
-    SERVER_SAVING = 'notification:server/saving',
-    SERVER_SAVED = 'notification:server/saved',
-    PLAYER_JOINED = 'notification:players/joined',
-    PLAYER_LEFT = 'notification:players/left',
-    OPERATOR_ADDED = 'notification:operators/added',
-    OPERATOR_REMOVED = 'notification:operators/removed',
-    ALLOWLIST_ADDED = 'notification:allowlist/added',
-    ALLOWLIST_REMOVED = 'notification:allowlist/removed',
-    IP_BAN_ADDED = 'notification:ip_bans/added',
-    IP_BAN_REMOVED = 'notification:ip_bans/removed',
-    BAN_ADDED = 'notification:bans/added',
-    BAN_REMOVED = 'notification:bans/removed',
-    GAME_RULE_UPDATED = 'notification:gamerules/updated',
-    SERVER_STATUS = 'notification:server/status',
-}
-
-export type EventData = {
-    'error': [Error],
-    [Notifications.SERVER_STARTED]: [],
-    [Notifications.SERVER_STOPPING]: [],
-    [Notifications.SERVER_SAVING]: [],
-    [Notifications.SERVER_SAVED]: [],
-    [Notifications.PLAYER_JOINED]: [Player],
-    [Notifications.PLAYER_LEFT]: [Player],
-    [Notifications.OPERATOR_ADDED]: [Operator],
-    [Notifications.OPERATOR_REMOVED]: [Operator],
-    [Notifications.ALLOWLIST_ADDED]: [Player],
-    [Notifications.ALLOWLIST_REMOVED]: [Player],
-    [Notifications.IP_BAN_ADDED]: [IPBan],
-    [Notifications.IP_BAN_REMOVED]: [string],
-    [Notifications.BAN_ADDED]: [UserBan],
-    [Notifications.BAN_REMOVED]: [Player],
-    [Notifications.GAME_RULE_UPDATED]: [TypedGameRule<GameRuleType>],
-    [Notifications.SERVER_STATUS]: [ServerState],
-}
+import EventData from "./EventData";
+import {
+    GameRuleType,
+    IPBan,
+    Notifications,
+    Operator, ServerState,
+    SystemMessage,
+    TypedGameRule,
+    UntypedGameRule,
+    UserBan
+} from "../index";
 
 /**
  * This is the main entrypoint for interacting with the Minecraft server management protocol.

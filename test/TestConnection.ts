@@ -1,4 +1,4 @@
-import Connection from "../src/connection/Connection.js";
+import {Connection} from "../src";
 
 export type RequestHistoryEntry = {
     method: string,
@@ -14,7 +14,7 @@ export default class TestConnection extends Connection {
         return result;
     }
 
-    public shiftRequestHistory(): RequestHistoryEntry|null {
+    public shiftRequestHistory(): RequestHistoryEntry | null {
         return this.requestHistory.shift() ?? null;
     }
 

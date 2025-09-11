@@ -1,6 +1,6 @@
 import PlayerList from "./PlayerList.js";
-import {UserBan} from "../schemas/ban.js";
-import {Player} from "../schemas/player.js";
+import Player from "../schemas/player/Player";
+import UserBan from "../schemas/player/ban/UserBan";
 
 export default class BanList extends PlayerList<UserBan, UserBan, Player> {
     protected getName(): string {

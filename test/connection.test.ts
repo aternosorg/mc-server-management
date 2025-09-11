@@ -1,7 +1,6 @@
 import {expect, test} from "vitest";
 import TestConnection from "./TestConnection.js";
-import MinecraftServer from "../src/MinecraftServer.js";
-import JsonRPCError from "../src/error/JsonRPCError.js";
+import {JsonRPCError, MinecraftServer} from "../src";
 import {getConnection} from "./utils.js";
 
 test('Convert json rpc errors to errors', async () => {

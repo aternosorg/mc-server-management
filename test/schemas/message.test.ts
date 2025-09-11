@@ -1,5 +1,5 @@
 import {expect, test} from "vitest";
-import {Message, SystemMessage} from "../../src/schemas/message.js";
+import {Message, SystemMessage} from "../../src";
 import {ATERNOS, EXAROTON} from "../utils.js";
 
 test('Translatable', () => {

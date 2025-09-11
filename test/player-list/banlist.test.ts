@@ -1,11 +1,7 @@
 import {ATERNOS, EXAROTON, getServer} from "../utils.js";
 import {beforeEach, expect, test} from "vitest";
 import TestConnection from "../TestConnection.js";
-import IncorrectTypeError from "../../src/error/IncorrectTypeError.js";
-import MissingPropertyError from "../../src/error/MissingPropertyError.js";
-import {UserBan} from "../../src/schemas/ban.js";
-import {Player} from "../../src/schemas/player.js";
-import BanList from "../../src/player-list/BanList.js";
+import {BanList, IncorrectTypeError, MissingPropertyError, Player, UserBan} from "../../src";
 
 const server = await getServer();
 

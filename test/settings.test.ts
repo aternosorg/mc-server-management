@@ -1,9 +1,7 @@
 import {getServer} from "./utils.js";
 import {expect, test} from "vitest";
-import {Difficulty, GameMode} from "../src/schemas/server.js";
+import {Difficulty, GameMode, IncorrectTypeError, ServerSettings} from "../src";
 import TestConnection from "./TestConnection.js";
-import ServerSettings from "../src/ServerSettings.js";
-import IncorrectTypeError from "../src/error/IncorrectTypeError.js";
 
 const server = await getServer();
 const settings = server.settings();

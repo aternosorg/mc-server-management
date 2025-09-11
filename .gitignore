@@ -8,6 +8,6 @@ coverage
 .vscode
 
 # Custom stuff
-server
+/server
 test.ts
 json-rpc-api-schema.json

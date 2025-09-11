@@ -1,7 +1,7 @@
 import Connection from './Connection.js';
 import {Client, type IWSClientAdditionalOptions} from "rpc-websockets";
-import {Notifications} from "../MinecraftServer.js";
 import type {ClientOptions} from "ws";
+import Notifications from "../server/Notifications";
 
 export default class WebSocketConnection extends Connection {
     protected impl: Client;

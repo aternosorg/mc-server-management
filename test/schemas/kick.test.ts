@@ -1,7 +1,6 @@
 import {expect, test} from "vitest";
-import {KickPlayer} from "../../src/schemas/kick.js";
+import {Message, KickPlayer} from "../../src";
 import {ATERNOS, EXAROTON} from "../utils.js";
-import {Message} from "../../src/schemas/message.js";
 
 test("Add Player", () => {
     const kick = new KickPlayer([]);

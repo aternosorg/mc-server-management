@@ -1,10 +1,7 @@
 import {getServer} from "../utils.js";
 import {beforeEach, expect, test} from "vitest";
-import {IncomingIPBan, IPBan} from "../../src/schemas/ban.js";
+import {IncomingIPBan, IncorrectTypeError, IPBan, IPBanList, MissingPropertyError} from "../../src";
 import TestConnection from "../TestConnection.js";
-import IncorrectTypeError from "../../src/error/IncorrectTypeError.js";
-import IPBanList from "../../src/player-list/IPBanList.js";
-import MissingPropertyError from "../../src/error/MissingPropertyError.js";
 
 const server = await getServer();
 

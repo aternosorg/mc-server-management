@@ -1,5 +1,5 @@
 import {expect, test} from "vitest";
-import {UntypedGameRule} from "../../src/schemas/gamerule.js";
+import {UntypedGameRule} from "../../src";
 
 test('Set key and value', () => {
     const gamerule = new UntypedGameRule("doDaylightCycle", "true");

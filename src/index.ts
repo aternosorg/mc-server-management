@@ -1,7 +1,10 @@
-import ServerSettings from "./ServerSettings.js";
-import MinecraftServer from "./MinecraftServer.js";
+import ServerSettings from "./server/ServerSettings";
+import MinecraftServer from "./server/MinecraftServer";
+import Notifications from "./server/Notifications";
+import EventData from "./server/EventData";
 
-export {MinecraftServer, ServerSettings};
+export type {EventData};
+export {MinecraftServer, Notifications, ServerSettings};
 
 import Connection from "./connection/Connection.js";
 import WebSocketConnection from "./connection/WebSocketConnection.js";
@@ -23,20 +26,29 @@ import PlayerList from "./player-list/PlayerList.js";
 
 export {AllowList, BanList, IPBanList, OperatorList, PlayerList};
 
-import {IncomingIPBan, IPBan, UserBan} from "./schemas/ban.js"
-
 export {IncomingIPBan, IPBan, UserBan};
 
-import {GameRuleType, GameRule, UntypedGameRule, TypedGameRule} from "./schemas/gamerule.js";
+import GameRule from "./schemas/gamerule/GameRule";
 
 export {GameRuleType, GameRule, UntypedGameRule, TypedGameRule};
 
-import {KickPlayer} from "./schemas/kick.js";
-import {Message, SystemMessage} from "./schemas/message.js";
-import {Player, Operator} from "./schemas/player.js";
+import KickPlayer from "./schemas/player/KickPlayer";
+import Message from "./schemas/message/Message";
+import Player from "./schemas/player/Player";
 
 export {KickPlayer, Message, SystemMessage, Player, Operator}
 
-import {ServerState, Version, Difficulty, GameMode} from "./schemas/server.js";
+import IncomingIPBan from "./schemas/player/ban/IncomingIPBan";
+import IPBan from "./schemas/player/ban/IPBan";
+import UserBan from "./schemas/player/ban/UserBan";
+import GameRuleType from "./schemas/gamerule/GameRuleType";
+import UntypedGameRule from "./schemas/gamerule/UntypedGameRule";
+import TypedGameRule from "./schemas/gamerule/TypedGameRule";
+import SystemMessage from "./schemas/message/SystemMessage";
+import Operator from "./schemas/player/Operator";
+import ServerState from "./schemas/server/ServerState";
+import Version from "./schemas/server/Version";
+import Difficulty from "./schemas/server/Difficulty";
+import GameMode from "./schemas/server/GameMode";
 
 export {ServerState, Version, Difficulty, GameMode};

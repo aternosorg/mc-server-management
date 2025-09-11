@@ -1,12 +1,18 @@
 import {afterEach, beforeEach, expect, test} from "vitest";
 import TestConnection from "./TestConnection.js";
-import MinecraftServer, {Notifications} from "../src/MinecraftServer.js";
+import {
+    GameRuleType,
+    IncorrectTypeError,
+    IPBan,
+    MinecraftServer,
+    Notifications,
+    Operator,
+    ServerState,
+    TypedGameRule,
+    UserBan,
+    Version,
+} from "../src"
 import {ATERNOS, EXAROTON} from "./utils.js";
-import {Operator} from "../src/schemas/player.js";
-import {IPBan, UserBan} from "../src/schemas/ban.js";
-import {GameRuleType, TypedGameRule} from "../src/schemas/gamerule.js";
-import {ServerState, Version} from "../src/schemas/server.js";
-import IncorrectTypeError from "../src/error/IncorrectTypeError.js";
 
 let connection: TestConnection;
 let err: any = null;

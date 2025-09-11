@@ -1,8 +1,7 @@
 import {expect, test} from "vitest";
 import {ATERNOS, EXAROTON} from "../utils.js";
 import TestConnection from "../TestConnection.js";
-import AllowList from "../../src/player-list/AllowList.js";
-
+import {AllowList} from "../../src";
 
 test('Calling removeMatching without cached items', async () => {
     const connection = new TestConnection();

@@ -1,6 +1,6 @@
 import JsonRPCError from "../error/JsonRPCError.js";
 import {EventEmitter} from "eventemitter3";
-import {EventData} from "../MinecraftServer.js";
+import EventData from "../server/EventData";
 
 /**
  * Library independent connection interface.

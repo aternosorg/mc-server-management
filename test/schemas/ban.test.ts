@@ -1,5 +1,5 @@
 import {expect, test} from "vitest";
-import {IncomingIPBan, IPBan, UserBan} from "../../src/schemas/ban.js";
+import {IncomingIPBan, IPBan, UserBan} from "../../src";
 import {ATERNOS, EXAROTON} from "../utils.js";
 
 test('Get expires as date', () => {

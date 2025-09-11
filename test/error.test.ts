@@ -1,7 +1,5 @@
 import {expect, test} from "vitest";
-import JsonRPCError from "../src/error/JsonRPCError.js";
-import MissingPropertyError from "../src/error/MissingPropertyError.js";
-import IncorrectTypeError from "../src/error/IncorrectTypeError.js";
+import {JsonRPCError, MissingPropertyError, IncorrectTypeError} from "../src";
 
 test("Parse error missing code", () => {
     const data = {message: "Error message"};

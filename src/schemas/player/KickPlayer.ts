@@ -1,10 +1,10 @@
-import {Player} from "./player.js";
-import {Message} from "./message.js";
+import Player from "./Player";
+import Message from "../message/Message";
 
 /**
  * Request to kick a player
  */
-export class KickPlayer {
+export default class KickPlayer {
     /**
      * Players to kick.
      */

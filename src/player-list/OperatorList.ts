@@ -1,5 +1,6 @@
-import {Operator, Player} from "../schemas/player.js";
+import Player from "../schemas/player/Player";
 import PlayerList from "./PlayerList.js";
+import Operator from "../schemas/player/Operator";
 
 export default class OperatorList extends PlayerList<Operator, Operator, Player> {
     protected getName(): string {

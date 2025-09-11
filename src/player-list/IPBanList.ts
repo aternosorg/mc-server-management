@@ -1,5 +1,6 @@
 import PlayerList from "./PlayerList.js";
-import {IncomingIPBan, IPBan} from "../schemas/ban.js";
+import IncomingIPBan from "../schemas/player/ban/IncomingIPBan";
+import IPBan from "../schemas/player/ban/IPBan";
 
 export default class IPBanList extends PlayerList<IPBan, IncomingIPBan, string> {
     protected getName(): string {

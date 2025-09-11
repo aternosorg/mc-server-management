@@ -1,7 +1,5 @@
 import {expect, test} from "vitest";
-import {ServerState, Version} from "../../src/schemas/server.js";
-import IncorrectTypeError from "../../src/error/IncorrectTypeError.js";
-import MissingPropertyError from "../../src/error/MissingPropertyError.js";
+import {IncorrectTypeError, MissingPropertyError, ServerState, Version} from "../../src";
 
 test('Parse Server State wrong type', () => {
     expect(() => ServerState.parse(false)).toThrow(

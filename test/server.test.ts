@@ -1,13 +1,16 @@
 import {ATERNOS, EXAROTON, getServer} from "./utils.js";
 import {expect, test} from "vitest";
 import TestConnection from "./TestConnection.js";
-import MinecraftServer from "../src/MinecraftServer.js";
-import {KickPlayer} from "../src/schemas/kick.js";
-import {Player} from "../src/schemas/player.js";
-import {Message} from "../src/schemas/message.js";
-import IncorrectTypeError from "../src/error/IncorrectTypeError.js";
-import {GameRuleType, TypedGameRule} from "../src/schemas/gamerule.js";
-import MissingPropertyError from "../src/error/MissingPropertyError.js";
+import {
+    GameRuleType,
+    IncorrectTypeError,
+    KickPlayer,
+    Message,
+    MinecraftServer,
+    MissingPropertyError,
+    Player,
+    TypedGameRule
+} from "../src";
 
 const server = await getServer();
 
