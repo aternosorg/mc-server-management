@@ -8,7 +8,6 @@ export default defineConfig({
     attw: true,
     entry: ['./src/index.ts'],
     format: ['cjs', 'esm'],
-    exports: true,
     minify: true,
     unused: true,
     outExtensions: ({format}) => ({
