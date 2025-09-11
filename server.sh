@@ -20,7 +20,7 @@ function error() {
 }
 
 function show-help() {
-    echo "Usage: ./spec.sh {command}"
+    echo "Usage: ./server.sh {command}"
     echo ""
     echo "Commands:"
     echo "  update-properties               Update server.properties with required properties"

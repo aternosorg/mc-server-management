@@ -26,8 +26,8 @@
         "url": "https://github.com/aternosorg/mc-server-management.git"
     },
     "scripts": {
-        "spec": "./spec.sh update-spec",
-        "server": "./spec.sh run-server",
+        "spec": "./server.sh update-spec",
+        "server": "./server.sh run-server",
         "check": "tsc",
         "test": "vitest",
         "build": "tsdown"
