@@ -20,6 +20,11 @@
     "main": "./dist/index.cjs",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.cts",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/aternosorg/mc-server-management.git"
+    },
     "scripts": {
         "spec": "./spec.sh update-spec",
         "server": "./spec.sh run-server",
