@@ -331,6 +331,18 @@ test('Update server status', async () => {
     expect(await server.getStatus()).toStrictEqual(postState);
 });
 
+test('Test by name', async () => {
+    const postState = new ServerState([ATERNOS, EXAROTON], true, new Version("1.21.9", 773))
+    let called = false;
+    server.once(Notifications.SERVER_STATUS, state => {
+        called = true;
+        expect(state).toStrictEqual(postState);
+    });
+
+    connection.emit(Notifications.SERVER_STATUS, {status: postState});
+    expect(called).toBe(true);
+});
+
 test('Remove IP ban incorrect type', async () => {
     expect(() => connection.emit(Notifications.IP_BAN_REMOVED, [123]))
         .toThrow(new IncorrectTypeError("string", "number", [123], "0"));

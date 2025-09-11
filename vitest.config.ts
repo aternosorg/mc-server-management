@@ -5,5 +5,8 @@ export default defineConfig({
         fileParallelism: true,
         globalSetup: ["test/setup.ts"],
         testTimeout: 15_000,
+        coverage: {
+            include: ["src/**/*.ts"],
+        }
     },
 })
