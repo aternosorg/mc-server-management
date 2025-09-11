@@ -10,7 +10,16 @@
     ],
     "license": "MIT",
     "author": "Julian Vennen <julian@aternos.org>",
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs"
+        },
+        "./package.json": "./package.json"
+    },
     "main": "./dist/index.cjs",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.cts",
     "scripts": {
         "spec": "./spec.sh update-spec",
         "server": "./spec.sh run-server",
@@ -31,16 +40,10 @@
         "unplugin-unused": "^0.5.3",
         "vitest": "^3.2.4"
     },
+    "overrides": {
+        "vite": "npm:rolldown-vite@latest"
+    },
     "engines": {
         "node": ">=22.0.0"
-    },
-    "module": "./dist/index.mjs",
-    "types": "./dist/index.d.cts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.cjs"
-        },
-        "./package.json": "./package.json"
     }
 }
