@@ -83,6 +83,7 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
      * Remove all items matching this callback from the cached list. Does not update the server.
      * If the cached list is not available, this method does nothing.
      * @param filter
+     * @internal
      */
     public removeMatching(filter: (item: ItemType) => boolean): this {
         if (!this.#items) {

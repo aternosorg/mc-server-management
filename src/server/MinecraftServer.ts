@@ -134,7 +134,11 @@ export default class MinecraftServer extends EventEmitter<EventData> {
     /**
      * @returns {Promise<Player[]>} Array of players currently connected to the server.
      */
-    public async getConnectedPlayers(): Promise<Player[]> {
+    public async getConnectedPlayers(force: boolean = false): Promise<Player[]> {
+        if (this.#state && !force) {
+            return this.#state.players;
+        }
+
         const response = await this.#connection.call('minecraft:players', []);
         return Player.parseList(response);
     }
@@ -213,7 +217,7 @@ export default class MinecraftServer extends EventEmitter<EventData> {
      * @param value The new value for the game rule. Must be a string, boolean or number.
      * @returns {Promise<void>} A promise that resolves when the game rule has been updated.
      */
-    async updateGameRule<T extends GameRuleType>(key: string, value: number | boolean | string): Promise<TypedGameRule<GameRuleType>> {
+    async updateGameRule(key: string, value: number | boolean | string): Promise<TypedGameRule<GameRuleType>> {
         const result = await this.#connection.call(
             'minecraft:gamerules/update',
             [new UntypedGameRule(key, value.toString())],
