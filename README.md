@@ -26,19 +26,60 @@ This is a TypeScript/JavaScript client library for the Minecraft server manageme
 ## Installation
 
 You can install the library using npm:
-```bash
+```shell
 npm install mc-server-management
 ```
 
-It can be used as an ES or CommonJS module.
+## Setting up the Minecraft Server
+To enable the management protocol set `management-server-enabled`, `management-server-port` and `management-server-host`
+in the server.properties file:
+```properties
+management-server-enabled=true
+management-server-port=25585
+management-server-host=0.0.0.0
+management-server-secret=
+```
+You can either set `management-server-secret` to a random 40 character long alphanumeric string or leave it empty and
+let the Minecraft server generate a random token on startup. You will need this token to connect to the server.
+
+### TLS
+By default, TLS is enabled, but the server will crash if you don't provide a certificate. If the management protocol is
+not exposed to the internet, or you are using a reverse proxy, the easiest option would be to disable TLS:
+```properties
+management-server-tls-enabled=false
+```
+
+#### Using a custom certificate
+If you want to use TLS, you need to provide a PKCS12 keystore file containing the certificate. To convert an existing
+certificate and private key to a PKCS12 file you can use OpenSSL:
+```shell
+openssl pkcs12 -export -in cert.pem -inkey key.pem -out keystore.p12
+```
+
+#### Creating a self-signed certificate
+To create untrusted local certificates use a tool like [mkcert](https://github.com/FiloSottile/mkcert). You will need to
+tell npm to trust the root CA created by mkcert using the `NODE_EXTRA_CA_CERTS` environment variable:
+```shell
+mkcert -pkcs12 localhost
+export NODE_EXTRA_CA_CERTS="$(mkcert -CAROOT)/rootCA.pem"
+```
+
+#### Setting up the keystore
+Then set the path to the keystore file and the password in the server.properties file:
+```properties
+management-server-tls-keystore=keystore.p12
+management-server-tls-keystore-password=changeit
+```
+
+## Usage
+
+This library can be used as an ES or CommonJS module.
 ```typescript
 // ESM
 import {WebsocketConnection, MinecraftServer} from 'mc-server-management';
 // CJS
 const {WebsocketConnection, MinecraftServer} = require('mc-server-management');
 ```
-
-## Usage
 
 ### Creating a Connection
 
@@ -55,7 +96,11 @@ The MinecraftServer class is the main entry point for interacting with the serve
 by passing in a connection.
 ```typescript
 const server = new MinecraftServer(connection);
+```
 
+### Getting the Server Status
+
+```typescript
 const status = await server.getStatus();
 console.log(`Server is ${status.started ? "running" : "starting"} on version ${status.version.name} with ${status.players.length} players.`);
 // getStatus inteliigently caches the result. It is automatically updated when the server sends a notification and only
@@ -63,7 +108,11 @@ console.log(`Server is ${status.started ? "running" : "starting"} on version ${s
 
 // Get just the player list. This method is cached and automatically updated using notifications.
 const players = await server.getConnectedPlayers();
+```
 
+### Kicking Players
+
+```typescript
 // Kick a player by their username
 await server.kickPlayers("Aternos");
 // You can also kick multiple players at once. To identify a player by their UUID, not username use `Player.withId(uuid)`.
@@ -73,13 +122,21 @@ await server.kickPlayers(Player.withName("Aternos"), "You have been kicked!");
 // You can also use a Message object, either for a literal or translated message
 await server.kickPlayers(Player.withName("Aternos"), Message.literal("You have been kicked!"));
 await server.kickPlayers(Player.withName("Aternos"), Message.translatable("test.translation.key", ["arg1", "arg2"]));
+```
 
+### Saving and Stopping the Server
+
+```typescript
 // Save the server
 await server.save();
 
 // Stop the server
 await server.stop();
+```
 
+### Sending Chat Messages
+
+```typescript
 // Send a system message to all players in the chat
 await server.sendSystemMessage("Hello World!");
 // Send a system message to specific players in the chat
@@ -87,7 +144,11 @@ await server.sendSystemMessage("Hello World!", "Aternos");
 await server.sendSystemMessage("Hello World!", ["Aternos", Player.withId("player-uuid")]);
 // Show the message as an overlay above the hotbar for all players
 await server.sendSystemMessage("Hello World!", "Aternos", true);
+```
 
+### Querying and Updating Game Rules
+
+```typescript
 // Get all gamerules. This method is cached and automatically updated using notifications.
 const gamerules = await server.getGameRules();
 console.log(gamerules);
