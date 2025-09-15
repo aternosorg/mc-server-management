@@ -9,8 +9,10 @@ on:
     types: [published]
 
 jobs:
-  build-and-test:
+  build-test-publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
