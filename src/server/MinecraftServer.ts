@@ -3,7 +3,7 @@ import AllowList from "../player-list/AllowList";
 import IPBanList from "../player-list/IPBanList";
 import IncorrectTypeError from "../error/IncorrectTypeError";
 import BanList from "../player-list/BanList";
-import Player from "../schemas/player/Player";
+import Player, {PlayerInput} from "../schemas/player/Player";
 import KickPlayer from "../schemas/player/KickPlayer";
 import OperatorList from "../player-list/OperatorList";
 import ServerSettings from "./ServerSettings";
@@ -19,6 +19,8 @@ import {
     UntypedGameRule,
     UserBan
 } from "../index";
+import Message, {MessageInput} from "../schemas/message/Message";
+import {fromItemOrArray, ItemOrArray, optional} from "../util";
 
 /**
  * This is the main entrypoint for interacting with the Minecraft server management protocol.
@@ -146,10 +148,16 @@ export default class MinecraftServer extends EventEmitter<EventData> {
     /**
      * Kicks one or more players from the server.
      * @param player The player or players to kick.
+     * @param message optional message to display to the player when they are kicked.
      * @returns {Promise<Player[]>} A promise that resolves to an array of kicked players.
      */
-    public async kickPlayers(player: KickPlayer): Promise<Player[]> {
-        const response = await this.#connection.call('minecraft:players/kick', [player]);
+    public async kickPlayers(player: ItemOrArray<PlayerInput>, message?: MessageInput|null): Promise<Player[]> {
+        const response = await this.#connection.call('minecraft:players/kick', [
+            new KickPlayer(
+                fromItemOrArray(player).map(Player.fromInput),
+                optional(Message.fromInput, message),
+            )
+        ]);
         return Player.parseList(response);
     }
 
@@ -179,11 +187,23 @@ export default class MinecraftServer extends EventEmitter<EventData> {
 
     /**
      * Sends a system message to the server.
-     * @param {SystemMessage} message The system message to send.
+     * @param message The message content to send.
+     * @param players An optional list of players to receive the message. If omitted, all players will receive the message.
+     * @param overlay Whether to display the message as an overlay above the hotbar (true) or in the chat (false). Default is false.
      * @returns {Promise<boolean>} A promise that resolves to true if the message was sent successfully, false otherwise.
      */
-    async sendSystemMessage(message: SystemMessage): Promise<boolean> {
-        const result = await this.#connection.call('minecraft:server/system_message', [message]);
+    async sendSystemMessage(
+        message: MessageInput,
+        players?: ItemOrArray<PlayerInput>|null,
+        overlay: boolean = false,
+    ): Promise<boolean> {
+        const result = await this.#connection.call('minecraft:server/system_message', [
+            new SystemMessage(
+                Message.fromInput(message),
+                optional(t => fromItemOrArray(t).map(Player.fromInput), players),
+                overlay,
+            )
+        ]);
         if (typeof result !== 'boolean') {
             throw new IncorrectTypeError("boolean", typeof result, result);
         }

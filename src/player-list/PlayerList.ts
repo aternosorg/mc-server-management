@@ -1,7 +1,7 @@
 import type Connection from "../connection/Connection.js";
 import IncorrectTypeError from "../error/IncorrectTypeError.js";
 
-export default abstract class PlayerList<ItemType, AddType, RemoveType> {
+export default abstract class PlayerList<ItemType> {
     #connection: Connection;
     #items?: ItemType[];
 
@@ -26,39 +26,6 @@ export default abstract class PlayerList<ItemType, AddType, RemoveType> {
             throw new Error("Invalid player list.");
         }
         return this.#items;
-    }
-
-    /**
-     * Overwrite the existing list with a set of entries.
-     * This method updates the cached with the resulting list from the server. Use `get()` to retrieve it.
-     * @param items
-     */
-    public set(items: ItemType[]): Promise<this> {
-        return this.callAndParse('set', [items]);
-    }
-
-    /**
-     * Add items to the list.
-     * This method updates the cached with the resulting list from the server. Use `get()` to retrieve it.
-     * @param items
-     */
-    public add(items: AddType | AddType[]): Promise<this> {
-        if (!Array.isArray(items)) {
-            items = [items];
-        }
-        return this.callAndParse('add', [items]);
-    }
-
-    /**
-     * Remove items from the list.
-     * This method updates the cached with the resulting list from the server. Use `get()` to retrieve it.
-     * @param items
-     */
-    public remove(items: RemoveType | RemoveType[]): Promise<this> {
-        if (!Array.isArray(items)) {
-            items = [items];
-        }
-        return this.callAndParse('remove', [items]);
     }
 
     /**

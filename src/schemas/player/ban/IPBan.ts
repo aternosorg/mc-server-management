@@ -1,6 +1,8 @@
 import IncorrectTypeError from "../../../error/IncorrectTypeError";
 import MissingPropertyError from "../../../error/MissingPropertyError";
-import Ban from "./Ban";
+import Ban, {BanExpiryInput} from "./Ban";
+
+export type IPBanInput = IPBan | string;
 
 /**
  * Entry on the IP ban list
@@ -10,6 +12,27 @@ export default class IPBan extends Ban {
      * Banned ip address.
      */
     ip: string;
+
+    /**
+     * Creates a IPBan instance from a IPBanInput.
+     * @param input
+     * @param reason Default reason if input is not an IPBan
+     * @param source Default source if input is not an IPBan
+     * @param expires Default expiry if input is not an IPBan
+     * @internal
+     */
+    static fromInput(
+        input: IPBanInput,
+        reason: string | null,
+        source: string | null,
+        expires: BanExpiryInput,
+        ): IPBan {
+        if (input instanceof IPBan) {
+            return input;
+        }
+
+        return new IPBan(input, reason, source, expires);
+    }
 
     /**
      * Parse an IPBan instance from a raw object.
@@ -46,7 +69,7 @@ export default class IPBan extends Ban {
         ip: string,
         reason: string | null = null,
         source: string | null = null,
-        expires: Date | string | null = null,
+        expires: BanExpiryInput = null,
     ) {
         super(reason, source, expires);
         this.ip = ip;

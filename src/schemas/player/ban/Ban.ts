@@ -1,5 +1,7 @@
 import IncorrectTypeError from "../../../error/IncorrectTypeError";
 
+export type BanExpiryInput = Date | string | null;
+
 /**
  * Base class for all ban related classes.
  */
@@ -26,7 +28,7 @@ export default class Ban {
     constructor(
         reason: string | null = null,
         source: string | null = null,
-        expires: Date | string | null = null,
+        expires: BanExpiryInput = null,
     ) {
         this.reason = reason;
         this.source = source;
@@ -55,7 +57,7 @@ export default class Ban {
      * Sets the expiration date of the ban.
      * @param expires The expiration date as a Date or string in ISO 8601 format.
      */
-    setExpires(expires: Date | string | null): this {
+    setExpires(expires: BanExpiryInput): this {
         if (expires instanceof Date) {
             if (isNaN(expires.getTime())) {
                 throw new Error("Invalid date.");

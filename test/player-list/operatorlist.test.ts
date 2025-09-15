@@ -112,3 +112,18 @@ test('Invalid response wrong type for bypassesPlayerLimit', async () => {
 
     await expect(ops.get()).rejects.toThrow(new IncorrectTypeError("boolean", "string", result, "0", "bypassesPlayerLimit"));
 });
+
+test('Defaults for permissionLevel and bypassPlayerLimit', async () => {
+    const connection = new TestConnection();
+    const ops = new OperatorList(connection);
+    connection.addResponse([]);
+    await ops.add([ATERNOS.name!, Player.withId(EXAROTON.id!), new Operator(Player.withId(ATERNOS.id!))], 2, true);
+    expect(connection.shiftRequestHistory()).toStrictEqual({
+        method: 'minecraft:operators/add',
+        parameters: [[
+            new Operator(ATERNOS.name!, 2, true),
+            new Operator(Player.withId(EXAROTON.id!), 2, true),
+            new Operator(Player.withId(ATERNOS.id!)),
+        ]]
+    });
+});

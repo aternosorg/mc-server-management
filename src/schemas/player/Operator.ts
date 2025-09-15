@@ -1,6 +1,11 @@
 import IncorrectTypeError from "../../error/IncorrectTypeError";
 import MissingPropertyError from "../../error/MissingPropertyError";
-import Player from "./Player";
+import Player, {PlayerInput} from "./Player";
+
+/**
+ * Input type for Operator. Can be either an Operator instance or a PlayerInput.
+ */
+export type OperatorInput = Operator | PlayerInput;
 
 export default class Operator {
     /**
@@ -15,6 +20,25 @@ export default class Operator {
      * Whether the operator bypasses the player limit.
      */
     bypassesPlayerLimit?: boolean;
+
+    /**
+     * Creates a Operator instance from a OperatorInput.
+     * @param input
+     * @param permissionLevel Default permission level if the input is not an Operator object
+     * @param bypassesPlayerLimit Default bypassesPlayerLimit if the input is not an Operator object
+     * @internal
+     */
+    static fromInput(
+        input: OperatorInput,
+        permissionLevel: number | undefined,
+        bypassesPlayerLimit: boolean | undefined,
+    ): Operator {
+        if (input instanceof Operator) {
+            return input;
+        }
+
+        return new Operator(input, permissionLevel, bypassesPlayerLimit);
+    }
 
     /**
      * Parse an Operator instance from a raw object.
@@ -69,8 +93,8 @@ export default class Operator {
      * @param permissionLevel Which permissions level the operator has.
      * @param bypassesPlayerLimit Whether the operator bypasses the player limit.
      */
-    constructor(player: Player, permissionLevel?: number, bypassesPlayerLimit?: boolean) {
-        this.player = player;
+    constructor(player: PlayerInput, permissionLevel?: number, bypassesPlayerLimit?: boolean) {
+        this.player = Player.fromInput(player);
         this.permissionLevel = permissionLevel;
         this.bypassesPlayerLimit = bypassesPlayerLimit;
     }

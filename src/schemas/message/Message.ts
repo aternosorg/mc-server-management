@@ -1,3 +1,5 @@
+export type MessageInput = Message|string;
+
 export default class Message {
     /**
      * Literal message to send (non-translatable).
@@ -29,6 +31,19 @@ export default class Message {
         return new Message()
             .setTranslatable(translatable)
             .setTranslatableParams(translatableParams);
+    }
+
+    /**
+     * Parse a MessageParseable
+     * @param input
+     * @internal
+     */
+    static fromInput(input: MessageInput): Message {
+        if (typeof input === "string") {
+            return Message.literal(input);
+        }
+
+        return input;
     }
 
     /**

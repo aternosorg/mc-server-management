@@ -1,4 +1,4 @@
-import {ATERNOS, EXAROTON, getServer} from "../utils.js";
+import {ATERNOS, EXAROTON, TEST_DATE, TEST_DATE_STRING, getServer} from "../utils.js";
 import {beforeEach, expect, test} from "vitest";
 import TestConnection from "../TestConnection.js";
 import {BanList, IncorrectTypeError, MissingPropertyError, Player, UserBan} from "../../src";
@@ -50,10 +50,10 @@ test('Add item with expire time to banlist', async () => {
     const banList = server.banList();
     expect(await banList.get()).toStrictEqual([]);
     expect(await banList.add(
-        new UserBan(Player.withName(ATERNOS.name!)).setExpires(new Date(4102444800_000))
+        new UserBan(Player.withName(ATERNOS.name!)).setExpires(TEST_DATE)
     )).toBe(banList);
     expect(await banList.get()).toStrictEqual([new UserBan(ATERNOS)
-        .setExpires("2100-01-01T00:00:00Z")
+        .setExpires(TEST_DATE_STRING)
         .setSource("Management server")
     ]);
 
@@ -159,4 +159,20 @@ test('Invalid response wrong type for expires', async () => {
     await expect(banList.get()).rejects.toThrow(
         new IncorrectTypeError("string", "boolean", result, "0", "expires")
     );
+});
+
+test('Defaults for reason, source and expires', async () => {
+    const connection = new TestConnection();
+    const banList = new BanList(connection);
+    connection.addResponse([]);
+    await banList.add([ATERNOS.name!, Player.withId(EXAROTON.id!), new UserBan(Player.withId(ATERNOS.id!))],
+        "reason", "Unit Tests", TEST_DATE);
+    expect(connection.shiftRequestHistory()).toStrictEqual({
+        method: "minecraft:bans/add",
+        parameters: [[
+            new UserBan(ATERNOS.name!, "reason", "Unit Tests", TEST_DATE.toISOString()),
+            new UserBan(Player.withId(EXAROTON.id!), "reason", "Unit Tests", TEST_DATE.toISOString()),
+            new UserBan(Player.withId(ATERNOS.id!)),
+        ]]
+    });
 });

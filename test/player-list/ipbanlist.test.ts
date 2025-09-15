@@ -1,6 +1,13 @@
-import {getServer} from "../utils.js";
+import {ATERNOS, EXAROTON, getServer, TEST_DATE, TEST_DATE_STRING} from "../utils.js";
 import {beforeEach, expect, test} from "vitest";
-import {IncomingIPBan, IncorrectTypeError, IPBan, IPBanList, MissingPropertyError} from "../../src";
+import {
+    IncomingIPBan,
+    IncorrectTypeError,
+    IPBan,
+    IPBanList,
+    MissingPropertyError,
+    Player
+} from "../../src";
 import TestConnection from "../TestConnection.js";
 
 const server = await getServer();
@@ -50,18 +57,18 @@ test('Add item with expire time to IP banlist', async () => {
     const ipBanList = server.ipBanList();
     expect(await ipBanList.get()).toStrictEqual([]);
     expect(await ipBanList.add(
-        IncomingIPBan.withIp("1.1.1.1").setExpires(new Date(4102444800_000))
+        IncomingIPBan.withIp("1.1.1.1").setExpires(TEST_DATE)
     )).toBe(ipBanList);
     expect(await ipBanList.get()).toStrictEqual([new IPBan("1.1.1.1")
-        .setExpires("2100-01-01T00:00:00Z")
+        .setExpires(TEST_DATE_STRING)
         .setSource("Management server")
     ]);
 
     expect(await ipBanList.add(
-        IncomingIPBan.withIp("1.1.1.1").setExpires("2100-01-01T00:00:00Z")
+        IncomingIPBan.withIp("1.1.1.1").setExpires(TEST_DATE_STRING)
     )).toBe(ipBanList);
     expect(await ipBanList.get()).toStrictEqual([new IPBan("1.1.1.1")
-        .setExpires("2100-01-01T00:00:00Z")
+        .setExpires(TEST_DATE_STRING)
         .setSource("Management server")
     ]);
 
@@ -155,4 +162,34 @@ test('Invalid response wrong type for expires', async () => {
     const result = connection.addResponse([{ip: '1.1.1.1', expires: true}]);
 
     await expect(ipBanList.get()).rejects.toThrow(new IncorrectTypeError("string", "boolean", result, "0", "expires"));
+});
+
+test('Defaults for reason, source and expires (add)', async () => {
+    const connection = new TestConnection();
+    const banList = new IPBanList(connection);
+    connection.addResponse([]);
+    await banList.add(["1.1.1.1", Player.withId(EXAROTON.id!), IncomingIPBan.withConnectedPlayer(Player.withId(ATERNOS.id!))],
+        "reason", "Unit Tests", TEST_DATE);
+    expect(connection.shiftRequestHistory()).toStrictEqual({
+        method: "minecraft:ip_bans/add",
+        parameters: [[
+            new IncomingIPBan("1.1.1.1", undefined, "reason", "Unit Tests", TEST_DATE.toISOString()),
+            new IncomingIPBan(undefined, Player.withId(EXAROTON.id!), "reason", "Unit Tests", TEST_DATE.toISOString()),
+            new IncomingIPBan(undefined, Player.withId(ATERNOS.id!)),
+        ]]
+    });
+});
+
+test('Defaults for reason, source and expires (set)', async () => {
+    const connection = new TestConnection();
+    const banList = new IPBanList(connection);
+    connection.addResponse([]);
+    await banList.set(["1.1.1.1", new IPBan("8.8.8.8")], "reason", "Unit Tests", TEST_DATE);
+    expect(connection.shiftRequestHistory()).toStrictEqual({
+        method: "minecraft:ip_bans/set",
+        parameters: [[
+            new IPBan("1.1.1.1", "reason", "Unit Tests", TEST_DATE.toISOString()),
+            new IPBan("8.8.8.8"),
+        ]]
+    });
 });

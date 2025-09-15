@@ -22,7 +22,7 @@ import AllowList from "./player-list/AllowList.js";
 import BanList from "./player-list/BanList.js";
 import IPBanList from "./player-list/IPBanList.js";
 import OperatorList from "./player-list/OperatorList.js";
-import PlayerList from "./player-list/PlayerList.js";
+import PlayerList from "./player-list/PlayerList";
 
 export {AllowList, BanList, IPBanList, OperatorList, PlayerList};
 

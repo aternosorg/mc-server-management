@@ -59,12 +59,15 @@ console.log(`Server is ${status.started ? "running" : "starting"} on version ${s
 // Get just the player list. This method is cached and automatically updated using notifications.
 const players = await server.getConnectedPlayers();
 
-// Kick a player
-await server.kickPlayers(new KickPlayer(Player.withName("Aternos")));
-// You can also kick multiple players at once
-await server.kickPlayers(new KickPlayer([Player.withName("Aternos"), Player.withId("player-uuid")]));
+// Kick a player by their username
+await server.kickPlayers("Aternos");
+// You can also kick multiple players at once. To identify a player by their UUID, not username use `Player.withId(uuid)`.
+await server.kickPlayers([Player.withName("Aternos"), Player.withId("player-uuid")]);
 // Specifying a message is optional
-await server.kickPlayers(new KickPlayer(Player.withName("Aternos"), Message.literal("You have been kicked!")));
+await server.kickPlayers(Player.withName("Aternos"), "You have been kicked!");
+// You can also use a Message object, either for a literal or translated message
+await server.kickPlayers(Player.withName("Aternos"), Message.literal("You have been kicked!"));
+await server.kickPlayers(Player.withName("Aternos"), Message.translatable("test.translation.key", ["arg1", "arg2"]));
 
 // Save the server
 await server.save();
@@ -72,19 +75,23 @@ await server.save();
 // Stop the server
 await server.stop();
 
-// Send a system message
-await server.sendSystemMessage(new SystemMessage(Message.literal("Hello World!")));
-await server.sendSystemMessage(new SystemMessage(Message.translatable("test.translation.key", ["arg1", "arg2"])));
+// Send a system message to all players in the chat
+await server.sendSystemMessage("Hello World!");
+// Send a system message to specific players in the chat
+await server.sendSystemMessage("Hello World!", "Aternos");
+await server.sendSystemMessage("Hello World!", ["Aternos", Player.withId("player-uuid")]);
+// Show the message as an overlay above the hotbar for all players
+await server.sendSystemMessage("Hello World!", "Aternos", true);
 
 // Get all gamerules. This method is cached and automatically updated using notifications.
 const gamerules = await server.getGamerules();
 console.log(gamerules);
 
 // Update a gamerule
-await server.updateGameRule(new UpdateGamerule("doDaylightCycle", true));
+await server.updateGameRule("doDaylightCycle", true);
 ```
 
-### Using player lists
+### The Allowlist
 
 ```typescript
 // Get an API wrapper for the allowlist (aka whitelist)
@@ -95,24 +102,135 @@ const allowedPlayers = await allowlist.get();
 console.log(allowedPlayers);
 
 // Add a player to the allowlist
+await allowlist.add("Aternos");
 await allowlist.add(Player.withName("Aternos"));
+await allowlist.add(["Aternos", Player.withId("player-uuid")]);
 
 // Remove a player from the allowlist
 await allowlist.remove(Player.withId("player-uuid"));
 
 // Set the entire allowlist
-await allowlist.set([Player.withName("Aternos"), Player.withId("player-uuid")]);
+await allowlist.set(["Aternos", Player.withId("player-uuid")]);
 
 // Clear the allowlist
 await allowlist.clear();
 ```
 
-All other player lists are also available and follow the same pattern:
+### Operators
+
 ```typescript
-const ipBanlist = server.ipBanList();
-const banList = server.banList();
-const opList = server.operatorList();
+// Get an API wrapper for the operators
+const ops = server.operatorList();
+
+// Get all operators. This method is cached and automatically updated using notifications.
+const operators = await ops.get();
+console.log(operators);
+
+// Add an operator
+await ops.add("Aternos");
+// Optionally specify the operator level and whether they bypass the player limit
+await ops.add("Aternos", 4, true);
+await ops.add(Player.withId("player-uuid"), 2, false);
+await ops.add(["Aternos", Player.withId("player-uuid")], 3, true);
+
+// Remove an operator
+await ops.remove("Aternos");
+await ops.remove(Player.withId("player-uuid"));
+await ops.remove(["Aternos", Player.withId("player-uuid")]);
+
+// Set the entire operator list
+await ops.set(["Aternos", Player.withId("player-uuid")]);
+// You can specify the permission level and whether they bypass the player limit for each operator
+// The default level and bypass options are only used for string/Player entries
+await ops.set(
+    [
+        new Operator("Aternos", 4, true), // Aternos with level 4 and bypass
+        new Operator(Player.withId("player-uuid"), 2, false), // player-uuid with level 2 and no bypass
+        "Aternos", // Aternos with level 3 and bypass
+    ],
+    3,
+    true,
+);
+
+// Clear the operator list
+await ops.clear();
 ```
+
+### Bans
+
+```typescript
+// Get an API wrapper for the bans
+const bans = server.banList();
+
+// Get all bans. This method is cached and automatically updated using notifications.
+const banList = await bans.get();
+console.log(banList);
+
+// Ban a player by their username or UUID. You can optionally specify a reason, source and when the ban expires.
+await bans.add("Aternos");
+await bans.add(Player.withId("player-uuid"), "Breaking the rules", "Source", new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)); // Expires in 7 days
+// The optional fields are only used for input objects that aren't already ban objects.
+await bans.add([
+    "Aternos", // Expires in 1 day
+    Player.withId("player-uuid"), // Expires in 1 day
+    new UserBan("Notch"), // Never expires
+], "Breaking the rules", "Source", new Date(Date.now() + 24 * 60 * 60 * 1000));
+
+// Unban a player by their username or UUID
+await bans.remove("Aternos");
+await bans.remove(Player.withId("player-uuid"));
+await bans.remove([
+    "Aternos",
+    Player.withId("player-uuid"),
+]);
+
+// Set the entire ban list at once. This will add new bans and remove old ones.
+await bans.set([
+    new UserBan("Notch"),
+    Player.withId("player-uuid"),
+]);
+
+// Clear the entire ban list
+await bans.clear();
+```
+
+### IP Bans
+
+```typescript
+// Get an API wrapper for the IP bans
+const ipBans = server.ipBanList();
+
+// Get all IP bans. This method is cached and automatically updated using notifications.
+const ipBanList = await ipBans.get();
+console.log(ipBanList);
+
+// Ban an IP address. You can optionally specify a reason, source and when the ban expires.
+await ipBans.add("192.168.1.100");
+await ipBans.add("10.0.0.5", "Suspicious activity", "Admin", new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)); // Expires in 7 days
+await ipBans.add([
+    "192.168.1.101", // Expires in 1 day
+    "10.0.0.6",      // Expires in 1 day
+    IncomingIPBan.withIp("172.16.0.1"), // Never expires
+], "Malicious behavior", "Moderator", new Date(Date.now() + 24 * 60 * 60 * 1000));
+
+// Unban an IP address
+await ipBans.remove("192.168.1.100");
+await ipBans.remove("10.0.0.5");
+await ipBans.remove([
+    "192.168.1.101",
+    "10.0.0.6",
+]);
+
+// Set the entire IP ban list at once. This will add new bans and remove old ones.
+await ipBans.set([
+    new IPBan("172.16.0.1"),
+    "10.0.0.5",
+]);
+
+// Clear the entire IP ban list
+await ipBans.clear();
+```
+
 
 ### Get/Update server settings
 

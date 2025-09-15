@@ -1,5 +1,10 @@
 import Player from "../Player";
-import Ban from "./Ban";
+import Ban, {BanExpiryInput} from "./Ban";
+
+/**
+ * A IncomingIPBan object or an IP address or a connected Player.
+ */
+export type IncomingIPBanInput = IncomingIPBan | string | Player;
 
 /**
  * Request to ban a player by their IP address.
@@ -32,6 +37,30 @@ export default class IncomingIPBan extends Ban {
     }
 
     /**
+     * Creates a IncomingIPBan instance from a IPBanInput.
+     * @param input
+     * @param reason Default reason if input is not an IncomingIPBan
+     * @param source Default source if input is not an IncomingIPBan
+     * @param expires Default expiry if input is not an IncomingIPBan
+     * @internal
+     */
+    static fromInput(
+        input: IncomingIPBanInput,
+        reason: string | null,
+        source: string | null,
+        expires: BanExpiryInput,
+    ): IncomingIPBan {
+        if (input instanceof IncomingIPBan) {
+            return input;
+        }
+
+        return (typeof input === "string" ? IncomingIPBan.withIp(input) : IncomingIPBan.withConnectedPlayer(input))
+            .setReason(reason)
+            .setSource(source)
+            .setExpires(expires);
+    }
+
+    /**
      * @param ip IP address to ban
      * @param player connected player who should be banned by their IP address
      * @param reason reason for the ban
@@ -44,7 +73,7 @@ export default class IncomingIPBan extends Ban {
         player: Player | null = null,
         reason: string | null = null,
         source: string | null = null,
-        expires: Date | string | null = null,
+        expires: BanExpiryInput = null,
     ) {
         super(reason, source, expires);
         this.ip = ip;

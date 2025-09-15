@@ -4,7 +4,6 @@ import TestConnection from "./TestConnection.js";
 import {
     GameRuleType,
     IncorrectTypeError,
-    KickPlayer,
     Message,
     MinecraftServer,
     MissingPropertyError,
@@ -74,8 +73,9 @@ test('Get mocked connected players', async () => {
 
 test('Kick player', async () => {
     for (const argument of [
-        new KickPlayer(Player.withName(ATERNOS.name!)),
-        new KickPlayer([Player.withName(ATERNOS.name!), Player.withId(EXAROTON.id!)]),
+        ATERNOS.name!,
+        Player.withName(ATERNOS.name!),
+        [Player.withName(ATERNOS.name!), Player.withId(EXAROTON.id!)],
     ]) {
         const response = await server.kickPlayers(argument)
         expect(response).toStrictEqual([]);
@@ -83,10 +83,10 @@ test('Kick player', async () => {
 });
 
 test('Kick player with message', async () => {
-    const response = await server.kickPlayers(new KickPlayer(
+    const response = await server.kickPlayers(
         Player.withName(ATERNOS.name!),
         Message.literal("You have been kicked"),
-    ));
+    );
     expect(response).toStrictEqual([]);
 });
 
@@ -95,10 +95,10 @@ test('Test kick players with result', async () => {
     const server = new MinecraftServer(connection);
     connection.addResponse([ATERNOS, EXAROTON]);
 
-    const response = await server.kickPlayers(new KickPlayer(
+    const response = await server.kickPlayers(
         [Player.withName(ATERNOS.name!), Player.withId(EXAROTON.id!)],
         Message.literal("You have been kicked"),
-    ));
+    );
     expect(response).toStrictEqual([ATERNOS, EXAROTON]);
 
     const history = connection.shiftRequestHistory();

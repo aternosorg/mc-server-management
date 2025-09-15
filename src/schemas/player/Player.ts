@@ -1,6 +1,11 @@
 import IncorrectTypeError from "../../error/IncorrectTypeError";
 import MissingPropertyError from "../../error/MissingPropertyError";
 
+/**
+ * A player object or a player's username.
+ */
+export type PlayerInput = string | Player;
+
 export default class Player {
     /**
      * Unique identifier of the player (UUID format).
@@ -25,6 +30,19 @@ export default class Player {
      */
     static withName(name: string): Player {
         return new Player().setName(name);
+    }
+
+    /**
+     * Parse a Player instance from a PlayerInput.
+     * @param input
+     * @internal
+     */
+    static fromInput(input: PlayerInput): Player {
+        if (typeof input === "string") {
+            return Player.withName(input);
+        }
+
+        return input;
     }
 
     /**
