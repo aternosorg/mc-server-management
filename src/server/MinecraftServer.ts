@@ -14,20 +14,20 @@ import {
     IPBan,
     Notifications,
     Operator, ServerState,
-    SystemMessage,
     TypedGameRule,
-    UntypedGameRule,
     UserBan
 } from "../index";
 import Message, {MessageInput} from "../schemas/message/Message";
 import {fromItemOrArray, ItemOrArray, optional} from "../util";
+import SystemMessage from "../schemas/message/SystemMessage";
+import UntypedGameRule from "../schemas/gamerule/UntypedGameRule";
 
 /**
  * This is the main entrypoint for interacting with the Minecraft server management protocol.
  * It provides methods for retrieving server status, managing players, and accessing various server settings and lists.
  */
 export default class MinecraftServer extends EventEmitter<EventData> {
-    #connection: Connection;
+    readonly #connection: Connection;
     #allowlist?: AllowList;
     #ipBanList?: IPBanList;
     #banList?: BanList;
