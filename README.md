@@ -84,7 +84,7 @@ await server.sendSystemMessage("Hello World!", ["Aternos", Player.withId("player
 await server.sendSystemMessage("Hello World!", "Aternos", true);
 
 // Get all gamerules. This method is cached and automatically updated using notifications.
-const gamerules = await server.getGamerules();
+const gamerules = await server.getGameRules();
 console.log(gamerules);
 
 // Update a gamerule
