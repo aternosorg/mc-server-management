@@ -18,6 +18,11 @@ This is a TypeScript/JavaScript client library for the Minecraft server manageme
 - Type validation of responses
 - ESModule and CommonJS support
 
+## Requirements
+
+- Minecraft 25w35a or later.
+- Node 22+ or another ES2022+ compatible environment.
+
 ## Installation
 
 You can install the library using npm:
@@ -243,3 +248,24 @@ await settings.setAcceptTransfers(!acceptTransfers);
 ```
 
 For a list of all available settings, see the `ServerSettings` class.
+
+### Events / Notifications
+
+The Minecraft server sends events as so called `Notifications`. You can listen for these events using the `on` method.
+For a list of all available notifications, see the `Notifications` enum.
+
+```typescript
+// Subscribe to notifications
+server.on(Notifications.SERVER_SAVED, () => console.log("Server saved!"));
+
+// Notifications with data
+server.on(Notifications.GAME_RULE_UPDATED, data => console.log(`Game rule ${data.key} updated to ${data.value}`));
+
+// Listen for errors
+server.on('error', error => console.error("Error:", error));
+
+// Only listen for a notification once
+server.once(Notifications.SERVER_STARTED, () => {
+    console.log("Server started!");
+});
+```
