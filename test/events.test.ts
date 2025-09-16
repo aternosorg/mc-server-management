@@ -352,3 +352,66 @@ test('Missing parameter', async () => {
     expect(() => connection.emit(Notifications.BAN_REMOVED))
         .toThrow(new Error(`Could not get parameter 'player' (0) from notification data: undefined`) );
 });
+
+test('Verify forwarding of legacy events', async () => {
+    const connection = new TestConnection();
+    const server = new MinecraftServer(connection);
+
+    const TEST_OP = new Operator(ATERNOS, 4, false);
+    const TEST_IP_BAN = {ip: "1.1.1.1", reason: "reason", source: "source"};
+    const TEST_USER_BAN = {player: ATERNOS, reason: "reason", source: "source"};
+    const TEST_GAME_RULE = {type: GameRuleType.BOOLEAN, key: "doDaylightCycle", value: "false"};
+    const TEST_STATE = new ServerState([ATERNOS, EXAROTON], true, new Version("1.21.9", 773));
+
+    const legacyToNewMap: Record<Notifications, [Notifications, unknown[]]> = {
+        [Notifications.LEGACY_SERVER_STARTED]: [Notifications.SERVER_STARTED, []],
+        [Notifications.LEGACY_SERVER_STOPPING]: [Notifications.SERVER_STOPPING, []],
+        [Notifications.LEGACY_SERVER_SAVING]: [Notifications.SERVER_SAVING, []],
+        [Notifications.LEGACY_SERVER_SAVED]: [Notifications.SERVER_SAVED, []],
+        [Notifications.LEGACY_PLAYER_JOINED]: [Notifications.PLAYER_JOINED, [ATERNOS]],
+        [Notifications.LEGACY_PLAYER_LEFT]: [Notifications.PLAYER_LEFT, [ATERNOS]],
+        [Notifications.LEGACY_OPERATOR_ADDED]: [Notifications.OPERATOR_ADDED, [TEST_OP]],
+        [Notifications.LEGACY_OPERATOR_REMOVED]: [Notifications.OPERATOR_REMOVED, [TEST_OP]],
+        [Notifications.LEGACY_ALLOWLIST_ADDED]: [Notifications.ALLOWLIST_ADDED, [ATERNOS]],
+        [Notifications.LEGACY_ALLOWLIST_REMOVED]: [Notifications.ALLOWLIST_REMOVED, [ATERNOS]],
+        [Notifications.LEGACY_IP_BAN_ADDED]: [Notifications.IP_BAN_ADDED, [TEST_IP_BAN]],
+        [Notifications.LEGACY_IP_BAN_REMOVED]: [Notifications.IP_BAN_REMOVED, [TEST_IP_BAN.ip]],
+        [Notifications.LEGACY_BAN_ADDED]: [Notifications.BAN_ADDED, [TEST_USER_BAN]],
+        [Notifications.LEGACY_BAN_REMOVED]: [Notifications.BAN_REMOVED, [ATERNOS]],
+        [Notifications.LEGACY_GAME_RULE_UPDATED]: [Notifications.GAME_RULE_UPDATED, [TEST_GAME_RULE]],
+        [Notifications.LEGACY_SERVER_STATUS]: [Notifications.SERVER_STATUS, [TEST_STATE]],
+
+        [Notifications.SERVER_STARTED]: [Notifications.LEGACY_SERVER_STARTED, []],
+        [Notifications.SERVER_STOPPING]: [Notifications.LEGACY_SERVER_STOPPING, []],
+        [Notifications.SERVER_SAVING]: [Notifications.LEGACY_SERVER_SAVING, []],
+        [Notifications.SERVER_SAVED]: [Notifications.LEGACY_SERVER_SAVED, []],
+        [Notifications.PLAYER_JOINED]: [Notifications.LEGACY_PLAYER_JOINED, [ATERNOS]],
+        [Notifications.PLAYER_LEFT]: [Notifications.LEGACY_PLAYER_LEFT, [ATERNOS]],
+        [Notifications.OPERATOR_ADDED]: [Notifications.LEGACY_OPERATOR_ADDED, [TEST_OP]],
+        [Notifications.OPERATOR_REMOVED]: [Notifications.LEGACY_OPERATOR_REMOVED, [TEST_OP]],
+        [Notifications.ALLOWLIST_ADDED]: [Notifications.LEGACY_ALLOWLIST_ADDED, [ATERNOS]],
+        [Notifications.ALLOWLIST_REMOVED]: [Notifications.LEGACY_ALLOWLIST_REMOVED, [ATERNOS]],
+        [Notifications.IP_BAN_ADDED]: [Notifications.LEGACY_IP_BAN_ADDED, [TEST_IP_BAN]],
+        [Notifications.IP_BAN_REMOVED]: [Notifications.LEGACY_IP_BAN_REMOVED, [TEST_IP_BAN.ip]],
+        [Notifications.BAN_ADDED]: [Notifications.LEGACY_BAN_ADDED, [TEST_USER_BAN]],
+        [Notifications.BAN_REMOVED]: [Notifications.LEGACY_BAN_REMOVED, [ATERNOS]],
+        [Notifications.GAME_RULE_UPDATED]: [Notifications.LEGACY_GAME_RULE_UPDATED, [TEST_GAME_RULE]],
+        [Notifications.SERVER_STATUS]: [Notifications.LEGACY_SERVER_STATUS, [TEST_STATE]],
+    }
+
+    for (const [source, [target, args]] of Object.entries(legacyToNewMap) as [Notifications, [Notifications, any[]]][]) {
+        let targetCalled = false;
+        server.once(target, () => {
+            targetCalled = true;
+        });
+
+        let sourceCalled = false;
+        server.once(source, () => {
+            sourceCalled = true;
+        });
+
+        connection.emit(source, args);
+        expect(targetCalled).toBe(true);
+        expect(sourceCalled).toBe(true);
+    }
+});

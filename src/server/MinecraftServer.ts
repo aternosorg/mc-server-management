@@ -18,7 +18,7 @@ import {
     UserBan
 } from "../index";
 import Message, {MessageInput} from "../schemas/message/Message";
-import {fromItemOrArray, ItemOrArray, optional} from "../util";
+import {fromItemOrArray, ItemOrArray, LEGACY_NOTIFICATION_PREFIX, MODERN_NOTIFICATION_PREFIX, optional} from "../util";
 import SystemMessage from "../schemas/message/SystemMessage";
 import UntypedGameRule from "../schemas/gamerule/UntypedGameRule";
 
@@ -281,6 +281,23 @@ export default class MinecraftServer extends EventEmitter<EventData> {
      */
     public settings(): ServerSettings {
         return new ServerSettings(this.#connection);
+    }
+
+    emit<T extends EventEmitter.EventNames<EventData>>(
+        event: T,
+        ...args: EventEmitter.EventArgs<EventData, T>
+    ): boolean {
+        let result = super.emit(event, ...args);
+        if (event.startsWith(MODERN_NOTIFICATION_PREFIX)) {
+            if (super.emit(
+                event.replace(MODERN_NOTIFICATION_PREFIX, LEGACY_NOTIFICATION_PREFIX) as keyof EventData,
+                ...args as EventEmitter.EventArgs<EventData, T>
+            )) {
+                result = true;
+            }
+        }
+
+        return result;
     }
 
     /**
