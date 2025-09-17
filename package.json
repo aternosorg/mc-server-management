@@ -12,9 +12,14 @@
     "author": "Julian Vennen <julian@aternos.org>",
     "exports": {
         ".": {
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.cjs",
-            "types": "./dist/index.d.mts"
+            "import": {
+                "default": "./dist/index.mjs",
+                "types": "./dist/index.d.mts"
+            },
+            "require": {
+                "default": "./dist/index.cjs",
+                "types": "./dist/index.d.cts"
+            }
         },
         "./package.json": "./package.json"
     },
