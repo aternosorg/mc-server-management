@@ -1,0 +1,42 @@
+import Notifications from "../server/Notifications";
+
+type ConnectionEventData = {
+    'open': [],
+    'close': [number, string],
+    'error': [Error],
+    [Notifications.SERVER_STARTED]: unknown,
+    [Notifications.SERVER_STOPPING]: unknown,
+    [Notifications.SERVER_SAVING]: unknown,
+    [Notifications.SERVER_SAVED]: unknown,
+    [Notifications.PLAYER_JOINED]: unknown,
+    [Notifications.PLAYER_LEFT]: unknown,
+    [Notifications.OPERATOR_ADDED]: unknown,
+    [Notifications.OPERATOR_REMOVED]: unknown,
+    [Notifications.ALLOWLIST_ADDED]: unknown,
+    [Notifications.ALLOWLIST_REMOVED]: unknown,
+    [Notifications.IP_BAN_ADDED]: unknown,
+    [Notifications.IP_BAN_REMOVED]: unknown,
+    [Notifications.BAN_ADDED]: unknown,
+    [Notifications.BAN_REMOVED]: unknown,
+    [Notifications.GAME_RULE_UPDATED]: unknown,
+    [Notifications.SERVER_STATUS]: unknown,
+
+    [Notifications.LEGACY_SERVER_STARTED]: unknown,
+    [Notifications.LEGACY_SERVER_STOPPING]: unknown,
+    [Notifications.LEGACY_SERVER_SAVING]: unknown,
+    [Notifications.LEGACY_SERVER_SAVED]: unknown,
+    [Notifications.LEGACY_PLAYER_JOINED]: unknown,
+    [Notifications.LEGACY_PLAYER_LEFT]: unknown,
+    [Notifications.LEGACY_OPERATOR_ADDED]: unknown,
+    [Notifications.LEGACY_OPERATOR_REMOVED]: unknown,
+    [Notifications.LEGACY_ALLOWLIST_ADDED]: unknown,
+    [Notifications.LEGACY_ALLOWLIST_REMOVED]: unknown,
+    [Notifications.LEGACY_IP_BAN_ADDED]: unknown,
+    [Notifications.LEGACY_IP_BAN_REMOVED]: unknown,
+    [Notifications.LEGACY_BAN_ADDED]: unknown,
+    [Notifications.LEGACY_BAN_REMOVED]: unknown,
+    [Notifications.LEGACY_GAME_RULE_UPDATED]: unknown,
+    [Notifications.LEGACY_SERVER_STATUS]: unknown,
+};
+
+export default ConnectionEventData;
