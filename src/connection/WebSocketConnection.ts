@@ -35,6 +35,9 @@ export default class WebSocketConnection extends Connection {
         super();
         this.impl = impl;
 
+        this.impl.on('open', () => this.emit('open'));
+        this.impl.on('error', (e: ErrorEvent) => this.emit('error', e.error));
+        this.impl.on('close', (code, reason) => this.emit('close', code, reason));
         for (const notification of Object.values(Notifications)) {
             this.impl.on(notification, (data: unknown) => this.emit(notification, data));
         }
