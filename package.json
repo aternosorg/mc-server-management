@@ -1,6 +1,6 @@
 {
     "name": "mc-server-management",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "A library for the Minecraft server management protocol added in 25w35a",
     "keywords": [
         "minecraft",
