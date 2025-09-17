@@ -11,7 +11,7 @@ const config: UserConfig = [{
     attw: true,
     entry: ['./src/index.ts'],
     format: ['cjs', 'esm'],
-    minify: true,
+    minify: false,
     unused: true,
     outExtensions: ({format}) => ({
         js: `.${format === "cjs" ? "cjs" : "mjs"}`,
