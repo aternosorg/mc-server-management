@@ -221,7 +221,6 @@ test('Ban add with cache', async () => {
     expect(await banList.get()).toStrictEqual([banResult]);
 });
 
-// TODO: Remove tests with cache
 
 test('OP remove with cache', async () => {
     const operator = new Operator(ATERNOS, 4, false);
