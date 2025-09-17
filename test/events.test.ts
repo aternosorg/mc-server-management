@@ -343,13 +343,23 @@ test('Test by name', async () => {
 });
 
 test('Remove IP ban incorrect type', async () => {
-    expect(() => connection.emit(Notifications.IP_BAN_REMOVED, [123]))
-        .toThrow(new IncorrectTypeError("string", "number", [123], "0"));
+    let called = false;
+    server.on('error', e => {
+        expect(e).toStrictEqual(new IncorrectTypeError("string", "number", [123], "0"));
+        called = true;
+    });
+    connection.emit(Notifications.IP_BAN_REMOVED, [123])
+    expect(called).toBe(true);
 });
 
 test('Missing parameter', async () => {
-    expect(() => connection.emit(Notifications.BAN_REMOVED))
-        .toThrow(new Error(`Could not get parameter 'player' (0) from notification data: undefined`) );
+    let called = false;
+    server.on('error', e => {
+        expect(e).toStrictEqual(new Error(`Could not get parameter 'player' (0) from notification data: undefined`));
+        called = true;
+    });
+    connection.emit(Notifications.BAN_REMOVED)
+    expect(called).toBe(true);
 });
 
 test('Verify forwarding of legacy events', async () => {

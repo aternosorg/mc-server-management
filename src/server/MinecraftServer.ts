@@ -21,6 +21,9 @@ import Message, {MessageInput} from "../schemas/message/Message";
 import {fromItemOrArray, ItemOrArray, LEGACY_NOTIFICATION_PREFIX, MODERN_NOTIFICATION_PREFIX, optional} from "../util";
 import SystemMessage from "../schemas/message/SystemMessage";
 import UntypedGameRule from "../schemas/gamerule/UntypedGameRule";
+import ConnectionEventData from "../connection/ConnectionEventData";
+import EventArgs = EventEmitter.EventArgs;
+import EventNames = EventEmitter.EventNames;
 
 /**
  * This is the main entrypoint for interacting with the Minecraft server management protocol.
@@ -44,49 +47,49 @@ export default class MinecraftServer extends EventEmitter<EventData> {
         super();
         this.#connection = connection;
 
-        this.#connection.on(Notifications.SERVER_STARTED, () => this.emit(Notifications.SERVER_STARTED));
-        this.#connection.on(Notifications.SERVER_STOPPING, () => this.emit(Notifications.SERVER_STOPPING));
-        this.#connection.on(Notifications.SERVER_SAVING, () => this.emit(Notifications.SERVER_SAVING));
-        this.#connection.on(Notifications.SERVER_SAVED, () => this.emit(Notifications.SERVER_SAVED));
-        this.#connection.on(Notifications.PLAYER_JOINED, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.SERVER_STARTED, () => this.emit(Notifications.SERVER_STARTED))
+        this.#onConnectionEvent(Notifications.SERVER_STOPPING, () => this.emit(Notifications.SERVER_STOPPING));
+        this.#onConnectionEvent(Notifications.SERVER_SAVING, () => this.emit(Notifications.SERVER_SAVING));
+        this.#onConnectionEvent(Notifications.SERVER_SAVED, () => this.emit(Notifications.SERVER_SAVED));
+        this.#onConnectionEvent(Notifications.PLAYER_JOINED, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "player");
             this.emit(Notifications.PLAYER_JOINED, Player.parse(param, data, ...path))
         });
-        this.#connection.on(Notifications.PLAYER_LEFT, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.PLAYER_LEFT, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "player");
             this.emit(Notifications.PLAYER_LEFT, Player.parse(param, data, ...path))
         });
-        this.#connection.on(Notifications.OPERATOR_ADDED, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.OPERATOR_ADDED, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "player");
             const op = Operator.parse(param, data, ...path);
             this.emit(Notifications.OPERATOR_ADDED, op);
             this.#operatorList?.addItem(op);
         });
-        this.#connection.on(Notifications.OPERATOR_REMOVED, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.OPERATOR_REMOVED, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "player");
             const op = Operator.parse(param, data, ...path);
             this.emit(Notifications.OPERATOR_REMOVED, op);
             this.#operatorList?.removeMatching(item => item.player.id === op.player.id);
         });
-        this.#connection.on(Notifications.ALLOWLIST_ADDED, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.ALLOWLIST_ADDED, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "player");
             const player = Player.parse(param, data, ...path);
             this.emit(Notifications.ALLOWLIST_ADDED, player);
             this.#allowlist?.addItem(player);
         });
-        this.#connection.on(Notifications.ALLOWLIST_REMOVED, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.ALLOWLIST_REMOVED, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "player");
             const player = Player.parse(param, data, ...path);
             this.emit(Notifications.ALLOWLIST_REMOVED, player);
             this.#allowlist?.removeMatching(item => item.id === player.id);
         });
-        this.#connection.on(Notifications.IP_BAN_ADDED, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.IP_BAN_ADDED, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "player");
             const ban = IPBan.parse(param, data, ...path);
             this.emit(Notifications.IP_BAN_ADDED, ban);
             this.#ipBanList?.addItem(ban);
         });
-        this.#connection.on(Notifications.IP_BAN_REMOVED, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.IP_BAN_REMOVED, (data: unknown) => {
             const [path, ip] = this.#getByNameOrPos(data, "player");
 
             if (typeof ip !== 'string') {
@@ -96,25 +99,25 @@ export default class MinecraftServer extends EventEmitter<EventData> {
             this.emit(Notifications.IP_BAN_REMOVED, ip);
             this.#ipBanList?.removeMatching(item => item.ip === ip);
         });
-        this.#connection.on(Notifications.BAN_ADDED, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.BAN_ADDED, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "player");
             const ban = UserBan.parse(param, data, ...path);
             this.emit(Notifications.BAN_ADDED, ban);
             this.#banList?.addItem(ban);
         });
-        this.#connection.on(Notifications.BAN_REMOVED, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.BAN_REMOVED, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "player");
             const player = Player.parse(param, data, ...path);
             this.emit(Notifications.BAN_REMOVED, player);
             this.#banList?.removeMatching(item => item.player.id === player.id);
         });
-        this.#connection.on(Notifications.GAME_RULE_UPDATED, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.GAME_RULE_UPDATED, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "gamerule");
             const rule = TypedGameRule.parse(param, data, ...path);
             this.emit(Notifications.GAME_RULE_UPDATED, rule);
             this.#gameRules?.set(rule.key, rule);
         });
-        this.#connection.on(Notifications.SERVER_STATUS, (data: unknown) => {
+        this.#onConnectionEvent(Notifications.SERVER_STATUS, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "status");
             this.#state = ServerState.parse(param, data, ...path);
             this.emit(Notifications.SERVER_STATUS, this.#state);
@@ -283,21 +286,40 @@ export default class MinecraftServer extends EventEmitter<EventData> {
         return new ServerSettings(this.#connection);
     }
 
-    emit<T extends EventEmitter.EventNames<EventData>>(
+    emit<T extends EventNames<EventData>>(
         event: T,
-        ...args: EventEmitter.EventArgs<EventData, T>
+        ...args: EventArgs<EventData, T>
     ): boolean {
         let result = super.emit(event, ...args);
         if (event.startsWith(MODERN_NOTIFICATION_PREFIX)) {
             if (super.emit(
                 event.replace(MODERN_NOTIFICATION_PREFIX, LEGACY_NOTIFICATION_PREFIX) as keyof EventData,
-                ...args as EventEmitter.EventArgs<EventData, T>
+                ...args as EventArgs<EventData, T>
             )) {
                 result = true;
             }
         }
 
         return result;
+    }
+
+    /**
+     * Listen to a connection event and emit errors in the callback as 'error' events on this instance.
+     * @param event The event name to listen to.
+     * @param callback The callback to invoke when the event is emitted.
+     * @private
+     */
+    #onConnectionEvent<T extends EventNames<ConnectionEventData>>(
+        event: T,
+        callback: (...args: EventArgs<ConnectionEventData, T>) => void
+    ): void {
+        this.#connection.on(event, (...args) => {
+            try {
+                callback.call(this, ...args);
+            } catch (e) {
+                this.emit('error', e as Error);
+            }
+        });
     }
 
     /**
