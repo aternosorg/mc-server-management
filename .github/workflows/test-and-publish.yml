@@ -50,13 +50,13 @@ jobs:
         if: contains(github.ref, '-beta.')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --provenance --access public --tag beta --dry-run
+        run: npm publish --provenance --access public --tag beta
 
       - name: Publish to npm (latest)
         if: ${{ !contains(github.ref, '-beta.') }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --provenance --access public --dry-run
+        run: npm publish --provenance --access public
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
