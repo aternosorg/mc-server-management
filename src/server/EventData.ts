@@ -25,23 +25,6 @@ type EventData = {
     [Notifications.BAN_REMOVED]: [Player],
     [Notifications.GAME_RULE_UPDATED]: [TypedGameRule<GameRuleType>],
     [Notifications.SERVER_STATUS]: [ServerState],
-
-    [Notifications.LEGACY_SERVER_STARTED]: [],
-    [Notifications.LEGACY_SERVER_STOPPING]: [],
-    [Notifications.LEGACY_SERVER_SAVING]: [],
-    [Notifications.LEGACY_SERVER_SAVED]: [],
-    [Notifications.LEGACY_PLAYER_JOINED]: [Player],
-    [Notifications.LEGACY_PLAYER_LEFT]: [Player],
-    [Notifications.LEGACY_OPERATOR_ADDED]: [Operator],
-    [Notifications.LEGACY_OPERATOR_REMOVED]: [Operator],
-    [Notifications.LEGACY_ALLOWLIST_ADDED]: [Player],
-    [Notifications.LEGACY_ALLOWLIST_REMOVED]: [Player],
-    [Notifications.LEGACY_IP_BAN_ADDED]: [IPBan],
-    [Notifications.LEGACY_IP_BAN_REMOVED]: [string],
-    [Notifications.LEGACY_BAN_ADDED]: [UserBan],
-    [Notifications.LEGACY_BAN_REMOVED]: [Player],
-    [Notifications.LEGACY_GAME_RULE_UPDATED]: [TypedGameRule<GameRuleType>],
-    [Notifications.LEGACY_SERVER_STATUS]: [ServerState],
 }
 
 export default EventData;

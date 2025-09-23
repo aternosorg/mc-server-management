@@ -1,7 +1,5 @@
 import JsonRPCError from "../error/JsonRPCError.js";
 import {EventEmitter} from "eventemitter3";
-import EventData from "../server/EventData";
-import {LEGACY_NOTIFICATION_PREFIX, MODERN_NOTIFICATION_PREFIX} from "../util";
 import ConnectionEventData from "./ConnectionEventData";
 
 /**
@@ -36,21 +34,4 @@ export default abstract class Connection extends EventEmitter<ConnectionEventDat
      * Close the connection.
      */
     public abstract close(): void;
-
-    emit<T extends EventEmitter.EventNames<ConnectionEventData>>(
-        event: T,
-        ...args: EventEmitter.EventArgs<ConnectionEventData, T>
-    ): boolean {
-        let result = super.emit(event, ...args);
-        if (event.startsWith(LEGACY_NOTIFICATION_PREFIX)) {
-            if (super.emit(
-                event.replace(LEGACY_NOTIFICATION_PREFIX, MODERN_NOTIFICATION_PREFIX) as keyof EventData,
-                ...args as EventEmitter.EventArgs<ConnectionEventData, T>
-            )) {
-                result = true;
-            }
-        }
-
-        return result;
-    }
 }

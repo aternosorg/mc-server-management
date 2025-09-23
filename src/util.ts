@@ -1,10 +1,5 @@
 export type ItemOrArray<T> = T | T[];
 
-/** @internal */
-export const LEGACY_NOTIFICATION_PREFIX = "notification:";
-/** @internal */
-export const MODERN_NOTIFICATION_PREFIX = "minecraft:notification/";
-
 /**
  * Parse an optional value. If the input is `undefined` or `null`, `undefined` is returned.
  * Otherwise, the input is parsed using the provided function.

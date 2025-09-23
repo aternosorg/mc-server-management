@@ -20,7 +20,7 @@ This is a TypeScript/JavaScript client library for the Minecraft server manageme
 
 ## Requirements
 
-- Minecraft 25w35a or later.
+- Minecraft 1.21.9-pre4 or later.
 - Node 22+ or another ES2022+ compatible environment.
 
 ## Installation

@@ -18,7 +18,7 @@ import {
     UserBan
 } from "../index";
 import Message, {MessageInput} from "../schemas/message/Message";
-import {fromItemOrArray, ItemOrArray, LEGACY_NOTIFICATION_PREFIX, MODERN_NOTIFICATION_PREFIX, optional} from "../util";
+import {fromItemOrArray, ItemOrArray, optional} from "../util";
 import SystemMessage from "../schemas/message/SystemMessage";
 import UntypedGameRule from "../schemas/gamerule/UntypedGameRule";
 import ConnectionEventData from "../connection/ConnectionEventData";
@@ -149,17 +149,26 @@ export default class MinecraftServer extends EventEmitter<EventData> {
     }
 
     /**
-     * Kicks one or more players from the server.
-     * @param player The player or players to kick.
-     * @param message optional message to display to the player when they are kicked.
+     * Kicks one or more players from the server. To specify individual kick messages per user, use the KickPlayer class.
+     * @param player The player or players to kick. Can be a PlayerInput, KickPlayer, or an array of either.
+     * @param message optional default message when player is not an instance of KickPlayer.
      * @returns {Promise<Player[]>} A promise that resolves to an array of kicked players.
      */
-    public async kickPlayers(player: ItemOrArray<PlayerInput>, message?: MessageInput|null): Promise<Player[]> {
+    public async kickPlayers(player: ItemOrArray<PlayerInput|KickPlayer>, message?: MessageInput|null): Promise<Player[]> {
+        const items = fromItemOrArray(player)
+            .map(item => {
+                if (item instanceof KickPlayer) {
+                    return item;
+                }
+
+                return new KickPlayer(
+                    Player.fromInput(item),
+                    optional(Message.fromInput, message),
+                );
+            });
+
         const response = await this.#connection.call('minecraft:players/kick', [
-            new KickPlayer(
-                fromItemOrArray(player).map(Player.fromInput),
-                optional(Message.fromInput, message),
-            )
+            items
         ]);
         return Player.parseList(response);
     }
@@ -284,23 +293,6 @@ export default class MinecraftServer extends EventEmitter<EventData> {
      */
     public settings(): ServerSettings {
         return new ServerSettings(this.#connection);
-    }
-
-    emit<T extends EventNames<EventData>>(
-        event: T,
-        ...args: EventArgs<EventData, T>
-    ): boolean {
-        let result = super.emit(event, ...args);
-        if (event.startsWith(MODERN_NOTIFICATION_PREFIX)) {
-            if (super.emit(
-                event.replace(MODERN_NOTIFICATION_PREFIX, LEGACY_NOTIFICATION_PREFIX) as keyof EventData,
-                ...args as EventArgs<EventData, T>
-            )) {
-                result = true;
-            }
-        }
-
-        return result;
     }
 
     /**

@@ -104,17 +104,21 @@ test('Test kick players with result', async () => {
     const history = connection.shiftRequestHistory();
     expect(history).toEqual({
         method: 'minecraft:players/kick',
-        parameters: [{
-            players: [
-                {id: undefined, name: ATERNOS.name},
-                {id: EXAROTON.id, name: undefined}
-            ],
+        parameters: [[{
+            player: {id: undefined, name: ATERNOS.name},
             message: {
                 literal: "You have been kicked",
                 translatable: undefined,
                 translatableParams: undefined,
             }
-        }]
+        },{
+            player: {id: EXAROTON.id, name: undefined},
+            message: {
+                literal: "You have been kicked",
+                translatable: undefined,
+                translatableParams: undefined,
+            }
+        }]]
     });
 });
 
