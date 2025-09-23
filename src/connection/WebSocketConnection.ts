@@ -4,7 +4,7 @@ import type {ClientOptions} from "ws";
 import Notifications from "../server/Notifications";
 
 export default class WebSocketConnection extends Connection {
-    protected impl: Client;
+    readonly client: Client;
 
     /**
      * Connect to a WebSocket server and return a WebSocketConnection instance.
@@ -29,25 +29,25 @@ export default class WebSocketConnection extends Connection {
 
     /**
      * Manually create a WebSocket connection. Use {@link WebSocketConnection.connect} instead.
-     * @param impl
+     * @param client
      */
-    constructor(impl: Client) {
+    constructor(client: Client) {
         super();
-        this.impl = impl;
+        this.client = client;
 
-        this.impl.on('open', () => this.emit('open'));
-        this.impl.on('error', (e: ErrorEvent) => this.emit('error', e.error));
-        this.impl.on('close', (code, reason) => this.emit('close', code, reason));
+        this.client.on('open', () => this.emit('open'));
+        this.client.on('error', (e: ErrorEvent) => this.emit('error', e.error));
+        this.client.on('close', (code, reason) => this.emit('close', code, reason));
         for (const notification of Object.values(Notifications)) {
-            this.impl.on(notification, (data: unknown) => this.emit(notification, data));
+            this.client.on(notification, (data: unknown) => this.emit(notification, data));
         }
     }
 
     callRaw(method: string, parameters: object | Array<unknown>): Promise<unknown> {
-        return this.impl.call(method, parameters);
+        return this.client.call(method, parameters);
     }
 
     close() {
-        this.impl.close();
+        this.client.close();
     }
 }
