@@ -13,10 +13,10 @@ export {Connection, WebSocketConnection};
 
 import IncorrectTypeError from "./error/IncorrectTypeError.js";
 import InvalidResponseError from "./error/InvalidResponseError.js";
-import JsonRPCError from "./error/JsonRPCError.js";
+import JsonRPCError, {JsonRPCErrorCode} from "./error/JsonRPCError.js";
 import MissingPropertyError from "./error/MissingPropertyError.js";
 
-export {IncorrectTypeError, InvalidResponseError, JsonRPCError, MissingPropertyError};
+export {IncorrectTypeError, InvalidResponseError, JsonRPCError, JsonRPCErrorCode, MissingPropertyError};
 
 import AllowList from "./player-list/AllowList.js";
 import BanList from "./player-list/BanList.js";
