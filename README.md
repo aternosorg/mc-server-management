@@ -2,14 +2,14 @@
 
 ## About
 
-This is a TypeScript/JavaScript client library for the Minecraft server management protocol added in 25w35a.
+This is a TypeScript/JavaScript client library for the Minecraft server management protocol added in 1.21.9.
 
 ## Features
 
 - Complete type definitions
 - Builders for all request parameters
 - Full API coverage (including Notifications)
-- Authentication support (required since 25w37a)
+- Authentication support
 - Promise-based API
 - Automatic reconnection
 - TLS support
