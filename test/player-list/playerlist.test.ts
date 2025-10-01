@@ -7,7 +7,7 @@ test('Calling removeMatching without cached items', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
     expect(allowlist.removeMatching(() => true)).toBe(allowlist);
-    connection.addResponse([]);
+    connection.addSuccess([]);
     expect(await allowlist.get()).toStrictEqual([]);
     expect(connection.shiftRequestHistory()).toStrictEqual({method: 'minecraft:allowlist', parameters: []});
 });
@@ -15,7 +15,7 @@ test('Calling removeMatching without cached items', async () => {
 test('Calling removeMatching removes items', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    connection.addResponse([ATERNOS, EXAROTON]);
+    connection.addSuccess([ATERNOS, EXAROTON]);
     expect(await allowlist.get()).toStrictEqual([ATERNOS, EXAROTON]);
     expect(await allowlist.get()).toStrictEqual([ATERNOS, EXAROTON]);
     expect(allowlist.removeMatching(() => true)).toBe(allowlist);

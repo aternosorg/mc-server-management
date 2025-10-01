@@ -71,8 +71,38 @@ export default class JsonRPCError extends Error {
         return new JsonRPCError(error.code, error.message, 'data' in error ? error.data : undefined);
     }
 
+    /**
+     * Format the error message.
+     * @param code
+     * @param message
+     * @param data
+     * @internal
+     */
+    static formatMessage(code: number, message: string, data?: unknown): string {
+        let output = message;
+
+        if (typeof data === 'string') {
+            output += ": ";
+
+            if (data.startsWith(message)) {
+                output = "";
+            }
+
+            output += data;
+        }
+
+
+        return `${output} (code: ${code})`;
+    }
+
+    /**
+     * Create a new JsonRPCError.
+     * @param code JSON-RPC error code.
+     * @param message Error message.
+     * @param data Additional error data, if any.
+     */
     constructor(code: number, message: string, data?: unknown) {
-        super(message + (typeof data === 'string' ? `: ${data}` : '') + ` (code: ${code})`);
+        super(JsonRPCError.formatMessage(code, message, data));
         this.code = code;
         this.data = data;
     }

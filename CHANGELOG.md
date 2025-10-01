@@ -1,3 +1,14 @@
+# 3.0.0
+
+## Breaking Changes
+- Errors returned by the server are now correctly converted to JsonRPCError objects.
+- `Connection#callRaw` now returns an object with a success boolean and either a data field (if successful) or an error field (if failed).
+
+## Other Improvements
+- Improve JsonRPCError message formatting
+
+---
+
 # 2.0.0
 
 ## Breaking Changes

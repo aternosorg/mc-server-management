@@ -1,36 +1,30 @@
 import {expect, test} from "vitest";
 import TestConnection from "./TestConnection.js";
-import {JsonRPCError, MinecraftServer} from "../src";
+import {JsonRPCError, JsonRPCErrorCode, MinecraftServer} from "../src";
 import {getConnection} from "./utils.js";
 
 test('Convert json rpc errors to errors', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
-    connection.addResponse({
-        "error": {
-            code: -32601,
-            message: "Method not found"
-        }
+    connection.addError({
+        code: -32601,
+        message: "Method not found"
     });
-    await expect(server.getStatus()).rejects.toThrow(new JsonRPCError(-32601, "Method not found"));
+    await expect(server.getStatus()).rejects.toThrow(new JsonRPCError(JsonRPCErrorCode.METHOD_NOT_FOUND, "Method not found"));
 
-    connection.addResponse({
-        "error": {
-            code: -32601,
-            message: "Method not found",
-            data: {extra: "info"}
-        }
+    connection.addError({
+        code: -32601,
+        message: "Method not found",
+        data: {extra: "info"}
     });
-    await expect(server.getStatus()).rejects.toThrow(new JsonRPCError(-32601, "Method not found", {extra: "info"}));
+    await expect(server.getStatus()).rejects.toThrow(new JsonRPCError(JsonRPCErrorCode.METHOD_NOT_FOUND, "Method not found", {extra: "info"}));
 
-    connection.addResponse({
-        "error": {
-            code: -32601,
-            message: "Method not found",
-            data: "More info"
-        }
+    connection.addError({
+        code: -32601,
+        message: "Method not found",
+        data: "More info"
     });
-    await expect(server.getStatus()).rejects.toThrow(new JsonRPCError(-32601, "Method not found", "More info"));
+    await expect(server.getStatus()).rejects.toThrow(new JsonRPCError(JsonRPCErrorCode.METHOD_NOT_FOUND, "Method not found", "More info"));
 });
 
 test('Test closing connection', async () => {

@@ -11,7 +11,7 @@ for (let server of [null, await getServer()]) {
     }
 
     test('Send literal system message without overlay', async () => {
-        testConnection?.addResponse(true);
+        testConnection?.addSuccess(true);
 
         const result = await server.sendSystemMessage("Hello World");
         expect(result).toBe(true);
@@ -29,7 +29,7 @@ for (let server of [null, await getServer()]) {
     });
 
     test('Send translatable system message without overlay', async () => {
-        testConnection?.addResponse(true);
+        testConnection?.addSuccess(true);
 
         const result = await server.sendSystemMessage(
             Message.translatable("Hello World", ["1"])
@@ -49,7 +49,7 @@ for (let server of [null, await getServer()]) {
     });
 
     test('Send translatable system message with overlay', async () => {
-        testConnection?.addResponse(true);
+        testConnection?.addSuccess(true);
 
         const result = await server.sendSystemMessage(
             Message.translatable("Hello World", ["1"]),
@@ -71,7 +71,7 @@ for (let server of [null, await getServer()]) {
     });
 
     test('Send translatable system message with overlay to targets', async () => {
-        testConnection?.addResponse(true);
+        testConnection?.addSuccess(true);
 
         const result = await server.sendSystemMessage(
             Message.translatable("Hello World", ["1"]),
@@ -101,7 +101,7 @@ for (let server of [null, await getServer()]) {
 test('Check system message incorrect type', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
-    connection.addResponse("test");
+    connection.addSuccess("test");
 
     await expect(server.sendSystemMessage(Message.literal("Hello World"))).rejects.toThrow(
         new IncorrectTypeError("boolean", "string", "test")

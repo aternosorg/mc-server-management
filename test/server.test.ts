@@ -25,7 +25,7 @@ test('Get real server status', async () => {
 test('Get test server status', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
-    connection.addResponse({
+    connection.addSuccess({
         started: true,
         players: [{id: ATERNOS.id, name: ATERNOS.name}],
         version: {name: "1.21.9", protocol: 773}
@@ -48,7 +48,7 @@ test('Save server', async () => {
 test('Save server invalid response', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
-    connection.addResponse("invalid");
+    connection.addSuccess("invalid");
 
     await expect(server.save()).rejects.toThrow(
         new IncorrectTypeError("boolean", "string", "invalid")
@@ -63,7 +63,7 @@ test('Get connected players', async () => {
 test('Get mocked connected players', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
-    connection.addResponse([ATERNOS, EXAROTON]);
+    connection.addSuccess([ATERNOS, EXAROTON]);
 
     const players = await server.getConnectedPlayers();
     expect(players).toStrictEqual([ATERNOS, EXAROTON]);
@@ -93,7 +93,7 @@ test('Kick player with message', async () => {
 test('Test kick players with result', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
-    connection.addResponse([ATERNOS, EXAROTON]);
+    connection.addSuccess([ATERNOS, EXAROTON]);
 
     const response = await server.kickPlayers(
         [Player.withName(ATERNOS.name!), Player.withId(EXAROTON.id!)],
@@ -125,7 +125,7 @@ test('Test kick players with result', async () => {
 test('Stop server', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
-    connection.addResponse(true);
+    connection.addSuccess(true);
 
     const result = await server.stop();
     expect(result).toStrictEqual(true);
@@ -134,7 +134,7 @@ test('Stop server', async () => {
 test('Stop server invalid response', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
-    connection.addResponse("invalid");
+    connection.addSuccess("invalid");
 
     await expect(server.stop()).rejects.toThrow(
         new IncorrectTypeError("boolean", "string", "invalid")
@@ -171,7 +171,7 @@ test('Test gamerule caching', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
 
-    connection.addResponse([
+    connection.addSuccess([
         {key: "doDaylightCycle", value: "true", type: "boolean"},
         {key: "maxEntityCramming", value: "24", type: "integer"},
     ]);
@@ -204,7 +204,7 @@ test('Test gamerule caching', async () => {
     ));
 
     // Update a gamerule, should update cache
-    connection.addResponse({key: "maxEntityCramming", value: "10", type: "integer"});
+    connection.addSuccess({key: "maxEntityCramming", value: "10", type: "integer"});
     const updatedRule = await server.updateGameRule("maxEntityCramming", 10);
     expect(updatedRule.key).toStrictEqual("maxEntityCramming");
     expect(updatedRule.value).toStrictEqual(10);
@@ -228,42 +228,42 @@ test('Test GameRules invalid response', async () => {
     const connection = new TestConnection();
     const server = new MinecraftServer(connection);
 
-    let response: unknown = connection.addResponse("invalid");
+    let response: unknown = connection.addSuccess("invalid");
     await expect(server.getGameRules(true)).rejects.toThrow(
         new IncorrectTypeError("array", "string", response)
     );
 
-    response = connection.addResponse(["invalid"]);
+    response = connection.addSuccess(["invalid"]);
     await expect(server.getGameRules(true)).rejects.toThrow(
         new IncorrectTypeError("object", "string", response, '0')
     );
 
-    response = connection.addResponse([{}]);
+    response = connection.addSuccess([{}]);
     await expect(server.getGameRules(true)).rejects.toThrow(
         new MissingPropertyError("key", response, "0")
     );
 
-    response = connection.addResponse([{key: 123, value: "true", type: "boolean"}]);
+    response = connection.addSuccess([{key: 123, value: "true", type: "boolean"}]);
     await expect(server.getGameRules(true)).rejects.toThrow(
         new IncorrectTypeError("string", "number", response, "0", "key")
     );
 
-    response = connection.addResponse([{key: "doDaylightCycle"}]);
+    response = connection.addSuccess([{key: "doDaylightCycle"}]);
     await expect(server.getGameRules(true)).rejects.toThrow(
         new MissingPropertyError("value", response, "0")
     );
 
-    response = connection.addResponse([{key: "doDaylightCycle", value: true, type: "boolean"}]);
+    response = connection.addSuccess([{key: "doDaylightCycle", value: true, type: "boolean"}]);
     await expect(server.getGameRules(true)).rejects.toThrow(
         new IncorrectTypeError("string", "boolean", response, "0", "value")
     );
 
-    response = connection.addResponse([{key: "doDaylightCycle", value: "true"}]);
+    response = connection.addSuccess([{key: "doDaylightCycle", value: "true"}]);
     await expect(server.getGameRules(true)).rejects.toThrow(
         new MissingPropertyError("type", response, "0")
     );
 
-    response = connection.addResponse([{key: "doDaylightCycle", value: "true", type: 123}]);
+    response = connection.addSuccess([{key: "doDaylightCycle", value: "true", type: 123}]);
     await expect(server.getGameRules(true)).rejects.toThrow(
         new IncorrectTypeError("string", "number", response, "0", "type")
     );

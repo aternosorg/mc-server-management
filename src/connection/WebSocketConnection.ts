@@ -1,4 +1,4 @@
-import Connection from './Connection.js';
+import Connection, {CallResponse, SuccessfulCallResponse} from './Connection.js';
 import {Client, type IWSClientAdditionalOptions} from "rpc-websockets";
 import type {ClientOptions} from "ws";
 import Notifications from "../server/Notifications";
@@ -43,8 +43,13 @@ export default class WebSocketConnection extends Connection {
         }
     }
 
-    callRaw(method: string, parameters: object | Array<unknown>): Promise<unknown> {
-        return this.client.call(method, parameters);
+    async callRaw(method: string, parameters: object | Array<unknown>): Promise<CallResponse> {
+        try {
+            const result = await this.client.call(method, parameters);
+            return {success: true, data: result};
+        } catch (error) {
+            return {success: false, error: error};
+        }
     }
 
     close() {

@@ -108,7 +108,7 @@ test('Remove one item from banlist', async () => {
 test('Invalid response item not object', async () => {
     const connection = new TestConnection();
     const banList = new BanList(connection);
-    const result = connection.addResponse([true]);
+    const result = connection.addSuccess([true]);
 
     await expect(banList.get()).rejects.toThrow(new IncorrectTypeError("object", "boolean", result, "0"));
 });
@@ -116,7 +116,7 @@ test('Invalid response item not object', async () => {
 test('Invalid response missing player', async () => {
     const connection = new TestConnection();
     const banList = new BanList(connection);
-    const result = connection.addResponse([{}]);
+    const result = connection.addSuccess([{}]);
 
     await expect(banList.get()).rejects.toThrow(new MissingPropertyError("player", result, "0"));
 });
@@ -124,7 +124,7 @@ test('Invalid response missing player', async () => {
 test('Invalid response wrong type for player', async () => {
     const connection = new TestConnection();
     const banList = new BanList(connection);
-    const result = connection.addResponse([{player: true}]);
+    const result = connection.addSuccess([{player: true}]);
 
     await expect(banList.get()).rejects.toThrow(
         new IncorrectTypeError("object", "boolean", result, "0", "player")
@@ -134,7 +134,7 @@ test('Invalid response wrong type for player', async () => {
 test('Invalid response wrong type for reason', async () => {
     const connection = new TestConnection();
     const banList = new BanList(connection);
-    const result = connection.addResponse([{player: ATERNOS, reason: true}]);
+    const result = connection.addSuccess([{player: ATERNOS, reason: true}]);
 
     await expect(banList.get()).rejects.toThrow(
         new IncorrectTypeError("string", "boolean", result, "0", "reason")
@@ -144,7 +144,7 @@ test('Invalid response wrong type for reason', async () => {
 test('Invalid response wrong type for source', async () => {
     const connection = new TestConnection();
     const banList = new BanList(connection);
-    const result = connection.addResponse([{player: ATERNOS, source: true}]);
+    const result = connection.addSuccess([{player: ATERNOS, source: true}]);
 
     await expect(banList.get()).rejects.toThrow(
         new IncorrectTypeError("string", "boolean", result, "0", "source")
@@ -154,7 +154,7 @@ test('Invalid response wrong type for source', async () => {
 test('Invalid response wrong type for expires', async () => {
     const connection = new TestConnection();
     const banList = new BanList(connection);
-    const result = connection.addResponse([{player: ATERNOS, expires: true}]);
+    const result = connection.addSuccess([{player: ATERNOS, expires: true}]);
 
     await expect(banList.get()).rejects.toThrow(
         new IncorrectTypeError("string", "boolean", result, "0", "expires")
@@ -164,7 +164,7 @@ test('Invalid response wrong type for expires', async () => {
 test('Defaults for reason, source and expires', async () => {
     const connection = new TestConnection();
     const banList = new BanList(connection);
-    connection.addResponse([]);
+    connection.addSuccess([]);
     await banList.add([ATERNOS.name!, Player.withId(EXAROTON.id!), new UserBan(Player.withId(ATERNOS.id!))],
         "reason", "Unit Tests", TEST_DATE);
     expect(connection.shiftRequestHistory()).toStrictEqual({

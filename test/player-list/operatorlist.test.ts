@@ -75,7 +75,7 @@ test('Remove one operator', async () => {
 
 test('Invalid response item not object', async () => {
     const connection = new TestConnection();
-    const result = connection.addResponse([true]);
+    const result = connection.addSuccess([true]);
     const ops = new OperatorList(connection);
 
     await expect(ops.get()).rejects.toThrowError(new IncorrectTypeError("object", "boolean", result, "0"));
@@ -84,7 +84,7 @@ test('Invalid response item not object', async () => {
 test('Invalid response missing player', async () => {
     const connection = new TestConnection();
     const ops = new OperatorList(connection);
-    const result = connection.addResponse([{}]);
+    const result = connection.addSuccess([{}]);
 
     await expect(ops.get()).rejects.toThrow(new MissingPropertyError("player", result, "0"));
 });
@@ -92,7 +92,7 @@ test('Invalid response missing player', async () => {
 test('Invalid response wrong type for player', async () => {
     const connection = new TestConnection();
     const ops = new OperatorList(connection);
-    const result = connection.addResponse([{player: true}]);
+    const result = connection.addSuccess([{player: true}]);
 
     await expect(ops.get()).rejects.toThrow(new IncorrectTypeError("object", "boolean", result, "0", "player"));
 });
@@ -100,7 +100,7 @@ test('Invalid response wrong type for player', async () => {
 test('Invalid response wrong type for permissionLevel', async () => {
     const connection = new TestConnection();
     const ops = new OperatorList(connection);
-    const result = connection.addResponse([{player: {id: EXAROTON.id, name: EXAROTON.name}, permissionLevel: "4"}]);
+    const result = connection.addSuccess([{player: {id: EXAROTON.id, name: EXAROTON.name}, permissionLevel: "4"}]);
 
     await expect(ops.get()).rejects.toThrow(new IncorrectTypeError("number", "string", result, "0", "permissionLevel"));
 });
@@ -108,7 +108,7 @@ test('Invalid response wrong type for permissionLevel', async () => {
 test('Invalid response wrong type for bypassesPlayerLimit', async () => {
     const connection = new TestConnection();
     const ops = new OperatorList(connection);
-    const result = connection.addResponse([{player: {id: EXAROTON.id, name: EXAROTON.name}, bypassesPlayerLimit: "false"}]);
+    const result = connection.addSuccess([{player: {id: EXAROTON.id, name: EXAROTON.name}, bypassesPlayerLimit: "false"}]);
 
     await expect(ops.get()).rejects.toThrow(new IncorrectTypeError("boolean", "string", result, "0", "bypassesPlayerLimit"));
 });
@@ -116,7 +116,7 @@ test('Invalid response wrong type for bypassesPlayerLimit', async () => {
 test('Defaults for permissionLevel and bypassPlayerLimit', async () => {
     const connection = new TestConnection();
     const ops = new OperatorList(connection);
-    connection.addResponse([]);
+    connection.addSuccess([]);
     await ops.add([ATERNOS.name!, Player.withId(EXAROTON.id!), new Operator(Player.withId(ATERNOS.id!))], 2, true);
     expect(connection.shiftRequestHistory()).toStrictEqual({
         method: 'minecraft:operators/add',

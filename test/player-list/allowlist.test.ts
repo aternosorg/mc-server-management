@@ -53,7 +53,7 @@ test('Remove allowlist items', async () => {
 test('Invalid response not array', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    connection.addResponse(true);
+    connection.addSuccess(true);
 
     await expect(allowlist.get()).rejects.toThrow(new IncorrectTypeError("array", "boolean", true));
 });
@@ -61,7 +61,7 @@ test('Invalid response not array', async () => {
 test('Invalid response item not object', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    const result = connection.addResponse([true]);
+    const result = connection.addSuccess([true]);
 
     await expect(allowlist.get()).rejects.toThrow(new IncorrectTypeError("object", "boolean", result, "0"));
 });
@@ -69,7 +69,7 @@ test('Invalid response item not object', async () => {
 test('Invalid response item missing id', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    const result = connection.addResponse([{"name": ATERNOS.name}]);
+    const result = connection.addSuccess([{"name": ATERNOS.name}]);
 
     await expect(allowlist.get()).rejects.toThrow(new MissingPropertyError("id", result, "0"));
 });
@@ -77,7 +77,7 @@ test('Invalid response item missing id', async () => {
 test('Invalid response item missing name', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    const result = connection.addResponse([{"id": ATERNOS.id}]);
+    const result = connection.addSuccess([{"id": ATERNOS.id}]);
 
     await expect(allowlist.get()).rejects.toThrow(new MissingPropertyError("name", result, "0"));
 });
@@ -85,16 +85,16 @@ test('Invalid response item missing name', async () => {
 test('Validate that all methods use cached list', async () => {
     const connection = new TestConnection();
     const allowlist = new AllowList(connection);
-    connection.addResponse([ATERNOS]);
+    connection.addSuccess([ATERNOS]);
 
     expect(await allowlist.get()).toStrictEqual([ATERNOS]);
-    connection.addResponse([ATERNOS, EXAROTON]);
+    connection.addSuccess([ATERNOS, EXAROTON]);
     expect(await allowlist.add(Player.withName(EXAROTON.name!))).toBe(allowlist);
     expect(await allowlist.get()).toStrictEqual([ATERNOS, EXAROTON]);
-    connection.addResponse([ATERNOS]);
+    connection.addSuccess([ATERNOS]);
     expect(await allowlist.remove(Player.withName(EXAROTON.name!))).toBe(allowlist);
     expect(await allowlist.get()).toStrictEqual([ATERNOS]);
-    connection.addResponse([]);
+    connection.addSuccess([]);
     expect(await allowlist.clear()).toBe(allowlist);
     expect(await allowlist.get()).toStrictEqual([]);
 });

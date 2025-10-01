@@ -149,7 +149,7 @@ test('Entity Broadcast Range', async () => {
 test('Invalid response boolean', async () => {
     const connection = new TestConnection();
     const settings = new ServerSettings(connection);
-    connection.addResponse("not a boolean");
+    connection.addSuccess("not a boolean");
     await expect(settings.setAutoSave(true)).rejects.toThrow(
         new IncorrectTypeError("boolean", "string", "not a boolean")
     );
@@ -158,7 +158,7 @@ test('Invalid response boolean', async () => {
 test('Invalid response number', async () => {
     const connection = new TestConnection();
     const settings = new ServerSettings(connection);
-    connection.addResponse("not a number");
+    connection.addSuccess("not a number");
     await expect(settings.setMaxPlayers(10)).rejects.toThrow(
         new IncorrectTypeError("number", "string", "not a number")
     );
@@ -167,7 +167,7 @@ test('Invalid response number', async () => {
 test('Invalid response string', async () => {
     const connection = new TestConnection();
     const settings = new ServerSettings(connection);
-    connection.addResponse(123);
+    connection.addSuccess(123);
     await expect(settings.setMOTD("test")).rejects.toThrow(
         new IncorrectTypeError("string", "number", 123)
     );

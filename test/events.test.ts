@@ -153,7 +153,7 @@ test('Ban remove without cache', async () => {
 
 
 test('OP add with cache', async () => {
-    connection.addResponse([]);
+    connection.addSuccess([]);
     const ops = server.operatorList();
     expect(await ops.get()).toStrictEqual([]);
 
@@ -170,7 +170,7 @@ test('OP add with cache', async () => {
 });
 
 test('Allowlist add with cache', async () => {
-    connection.addResponse([]);
+    connection.addSuccess([]);
     const allowlist = server.allowlist();
     expect(await allowlist.get()).toStrictEqual([]);
 
@@ -186,7 +186,7 @@ test('Allowlist add with cache', async () => {
 });
 
 test('IP Ban add with cache', async () => {
-    connection.addResponse([]);
+    connection.addSuccess([]);
     const ipBanList = server.ipBanList();
     expect(await ipBanList.get()).toStrictEqual([]);
 
@@ -204,7 +204,7 @@ test('IP Ban add with cache', async () => {
 });
 
 test('Ban add with cache', async () => {
-    connection.addResponse([]);
+    connection.addSuccess([]);
     const banList = server.banList();
     expect(await banList.get()).toStrictEqual([]);
 
@@ -224,7 +224,7 @@ test('Ban add with cache', async () => {
 
 test('OP remove with cache', async () => {
     const operator = new Operator(ATERNOS, 4, false);
-    connection.addResponse([operator]);
+    connection.addSuccess([operator]);
     const ops = server.operatorList();
     expect(await ops.get()).toStrictEqual([operator]);
 
@@ -240,7 +240,7 @@ test('OP remove with cache', async () => {
 });
 
 test('Allowlist remove with cache', async () => {
-    connection.addResponse([ATERNOS]);
+    connection.addSuccess([ATERNOS]);
     const allowlist = server.allowlist();
     expect(await allowlist.get()).toStrictEqual([ATERNOS]);
 
@@ -258,7 +258,7 @@ test('Allowlist remove with cache', async () => {
 test('IP Ban remove with cache', async () => {
     const ip = "1.1.1.1";
     const banResult = new IPBan(ip, "reason", "source", new Date());
-    connection.addResponse([banResult]);
+    connection.addSuccess([banResult]);
     const ipBanList = server.ipBanList();
     expect(await ipBanList.get()).toStrictEqual([banResult]);
 
@@ -275,7 +275,7 @@ test('IP Ban remove with cache', async () => {
 
 test('Ban remove with cache', async () => {
     const banResult = new UserBan(ATERNOS, "reason", "source");
-    connection.addResponse([]);
+    connection.addSuccess([]);
     const banList = server.banList();
     expect(await banList.get()).toStrictEqual([]);
 
@@ -302,7 +302,7 @@ test('Game rule updated without cache', async () => {
 });
 
 test('Game rule updated with cache', async () => {
-    connection.addResponse([{ key: "doDaylightCycle", type: GameRuleType.BOOLEAN, value: "true" }]);
+    connection.addSuccess([{ key: "doDaylightCycle", type: GameRuleType.BOOLEAN, value: "true" }]);
     expect(await server.getGameRules()).toStrictEqual(new Map([["doDaylightCycle", new TypedGameRule(GameRuleType.BOOLEAN, "doDaylightCycle", true)]]));
 
     let called = false;
