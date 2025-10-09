@@ -47,10 +47,11 @@ export default class MinecraftServer extends EventEmitter<EventData> {
         super();
         this.#connection = connection;
 
-        this.#onConnectionEvent(Notifications.SERVER_STARTED, () => this.emit(Notifications.SERVER_STARTED))
+        this.#onConnectionEvent(Notifications.SERVER_STARTED, () => this.emit(Notifications.SERVER_STARTED));
         this.#onConnectionEvent(Notifications.SERVER_STOPPING, () => this.emit(Notifications.SERVER_STOPPING));
         this.#onConnectionEvent(Notifications.SERVER_SAVING, () => this.emit(Notifications.SERVER_SAVING));
         this.#onConnectionEvent(Notifications.SERVER_SAVED, () => this.emit(Notifications.SERVER_SAVED));
+        this.#onConnectionEvent(Notifications.SERVER_ACTIVITY, () => this.emit(Notifications.SERVER_ACTIVITY));
         this.#onConnectionEvent(Notifications.PLAYER_JOINED, (data: unknown) => {
             const [path, param] = this.#getByNameOrPos(data, "player");
             this.emit(Notifications.PLAYER_JOINED, Player.parse(param, data, ...path))

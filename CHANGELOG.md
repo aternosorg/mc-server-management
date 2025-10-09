@@ -1,3 +1,9 @@
+# 3.1.0
+## Improvements
+- Add `SERVER_ACTIVITY` notification
+
+---
+
 # 3.0.0
 
 ## Breaking Changes

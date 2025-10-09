@@ -8,6 +8,7 @@ type ConnectionEventData = {
     [Notifications.SERVER_STOPPING]: unknown,
     [Notifications.SERVER_SAVING]: unknown,
     [Notifications.SERVER_SAVED]: unknown,
+    [Notifications.SERVER_ACTIVITY]: unknown,
     [Notifications.PLAYER_JOINED]: unknown,
     [Notifications.PLAYER_LEFT]: unknown,
     [Notifications.OPERATOR_ADDED]: unknown,

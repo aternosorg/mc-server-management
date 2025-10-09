@@ -13,6 +13,7 @@ type EventData = {
     [Notifications.SERVER_STOPPING]: [],
     [Notifications.SERVER_SAVING]: [],
     [Notifications.SERVER_SAVED]: [],
+    [Notifications.SERVER_ACTIVITY]: [],
     [Notifications.PLAYER_JOINED]: [Player],
     [Notifications.PLAYER_LEFT]: [Player],
     [Notifications.OPERATOR_ADDED]: [Operator],

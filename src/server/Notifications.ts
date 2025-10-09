@@ -3,6 +3,11 @@ enum Notifications {
     SERVER_STOPPING = 'minecraft:notification/server/stopping',
     SERVER_SAVING = 'minecraft:notification/server/saving',
     SERVER_SAVED = 'minecraft:notification/server/saved',
+    /**
+     * Indicates that a network connection to the server has been initiated
+     * Available since Minecraft 25w41a (1.21.11)
+     */
+    SERVER_ACTIVITY = 'minecraft:notification/server/activity',
     PLAYER_JOINED = 'minecraft:notification/players/joined',
     PLAYER_LEFT = 'minecraft:notification/players/left',
     OPERATOR_ADDED = 'minecraft:notification/operators/added',

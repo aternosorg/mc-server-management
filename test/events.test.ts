@@ -34,6 +34,7 @@ test('Events without data are forwarded', async () => {
         Notifications.SERVER_STOPPING,
         Notifications.SERVER_SAVING,
         Notifications.SERVER_SAVED,
+        Notifications.SERVER_ACTIVITY,
     ]) {
         let called = false;
         server.once(event, () => {
