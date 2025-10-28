@@ -9,7 +9,10 @@ const config: UserConfig = [{
     sourcemap: true,
     treeshake: true,
     attw: true,
-    entry: ['./src/index.ts'],
+    entry: [
+        './src/index.node.ts',
+        './src/index.browser.ts',
+    ],
     format: ['cjs', 'esm'],
     minify: false,
     unused: true,
