@@ -17,6 +17,7 @@ This is a TypeScript/JavaScript client library for the Minecraft server manageme
 - Custom error classes for errors returned by the server
 - Type validation of responses
 - ESModule and CommonJS support
+- Supports establishing connections from a web browser or Node.js environment
 
 ## Requirements
 
@@ -89,6 +90,9 @@ Minecraft server.
 ```typescript
 const connection = await WebSocketConnection.connect("wss://<your-server>:<management-port>", "<auth-token>");
 ```
+
+WebSocketConnection is automatically exported to have the correct WebSocket implementation for your environment
+(Node.js or browser).
 
 ### Creating a MinecraftServer Instance
 
