@@ -17,6 +17,7 @@ export default class WebSocketConnection extends Connection {
         options.headers ??= {};
         options.headers['Authorization'] ??= `Bearer ${token}`;
         const client = new Client(url, options);
+        const connection = new WebSocketConnection(client);
         await new Promise<void>((resolve, reject) => {
             client.once('open', () => {
                 client.removeListener('error', reject);
@@ -24,7 +25,7 @@ export default class WebSocketConnection extends Connection {
             });
             client.once('error', reject);
         });
-        return new WebSocketConnection(client);
+        return connection;
     }
 
     /**

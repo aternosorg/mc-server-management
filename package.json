@@ -40,10 +40,12 @@
     },
     "dependencies": {
         "eventemitter3": "^5.0.1",
-        "rpc-websockets": "^9.1.3"
+        "rpc-websockets": "^9.1.3",
+        "semver": "^7.7.3"
     },
     "devDependencies": {
         "@arethetypeswrong/core": "^0.18.2",
+        "@types/semver": "^7.7.1",
         "@types/ws": "^8.18.1",
         "@vitest/coverage-v8": "^4.0.4",
         "tsdown": "^0.15.0",
