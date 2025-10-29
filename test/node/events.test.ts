@@ -1,5 +1,5 @@
 import {afterEach, beforeEach, expect, test} from "vitest";
-import TestConnection from "./TestConnection.js";
+import TestConnection from "../TestConnection";
 import {
     GameRuleType,
     IncorrectTypeError,
@@ -11,8 +11,8 @@ import {
     TypedGameRule,
     UserBan,
     Version,
-} from "../src"
-import {ATERNOS, EXAROTON} from "./utils.js";
+} from "../../src"
+import {ATERNOS, EXAROTON} from "../constants";
 
 let connection: TestConnection;
 let err: any = null;

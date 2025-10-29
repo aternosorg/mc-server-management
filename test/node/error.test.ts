@@ -1,5 +1,5 @@
 import {expect, test} from "vitest";
-import {JsonRPCError, MissingPropertyError, IncorrectTypeError, JsonRPCErrorCode} from "../src";
+import {JsonRPCError, MissingPropertyError, IncorrectTypeError, JsonRPCErrorCode} from "../../src";
 import {getConnection} from "./utils";
 
 test("Parse error missing code", () => {

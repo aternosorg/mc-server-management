@@ -1,6 +1,6 @@
 import {expect, test} from "vitest";
-import {IncomingIPBan, IPBan, UserBan} from "../../src";
-import {ATERNOS, EXAROTON} from "../utils.js";
+import {IncomingIPBan, IPBan, UserBan} from "../../../src";
+import {ATERNOS, EXAROTON} from "../../constants";
 
 test('Get expires as date', () => {
     const ban = new UserBan(ATERNOS).setExpires("2024-12-31T23:59:59Z");

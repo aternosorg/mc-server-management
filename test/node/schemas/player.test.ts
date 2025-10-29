@@ -1,6 +1,6 @@
 import {expect, test} from "vitest";
-import {IncorrectTypeError, Operator, Player} from "../../src";
-import {ATERNOS, EXAROTON} from "../utils.js";
+import {IncorrectTypeError, Operator, Player} from "../../../src";
+import {ATERNOS, EXAROTON} from "../../constants";
 
 test('Operator', () => {
     const operator = new Operator(ATERNOS);

@@ -1,7 +1,8 @@
 import {beforeEach, expect, test} from "vitest";
-import {ATERNOS, EXAROTON, getServer} from "../utils.js";
-import {AllowList, IncorrectTypeError, MissingPropertyError, Player} from "../../src";
-import TestConnection from "../TestConnection.js";
+import {ATERNOS, EXAROTON} from "../../constants";
+import {getServer} from "../utils";
+import {AllowList, IncorrectTypeError, MissingPropertyError, Player} from "../../../src";
+import TestConnection from "../../TestConnection";
 
 
 const server = await getServer();

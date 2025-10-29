@@ -1,5 +1,5 @@
 import {expect, test} from "vitest";
-import {Message} from "../../src";
+import {Message} from "../../../src";
 
 test('Translatable', () => {
     const message = Message.translatable("chat.type.text", ["User", "Hello world!"]);

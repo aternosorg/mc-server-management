@@ -51,7 +51,8 @@
         "spec": "./server.sh update-spec",
         "server": "./server.sh run-server",
         "check": "tsc",
-        "test": "vitest",
+        "test": "vitest --project node",
+        "test-browser": "vitest --project browser",
         "build": "tsdown"
     },
     "dependencies": {
@@ -61,6 +62,7 @@
     "devDependencies": {
         "@arethetypeswrong/core": "^0.18.2",
         "@types/ws": "^8.18.1",
+        "@vitest/browser-playwright": "^4.0.4",
         "@vitest/coverage-v8": "^4.0.4",
         "tsdown": "^0.15.0",
         "typescript": "^5.9.2",

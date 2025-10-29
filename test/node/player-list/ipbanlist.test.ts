@@ -1,14 +1,8 @@
-import {ATERNOS, EXAROTON, getServer, TEST_DATE, TEST_DATE_STRING} from "../utils.js";
+import {getServer} from "../utils";
+import {ATERNOS, EXAROTON, TEST_DATE, TEST_DATE_STRING} from "../../constants";
 import {beforeEach, expect, test} from "vitest";
-import {
-    IncomingIPBan,
-    IncorrectTypeError,
-    IPBan,
-    IPBanList,
-    MissingPropertyError,
-    Player
-} from "../../src";
-import TestConnection from "../TestConnection.js";
+import {IncomingIPBan, IncorrectTypeError, IPBan, IPBanList, MissingPropertyError, Player} from "../../../src";
+import TestConnection from "../../TestConnection";
 
 const server = await getServer();
 

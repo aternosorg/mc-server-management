@@ -1,5 +1,5 @@
 import {expect, test} from "vitest";
-import {IncorrectTypeError, MissingPropertyError, ServerState, Version} from "../../src";
+import {IncorrectTypeError, MissingPropertyError, ServerState, Version} from "../../../src";
 
 test('Parse Server State wrong type', () => {
     expect(() => ServerState.parse(false)).toThrow(

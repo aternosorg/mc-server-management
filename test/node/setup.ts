@@ -1,5 +1,5 @@
+import {getConnection, wait} from "./utils";
 import {ChildProcess, spawn} from 'child_process';
-import {getConnection, wait} from "./utils.js";
 
 let server: ChildProcess | null = null;
 

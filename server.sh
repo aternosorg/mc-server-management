@@ -13,6 +13,7 @@ PROPERTIES=(
  "management-server-host=0.0.0.0"
  "management-server-tls-enabled=false"
  "management-server-secret=jrpXKVsPgpCFF3JVVbQUDsEcvDw378gvezbcKqnK"
+ "management-server-allowed-origins=http:\/\/localhost:63315"
 )
 
 function error() {

@@ -1,6 +1,7 @@
-import {ATERNOS, EXAROTON, getServer} from "./utils.js";
+import {ATERNOS, EXAROTON} from "../constants";
+import {getServer} from "./utils";
 import {expect, test} from "vitest";
-import TestConnection from "./TestConnection.js";
+import TestConnection from "../TestConnection";
 import {
     GameRuleType,
     IncorrectTypeError,
@@ -9,7 +10,7 @@ import {
     MissingPropertyError,
     Player,
     TypedGameRule
-} from "../src";
+} from "../../src";
 
 const server = await getServer();
 
