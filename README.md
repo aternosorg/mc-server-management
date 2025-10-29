@@ -43,6 +43,11 @@ management-server-secret=
 You can either set `management-server-secret` to a random 40 character long alphanumeric string or leave it empty and
 let the Minecraft server generate a random token on startup. You will need this token to connect to the server.
 
+If you want to establish connections from a web browser, you need to set the allowed origins:
+```properties
+management-server-allowed-origins=http\://localhost\:63315
+```
+
 ### TLS
 By default, TLS is enabled, but the server will crash if you don't provide a certificate. If the management protocol is
 not exposed to the internet, or you are using a reverse proxy, the easiest option would be to disable TLS:
