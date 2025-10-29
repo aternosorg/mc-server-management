@@ -12,6 +12,9 @@ import {
 } from "../src";
 
 const server = await getServer();
+const randomTickSpeed = await server.hasGameRulesRegistry() ? "minecraft:random_tick_speed" : "randomTickSpeed";
+const doDaylightCycle = await server.hasGameRulesRegistry() ? "minecraft:advance_time" : "doDaylightCycle";
+const maxEntityCramming = await server.hasGameRulesRegistry() ? "minecraft:max_entity_cramming" : "maxEntityCramming";
 
 test('Get real server status', async () => {
     const status = await server.getStatus();
@@ -145,24 +148,24 @@ test('Get game rules', async () => {
     const gameRules = await server.getGameRules();
     expect(gameRules).toBeInstanceOf(Map);
     expect(gameRules.size).toBeGreaterThan(0);
-    expect(gameRules.get("randomTickSpeed")?.value).toBeTypeOf("number");
-    expect(gameRules.get("randomTickSpeed")?.type).toStrictEqual(GameRuleType.INTEGER);
-    expect(gameRules.get("randomTickSpeed")?.key).toStrictEqual("randomTickSpeed");
+    expect(gameRules.get(randomTickSpeed)?.value).toBeTypeOf("number");
+    expect(gameRules.get(randomTickSpeed)?.type).toStrictEqual(GameRuleType.INTEGER);
+    expect(gameRules.get(randomTickSpeed)?.key).toStrictEqual(randomTickSpeed);
 });
 
 test('Update game rules', async () => {
-    let res = await server.updateGameRule("randomTickSpeed", 0);
-    expect(res.key).toStrictEqual("randomTickSpeed");
+    let res = await server.updateGameRule(randomTickSpeed, 0);
+    expect(res.key).toStrictEqual(randomTickSpeed);
     expect(res.value).toStrictEqual(0);
     expect(res.type).toStrictEqual(GameRuleType.INTEGER);
 
-    res = await server.updateGameRule("randomTickSpeed", 3);
-    expect(res.key).toStrictEqual("randomTickSpeed");
+    res = await server.updateGameRule(randomTickSpeed, 3);
+    expect(res.key).toStrictEqual(randomTickSpeed);
     expect(res.value).toStrictEqual(3);
     expect(res.type).toStrictEqual(GameRuleType.INTEGER);
 
-    res = await server.updateGameRule("doDaylightCycle", false);
-    expect(res.key).toStrictEqual("doDaylightCycle");
+    res = await server.updateGameRule(doDaylightCycle, false);
+    expect(res.key).toStrictEqual(doDaylightCycle);
     expect(res.value).toStrictEqual(false);
     expect(res.type).toStrictEqual(GameRuleType.BOOLEAN);
 });
@@ -172,54 +175,54 @@ test('Test gamerule caching', async () => {
     const server = new MinecraftServer(connection);
 
     connection.addSuccess([
-        {key: "doDaylightCycle", value: "true", type: "boolean"},
-        {key: "maxEntityCramming", value: "24", type: "integer"},
+        {key: doDaylightCycle, value: "true", type: "boolean"},
+        {key: maxEntityCramming, value: "24", type: "integer"},
     ]);
 
     let gameRules = await server.getGameRules();
     expect(gameRules.size).toStrictEqual(2);
-    expect(gameRules.get("doDaylightCycle")).toStrictEqual(new TypedGameRule(
+    expect(gameRules.get(doDaylightCycle)).toStrictEqual(new TypedGameRule(
         GameRuleType.BOOLEAN,
-        "doDaylightCycle",
+        doDaylightCycle,
         true,
     ));
-    expect(gameRules.get("maxEntityCramming")).toStrictEqual(new TypedGameRule(
+    expect(gameRules.get(maxEntityCramming)).toStrictEqual(new TypedGameRule(
         GameRuleType.INTEGER,
-        "maxEntityCramming",
+        maxEntityCramming,
         24,
     ));
 
     // Call again, should use cache
     gameRules = await server.getGameRules();
     expect(gameRules.size).toStrictEqual(2);
-    expect(gameRules.get("doDaylightCycle")).toStrictEqual(new TypedGameRule(
+    expect(gameRules.get(doDaylightCycle)).toStrictEqual(new TypedGameRule(
         GameRuleType.BOOLEAN,
-        "doDaylightCycle",
+        doDaylightCycle,
         true,
     ));
-    expect(gameRules.get("maxEntityCramming")).toStrictEqual(new TypedGameRule(
+    expect(gameRules.get(maxEntityCramming)).toStrictEqual(new TypedGameRule(
         GameRuleType.INTEGER,
-        "maxEntityCramming",
+        maxEntityCramming,
         24,
     ));
 
     // Update a gamerule, should update cache
-    connection.addSuccess({key: "maxEntityCramming", value: "10", type: "integer"});
-    const updatedRule = await server.updateGameRule("maxEntityCramming", 10);
-    expect(updatedRule.key).toStrictEqual("maxEntityCramming");
+    connection.addSuccess({key: maxEntityCramming, value: "10", type: "integer"});
+    const updatedRule = await server.updateGameRule(maxEntityCramming, 10);
+    expect(updatedRule.key).toStrictEqual(maxEntityCramming);
     expect(updatedRule.value).toStrictEqual(10);
     expect(updatedRule.type).toStrictEqual(GameRuleType.INTEGER);
 
     gameRules = await server.getGameRules();
     expect(gameRules.size).toStrictEqual(2);
-    expect(gameRules.get("doDaylightCycle")).toStrictEqual(new TypedGameRule(
+    expect(gameRules.get(doDaylightCycle)).toStrictEqual(new TypedGameRule(
         GameRuleType.BOOLEAN,
-        "doDaylightCycle",
+        doDaylightCycle,
         true,
     ));
-    expect(gameRules.get("maxEntityCramming")).toStrictEqual(new TypedGameRule(
+    expect(gameRules.get(maxEntityCramming)).toStrictEqual(new TypedGameRule(
         GameRuleType.INTEGER,
-        "maxEntityCramming",
+        maxEntityCramming,
         10,
     ));
 });
@@ -248,22 +251,22 @@ test('Test GameRules invalid response', async () => {
         new IncorrectTypeError("string", "number", response, "0", "key")
     );
 
-    response = connection.addSuccess([{key: "doDaylightCycle"}]);
+    response = connection.addSuccess([{key: doDaylightCycle}]);
     await expect(server.getGameRules(true)).rejects.toThrow(
         new MissingPropertyError("value", response, "0")
     );
 
-    response = connection.addSuccess([{key: "doDaylightCycle", value: true, type: "boolean"}]);
+    response = connection.addSuccess([{key: doDaylightCycle, value: 1, type: "boolean"}]);
     await expect(server.getGameRules(true)).rejects.toThrow(
-        new IncorrectTypeError("string", "boolean", response, "0", "value")
+        new IncorrectTypeError("string|boolean", "number", response, "0", "value")
     );
 
-    response = connection.addSuccess([{key: "doDaylightCycle", value: "true"}]);
+    response = connection.addSuccess([{key: doDaylightCycle, value: "true"}]);
     await expect(server.getGameRules(true)).rejects.toThrow(
         new MissingPropertyError("type", response, "0")
     );
 
-    response = connection.addSuccess([{key: "doDaylightCycle", value: "true", type: 123}]);
+    response = connection.addSuccess([{key: doDaylightCycle, value: "true", type: 123}]);
     await expect(server.getGameRules(true)).rejects.toThrow(
         new IncorrectTypeError("string", "number", response, "0", "type")
     );

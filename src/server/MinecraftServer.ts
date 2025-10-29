@@ -24,6 +24,7 @@ import UntypedGameRule from "../schemas/gamerule/UntypedGameRule";
 import ConnectionEventData from "../connection/ConnectionEventData";
 import EventArgs = EventEmitter.EventArgs;
 import EventNames = EventEmitter.EventNames;
+import semver from "semver/preload";
 
 /**
  * This is the main entrypoint for interacting with the Minecraft server management protocol.
@@ -251,9 +252,12 @@ export default class MinecraftServer extends EventEmitter<EventData> {
      * @returns {Promise<void>} A promise that resolves when the game rule has been updated.
      */
     async updateGameRule(key: string, value: number | boolean | string): Promise<TypedGameRule<GameRuleType>> {
+        value = await this.hasGameRulesRegistry() ? value : JSON.stringify(value)
+
+        // TODO: update
         const result = await this.#connection.call(
             'minecraft:gamerules/update',
-            [new UntypedGameRule(key, value.toString())],
+            [new UntypedGameRule(key, value)],
         );
 
         const gamerule = TypedGameRule.parse(result, result);
@@ -294,6 +298,16 @@ export default class MinecraftServer extends EventEmitter<EventData> {
      */
     public settings(): ServerSettings {
         return new ServerSettings(this.#connection);
+    }
+
+    /**
+     * Whether or not this server has the new game rules registry (Minecraft 1.21.11+).
+     * GameRules are prefixed with "minecraft:" in this version.
+     * @returns {Promise<boolean>} True if the server has the new game rules registry, false otherwise.
+     */
+    public async hasGameRulesRegistry(): Promise<boolean> {
+        const discovery = await this.#connection.discover();
+        return semver.gte("2.0.0", discovery.info.version)
     }
 
     /**

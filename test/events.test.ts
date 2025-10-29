@@ -17,11 +17,13 @@ import {ATERNOS, EXAROTON} from "./utils.js";
 let connection: TestConnection;
 let err: any = null;
 let server: MinecraftServer;
-beforeEach(() => {
+let doDaylightCycle: string;
+beforeEach(async () => {
     connection = new TestConnection();
     server = new MinecraftServer(connection);
     err = null;
     connection.on('error', arg => err = arg);
+    doDaylightCycle = await server.hasGameRulesRegistry() ? "minecraft:advance_time" : "doDaylightCycle";
 });
 
 afterEach(() => {
@@ -295,27 +297,27 @@ test('Game rule updated without cache', async () => {
     let called = false;
     server.once(Notifications.GAME_RULE_UPDATED, rule => {
         called = true;
-        expect(rule).toStrictEqual(new TypedGameRule(GameRuleType.BOOLEAN, "doDaylightCycle", false));
+        expect(rule).toStrictEqual(new TypedGameRule(GameRuleType.BOOLEAN, doDaylightCycle, false));
     });
 
-    connection.emit(Notifications.GAME_RULE_UPDATED, [{ key: "doDaylightCycle", type: GameRuleType.BOOLEAN, value: "false" }]);
+    connection.emit(Notifications.GAME_RULE_UPDATED, [{ key: doDaylightCycle, type: GameRuleType.BOOLEAN, value: "false" }]);
     expect(called).toBe(true);
 });
 
 test('Game rule updated with cache', async () => {
-    connection.addSuccess([{ key: "doDaylightCycle", type: GameRuleType.BOOLEAN, value: "true" }]);
-    expect(await server.getGameRules()).toStrictEqual(new Map([["doDaylightCycle", new TypedGameRule(GameRuleType.BOOLEAN, "doDaylightCycle", true)]]));
+    connection.addSuccess([{ key: doDaylightCycle, type: GameRuleType.BOOLEAN, value: "true" }]);
+    expect(await server.getGameRules()).toStrictEqual(new Map([[doDaylightCycle, new TypedGameRule(GameRuleType.BOOLEAN, doDaylightCycle, true)]]));
 
     let called = false;
-    const postGameRule = new TypedGameRule(GameRuleType.BOOLEAN, "doDaylightCycle", false);
+    const postGameRule = new TypedGameRule(GameRuleType.BOOLEAN, doDaylightCycle, false);
     server.once(Notifications.GAME_RULE_UPDATED, rule => {
         called = true;
         expect(rule).toStrictEqual(postGameRule);
     });
 
-    connection.emit(Notifications.GAME_RULE_UPDATED, [{ key: "doDaylightCycle", type: GameRuleType.BOOLEAN, value: "false" }]);
+    connection.emit(Notifications.GAME_RULE_UPDATED, [{ key: doDaylightCycle, type: GameRuleType.BOOLEAN, value: "false" }]);
     expect(called).toBe(true);
-    expect(await server.getGameRules()).toStrictEqual(new Map([["doDaylightCycle", postGameRule]]));
+    expect(await server.getGameRules()).toStrictEqual(new Map([[doDaylightCycle, postGameRule]]));
 });
 
 test('Update server status', async () => {
