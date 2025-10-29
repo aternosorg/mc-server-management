@@ -1,4 +1,4 @@
-import Connection, {CallResponse, SuccessfulCallResponse} from './Connection.js';
+import Connection, {CallResponse} from './Connection.js';
 import {Client, type IWSClientAdditionalOptions} from "rpc-websockets";
 import type {ClientOptions} from "ws";
 import Notifications from "../server/Notifications";
