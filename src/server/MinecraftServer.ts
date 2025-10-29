@@ -254,7 +254,6 @@ export default class MinecraftServer extends EventEmitter<EventData> {
     async updateGameRule(key: string, value: number | boolean | string): Promise<TypedGameRule<GameRuleType>> {
         value = await this.hasGameRulesRegistry() ? value : JSON.stringify(value)
 
-        // TODO: update
         const result = await this.#connection.call(
             'minecraft:gamerules/update',
             [new UntypedGameRule(key, value)],
@@ -301,7 +300,7 @@ export default class MinecraftServer extends EventEmitter<EventData> {
     }
 
     /**
-     * Whether or not this server has the new game rules registry (Minecraft 1.21.11+).
+     * Whether this server has the new game rules registry (Minecraft 1.21.11+).
      * GameRules are prefixed with "minecraft:" in this version.
      * @returns {Promise<boolean>} True if the server has the new game rules registry, false otherwise.
      */
