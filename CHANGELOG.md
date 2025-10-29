@@ -1,3 +1,9 @@
+# 3.2.0
+## Improvements
+- Allow discovering the server management protocol version via `connection.discover()`
+- Log errors if no error handler is registered
+- Log warnings if an unsupported server management protocol version is detected
+
 # 3.1.0
 ## Improvements
 - Add `SERVER_ACTIVITY` notification

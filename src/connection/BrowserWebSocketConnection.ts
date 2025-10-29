@@ -14,6 +14,7 @@ export default class BrowserWebSocketConnection extends CommonWebSocketConnectio
         options ??= {};
         options.protocols ??= ["minecraft-v1", token];
         const client = new Client(url, options);
+        const connection = new BrowserWebSocketConnection(client);
         await new Promise<void>((resolve, reject) => {
             client.once('open', () => {
                 client.removeListener('error', reject);
@@ -21,7 +22,7 @@ export default class BrowserWebSocketConnection extends CommonWebSocketConnectio
             });
             client.once('error', reject);
         });
-        return new BrowserWebSocketConnection(client);
+        return connection;
     }
 
     /**

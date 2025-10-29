@@ -2,6 +2,7 @@ import GameRuleType from "./GameRuleType";
 import IncorrectTypeError from "../../error/IncorrectTypeError";
 import MissingPropertyError from "../../error/MissingPropertyError";
 import GameRule from "./GameRule";
+import UnknownEnumVariantError from "../../error/UnknownEnumVariantError";
 
 type GameRuleValue<T extends GameRuleType> =
     T extends GameRuleType.BOOLEAN ? boolean : number;
@@ -40,15 +41,46 @@ export default class TypedGameRule<T extends GameRuleType> extends GameRule<Game
             throw new IncorrectTypeError("string", typeof data.key, result, ...path, 'key');
         }
 
-        if (typeof data.value !== 'string') {
-            throw new IncorrectTypeError("string", typeof data.value, result, ...path, 'value');
-        }
-
         if (typeof data.type !== 'string') {
             throw new IncorrectTypeError("string", typeof data.type, result, ...path, 'type');
         }
 
-        return new TypedGameRule(data.type as GameRuleType, data.key, JSON.parse(data.value))
+        if (!Object.values(GameRuleType).includes(data.type as GameRuleType)) {
+            throw new UnknownEnumVariantError("GameRuleType", data.type as string, result, ...path, 'type');
+        }
+
+        let value = this.parseValue(data.type as GameRuleType, data.value, result, ...path, 'value');
+
+        return new TypedGameRule(data.type as GameRuleType, data.key, value);
+    }
+
+    /**
+     * @internal
+     */
+    static parseValue(type: GameRuleType, value: unknown, result: unknown, ...path: string[]): GameRuleValue<GameRuleType> {
+        switch (type) {
+            case GameRuleType.BOOLEAN:
+                if (value === 'true' || value === true) {
+                    return true;
+                } else if (value === 'false' || value === false) {
+                    return false;
+                }
+                throw new IncorrectTypeError("string|boolean", typeof value, result, ...path);
+            case GameRuleType.INTEGER:
+                if (typeof value === 'number' && Number.isInteger(value)) {
+                    return value;
+                }
+
+                if (typeof value !== 'string') {
+                    throw new IncorrectTypeError("string|number", typeof value, result, ...path);
+                }
+
+                const parsed = Number(value);
+                if (Number.isInteger(parsed)) {
+                    return parsed;
+                }
+                throw new IncorrectTypeError("integer", typeof value, result, ...path);
+        }
     }
 
     /**

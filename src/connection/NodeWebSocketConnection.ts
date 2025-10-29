@@ -14,6 +14,7 @@ export default class NodeWebSocketConnection extends CommonWebSocketConnection {
         options.headers ??= {};
         options.headers['Authorization'] ??= `Bearer ${token}`;
         const client = new Client(url, options);
+        const connection = new NodeWebSocketConnection(client);
         await new Promise<void>((resolve, reject) => {
             client.once('open', () => {
                 client.removeListener('error', reject);
@@ -21,7 +22,7 @@ export default class NodeWebSocketConnection extends CommonWebSocketConnection {
             });
             client.once('error', reject);
         });
-        return new NodeWebSocketConnection(client);
+        return connection;
     }
 
     /**

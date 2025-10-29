@@ -1,5 +1,7 @@
 import {Connection} from "../src";
 import {CallResponse} from "../src/connection/Connection";
+import ProtocolInfo from "../src/schemas/discovery/ProtocolInfo";
+import DiscoveryResponse from "../src/schemas/discovery/DiscoveryResponse";
 
 export type RequestHistoryEntry = {
     method: string,
@@ -25,6 +27,13 @@ export default class TestConnection extends Connection {
     }
 
     async callRaw(method: string, parameters: object | Array<unknown>): Promise<CallResponse> {
+        if (method === 'rpc.discover') {
+            return {
+                success: true,
+                data: new DiscoveryResponse("1.3.1", new ProtocolInfo("Minecraft Server Management", "2.0.0")),
+            };
+        }
+
         this.requestHistory.push({method, parameters});
         const result = this.responseQueue.shift();
         if (result === undefined) {
