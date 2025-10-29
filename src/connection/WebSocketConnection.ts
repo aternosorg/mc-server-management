@@ -36,7 +36,11 @@ export default class WebSocketConnection extends Connection {
         this.client = client;
 
         this.client.on('open', () => this.emit('open'));
-        this.client.on('error', (e: ErrorEvent) => this.emit('error', e.error));
+        this.client.on('error', (e: ErrorEvent) => {
+            if (!this.emit('error', e.error)) {
+                console.error('Unhandled connection error:', e.error);
+            }
+        });
         this.client.on('close', (code, reason) => this.emit('close', code, reason));
         for (const notification of Object.values(Notifications)) {
             this.client.on(notification, (data: unknown) => this.emit(notification, data));
