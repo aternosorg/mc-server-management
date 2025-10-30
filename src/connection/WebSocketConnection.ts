@@ -25,7 +25,7 @@ export default class WebSocketConnection extends Connection {
         const promise = new Promise<WebSocketConnection>((resolve, reject) => {
             let lastError: Error|null = null;
             const errorHandler = (e: Error) => {
-                if (client.willReconnect()) {
+                if (options.reconnect) {
                     lastError = e;
                     return;
                 }

@@ -15,8 +15,9 @@ import IncorrectTypeError from "./error/IncorrectTypeError.js";
 import InvalidResponseError from "./error/InvalidResponseError.js";
 import JsonRPCError, {JsonRPCErrorCode} from "./error/JsonRPCError.js";
 import MissingPropertyError from "./error/MissingPropertyError.js";
+import UnknownEnumVariantError from "./error/UnknownEnumVariantError";
 
-export {IncorrectTypeError, InvalidResponseError, JsonRPCError, JsonRPCErrorCode, MissingPropertyError};
+export {IncorrectTypeError, InvalidResponseError, JsonRPCError, JsonRPCErrorCode, MissingPropertyError, UnknownEnumVariantError};
 
 import AllowList from "./player-list/AllowList.js";
 import BanList from "./player-list/BanList.js";

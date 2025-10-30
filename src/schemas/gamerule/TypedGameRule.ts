@@ -72,14 +72,14 @@ export default class TypedGameRule<T extends GameRuleType> extends GameRule<Game
                 }
 
                 if (typeof value !== 'string') {
-                    throw new IncorrectTypeError("string|number", typeof value, result, ...path);
+                    throw new IncorrectTypeError("string|integer", typeof value, result, ...path);
                 }
 
                 const parsed = Number(value);
                 if (Number.isInteger(parsed)) {
                     return parsed;
                 }
-                throw new IncorrectTypeError("integer", typeof value, result, ...path);
+                throw new IncorrectTypeError("string|integer", typeof value, result, ...path);
         }
     }
 

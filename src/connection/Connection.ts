@@ -48,7 +48,6 @@ export default abstract class Connection extends EventEmitter<ConnectionEventDat
             try {
                 error = JsonRPCError.parse(error, "error");
             } catch (e) {
-                /* v8 ignore if */
                 if (!(e instanceof InvalidResponseError)) {
                     throw e;
                 }
@@ -69,8 +68,7 @@ export default abstract class Connection extends EventEmitter<ConnectionEventDat
      */
     public async discover(): Promise<DiscoveryResponse> {
         if (!this.#discovery) {
-            const response = await this.call("rpc.discover", []);
-            this.#discovery = DiscoveryResponse.parse(response, response);
+            return this.#discover();
         }
 
         return this.#discovery;
@@ -78,7 +76,7 @@ export default abstract class Connection extends EventEmitter<ConnectionEventDat
 
     async #discoverCapabilities() {
         try {
-            const response = await this.discover();
+            const response = await this.#discover();
             if (!semver.satisfies(response.info.version, "^1 || ^2")) {
                 console.warn("Warning: The server you're connecting to provides server management protocol version " +
                     response.info.version + ". This version is not supported by mc-server-management, some features " +
@@ -90,5 +88,11 @@ export default abstract class Connection extends EventEmitter<ConnectionEventDat
                 console.error("Unhandled discovery error:", error);
             }
         }
+    }
+
+    async #discover(): Promise<DiscoveryResponse> {
+        const response = await this.call("rpc.discover", []);
+        this.#discovery = DiscoveryResponse.parse(response, response);
+        return this.#discovery;
     }
 }

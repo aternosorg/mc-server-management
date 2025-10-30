@@ -32,6 +32,7 @@ export default class TestConnection extends Connection {
 
     public setDiscoveryResponse(response: unknown): void {
         this.discoveryResponse = response;
+        this.emit('open')
     }
 
     async callRaw(method: string, parameters: object | Array<unknown>): Promise<CallResponse> {
