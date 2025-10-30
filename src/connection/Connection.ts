@@ -48,6 +48,7 @@ export default abstract class Connection extends EventEmitter<ConnectionEventDat
             try {
                 error = JsonRPCError.parse(error, "error");
             } catch (e) {
+                /* v8 ignore if */
                 if (!(e instanceof InvalidResponseError)) {
                     throw e;
                 }

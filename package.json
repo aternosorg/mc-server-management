@@ -36,6 +36,7 @@
         "server": "./server.sh run-server",
         "check": "tsc",
         "test": "vitest",
+        "coverage": "vitest --coverage",
         "build": "tsdown"
     },
     "dependencies": {
