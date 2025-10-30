@@ -3,6 +3,8 @@
 - Allow discovering the server management protocol version via `connection.discover()`
 - Log errors if no error handler is registered
 - Log warnings if an unsupported server management protocol version is detected
+- This library can now be used in a browser environment. The WebSocketConnection import now automatically refers to the
+correct implementation based on the environment (Node.js or browser) and authenticates with the Minecraft server accordingly.
 
 ## Relevant Minecraft changes.
 - Gamerules are now stored in registries. This means that all gamerule names have been changed. You can find the new
