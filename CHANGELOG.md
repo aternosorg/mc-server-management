@@ -15,6 +15,8 @@ used to determine whether the server uses the old or the new names.
 - `WebSocketConnection.connect()` now respects your reconnect settings for the initial connection attempt instead of
 always rejecting if the initial connection fails, but attempting to reconnect anyways.
 
+---
+
 # 3.1.0
 ## Improvements
 - Add `SERVER_ACTIVITY` notification
