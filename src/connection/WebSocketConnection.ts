@@ -16,16 +16,34 @@ export default class WebSocketConnection extends Connection {
         options ??= {};
         options.headers ??= {};
         options.headers['Authorization'] ??= `Bearer ${token}`;
+
+        options.reconnect ??= true;
+        options.autoconnect = false;
+
         const client = new Client(url, options);
         const connection = new WebSocketConnection(client);
-        await new Promise<void>((resolve, reject) => {
-            client.once('open', () => {
-                client.removeListener('error', reject);
-                resolve();
+        const promise = new Promise<WebSocketConnection>((resolve, reject) => {
+            let lastError: Error|null = null;
+            const errorHandler = (e: Error) => {
+                if (client.willReconnect()) {
+                    lastError = e;
+                    return;
+                }
+                reject(e);
+            };
+            connection.once('open', () => {
+                connection.removeListener('max_reconnects_reached', reject);
+                connection.removeListener('error', errorHandler);
+                resolve(connection);
             });
-            client.once('error', reject);
+            connection.once('max_reconnects_reached', (code: number, reason: string) => {
+                reject(lastError);
+            });
+            connection.on('error', errorHandler);
         });
-        return connection;
+        client.connect();
+
+        return await promise;
     }
 
     /**
@@ -43,6 +61,7 @@ export default class WebSocketConnection extends Connection {
             }
         });
         this.client.on('close', (code, reason) => this.emit('close', code, reason));
+        this.client.on('max_reconnects_reached', (code, reason) => this.emit('max_reconnects_reached', code, reason));
         for (const notification of Object.values(Notifications)) {
             this.client.on(notification, (data: unknown) => this.emit(notification, data));
         }

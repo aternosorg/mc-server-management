@@ -12,7 +12,7 @@ export async function getServer() {
 }
 
 export function getConnection() {
-    return WebSocketConnection.connect(WS_URL, WS_TOKEN);
+    return WebSocketConnection.connect(WS_URL, WS_TOKEN, {reconnect: false});
 }
 
 export function wait(ms: number) {

@@ -3,11 +3,17 @@
 - Allow discovering the server management protocol version via `connection.discover()`
 - Log errors if no error handler is registered
 - Log warnings if an unsupported server management protocol version is detected
+- WebSocketConnection now forwards the `max_reconnects_reached` event
 
 ## Relevant Minecraft changes.
 - Gamerules are now stored in registries. This means that all gamerule names have been changed. You can find the new
 names [here](https://www.minecraft.net/en-us/article/minecraft-snapshot-25w44a). `server.hasGameRulesRegistry()` can be 
 used to determine whether the server uses the old or the new names.
+
+
+## Fixes
+- `WebSocketConnection.connect()` now respects your reconnect settings for the initial connection attempt instead of
+always rejecting if the initial connection fails, but attempting to reconnect anyways.
 
 # 3.1.0
 ## Improvements
