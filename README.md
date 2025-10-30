@@ -154,7 +154,10 @@ const gamerules = await server.getGameRules();
 console.log(gamerules);
 
 // Update a gamerule
-await server.updateGameRule("doDaylightCycle", true);
+await server.updateGameRule("minecraft:advance_time", true);
+
+// Before 1.21.11 gamerule names are camelCase and have no namespace prefix. Use server.hasGameRulesRegistry() to
+// check which format to use.
 ```
 
 ### The Allowlist

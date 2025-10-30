@@ -85,7 +85,7 @@ export default class TypedGameRule<T extends GameRuleType> extends GameRule<Game
 
     /**
      * @param type Type of the game rule.
-     * @param key Key of the game rule (e.g., "doDaylightCycle", "maxEntityCramming").
+     * @param key Key of the game rule (e.g., "minecraft:advance_time", "maxEntityCramming").
      * @param value Value of the game rule. Must match the type of the game rule.
      */
     constructor(type: T, key: string, value: GameRuleValue<T>) {
