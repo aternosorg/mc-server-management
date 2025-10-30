@@ -46,6 +46,10 @@ jobs:
       - name: Extract release body from CHANGELOG.md
         run: awk 'f{if($0 ~ /^---/) exit; print} /^# /{f=1}' CHANGELOG.md | sed '/^[[:space:]]*$/d' > release-body.md
 
+      - name: Append beta disclaimer to release body
+        if: contains(github.ref, '-beta.')
+        run: echo -e "\n\n**Note:** This is a beta release. Breaking changes may be introduced before this version becomes stable." >> release-body.md
+
       - name: Publish to npm (beta)
         if: contains(github.ref, '-beta.')
         env:
@@ -61,4 +65,5 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          prerelease: ${{ contains(github.ref, '-beta.') }}
           body_path: "${{ github.workspace }}/release-body.md"
