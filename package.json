@@ -48,11 +48,13 @@
         "url": "git+https://github.com/aternosorg/mc-server-management.git"
     },
     "scripts": {
-        "spec": "./server.sh update-spec",
-        "server": "./server.sh run-server",
+        "spec": "./server.sh spec",
+        "server:run": "./server.sh run",
+        "server:start": "./server.sh run -d",
+        "server:stop": "./server.sh stop",
+        "server:logs": "./server.sh logs",
         "check": "tsc",
-        "test": "vitest --project node",
-        "test-browser": "vitest --project browser",
+        "test": "vitest",
         "build": "tsdown"
     },
     "dependencies": {

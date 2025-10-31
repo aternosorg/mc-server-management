@@ -22,7 +22,7 @@ export async function setup() {
     }
 
     console.log("Starting Minecraft server...");
-    server = spawn('./server.sh', ['run-server']);
+    server = spawn('./server.sh', ['run']);
     let log = '';
     server.stdout?.on('data', (data) => {
         log += data.toString();
@@ -59,6 +59,6 @@ export async function teardown() {
 
     if (server !== null) {
         console.log("Stopping Minecraft server...");
-        server = spawn('./server.sh', ['stop-server']);
+        server = spawn('./server.sh', ['stop']);
     }
 }

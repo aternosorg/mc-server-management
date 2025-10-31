@@ -24,10 +24,10 @@ function show-help() {
     echo "Usage: ./server.sh {command}"
     echo ""
     echo "Commands:"
-    echo "  update-properties               Update server.properties with required properties"
-    echo "  run-server                      Run the Minecraft server with management protocol enabled"
-    echo "  stop-server                     Stop the Minecraft server"
-    echo "  update-spec                     Update the JSON-RPC API schema file"
+    echo "  properties                      Update server.properties with required properties"
+    echo "  run                             Run the Minecraft server with management protocol enabled"
+    echo "  stop                            Stop the Minecraft server"
+    echo "  spec                            Update the JSON-RPC API schema file"
     echo ""
     echo "Environment variables:"
     echo "  MC_PORT                         Port for Minecraft server (default: 25565)"
@@ -57,7 +57,8 @@ function update-properties() {
     done
 }
 
-function run-server() {
+# shellcheck disable=SC2120
+function run() {
     mkdir -p "$SERVER_DIR"
     update-properties
     docker run \
@@ -70,15 +71,20 @@ function run-server() {
         -p "$MANAGEMENT_PORT":25585 \
         -e EXTRA_ARGS="$EXTRA_ARGS" \
         -e JVM_OPTS="$JVM_OPTS" \
+        "$@" \
         ghcr.io/itzg/minecraft-server
 }
 
-function stop-server() {
+function stop() {
     docker stop "mc-management-protocol-server" || true
 }
 
-function update-spec() {
-    EXTRA_ARGS="--reports" JVM_OPTS="-DbundlerMainClass=net.minecraft.data.Main" run-server
+function logs() {
+    docker logs "mc-management-protocol-server" "$@"
+}
+
+function spec() {
+    EXTRA_ARGS="--reports" JVM_OPTS="-DbundlerMainClass=net.minecraft.data.Main" run
     mv "$SERVER_DIR/generated/reports/json-rpc-api-schema.json" "$PROJECT_DIR"
 }
 
@@ -90,4 +96,4 @@ type -t "${COMMAND}" | grep -q 'function' || {
     exit 1
 }
 
-$COMMAND
+$COMMAND "${@:2}"
