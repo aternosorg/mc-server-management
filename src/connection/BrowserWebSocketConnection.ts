@@ -1,6 +1,4 @@
-import {Client, type IWSClientAdditionalOptions} from "rpc-websockets";
-// @ts-ignore
-import {type WebSocketBrowserOptions} from "rpc-websockets";
+import {Client, type IWSClientAdditionalOptions, type WebSocketBrowserOptions} from "rpc-websockets";
 import CommonWebSocketConnection from "./CommonWebSocketConnection";
 
 export default class BrowserWebSocketConnection extends CommonWebSocketConnection {
