@@ -1,5 +1,5 @@
 import {ATERNOS, EXAROTON, TEST_DATE, TEST_DATE_STRING} from "../../constants";
-import {getServer} from "../utils";
+import {getServer} from "../setup/connections";
 import {beforeEach, expect, test} from "vitest";
 import TestConnection from "../../TestConnection";
 import {BanList, IncorrectTypeError, MissingPropertyError, Player, UserBan} from "../../../src";

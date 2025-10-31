@@ -29,8 +29,11 @@ export default defineConfig({
                     ],
                     name: "node",
                     globalSetup: [
-                        "test/node/setup.ts",
+                        "test/node/setup/global.ts",
                     ],
+                    setupFiles: [
+                        "test/node/setup/connections.ts",
+                    ]
                 },
             }
         ],

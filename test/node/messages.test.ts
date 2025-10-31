@@ -1,5 +1,5 @@
 import {ATERNOS, EXAROTON} from "../constants";
-import {getServer} from "./utils";
+import {getServer} from "./setup/connections";
 import TestConnection from "../TestConnection";
 import {expect, test} from "vitest";
 import {IncorrectTypeError, Message, MinecraftServer, Player} from "../../src";

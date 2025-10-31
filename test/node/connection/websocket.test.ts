@@ -1,7 +1,7 @@
 import {expect, test} from "vitest";
 import {Client} from "rpc-websockets";
 import {WS_TOKEN, WS_URL} from "../../constants";
-import {getConnection} from "../utils";
+import {getConnection} from "../setup/connections";
 import {WebSocketConnection} from "../../../src/index.node";
 
 test('Open event is forwarded', async () => {

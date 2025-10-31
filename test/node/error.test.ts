@@ -1,6 +1,6 @@
 import {expect, test} from "vitest";
 import {JsonRPCError, MissingPropertyError, IncorrectTypeError, JsonRPCErrorCode} from "../../src";
-import {getConnection} from "./utils";
+import {getConnection} from "./setup/connections";
 
 test("Parse error missing code", () => {
     const data = {message: "Error message"};

@@ -1,4 +1,4 @@
-import {getServer} from "../utils";
+import {getServer} from "../setup/connections";
 import {ATERNOS, EXAROTON, TEST_DATE, TEST_DATE_STRING} from "../../constants";
 import {beforeEach, expect, test} from "vitest";
 import {IncomingIPBan, IncorrectTypeError, IPBan, IPBanList, MissingPropertyError, Player} from "../../../src";

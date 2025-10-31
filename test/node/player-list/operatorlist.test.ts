@@ -1,6 +1,6 @@
 import {beforeEach, expect, test} from "vitest";
 import {ATERNOS, EXAROTON} from "../../constants";
-import {getServer} from "../utils";
+import {getServer} from "../setup/connections";
 import {IncorrectTypeError, MissingPropertyError, Operator, OperatorList, Player} from "../../../src";
 import TestConnection from "../../TestConnection";
 

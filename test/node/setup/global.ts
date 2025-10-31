@@ -1,11 +1,11 @@
-import {getConnection, wait} from "./utils";
+import {createConnection, wait, waitForProcessExit} from "../utils";
 import {ChildProcess, spawn} from 'child_process';
 
 let server: ChildProcess | null = null;
 
 async function isConnectable(): Promise<boolean> {
     try {
-        (await getConnection()).close();
+        (await createConnection()).close();
         return true;
     } catch (e) {
         return false;
@@ -14,11 +14,7 @@ async function isConnectable(): Promise<boolean> {
 
 async function isRunning(): Promise<boolean> {
     const process = spawn('./server.sh', ['is-running']);
-    return new Promise<boolean>(resolve => {
-        process.on('exit', (code) => {
-            resolve(code === 0);
-        });
-    });
+    return await waitForProcessExit(process) === 0;
 }
 
 async function waitForConnectable(): Promise<void> {
@@ -102,7 +98,7 @@ export async function teardown() {
 
     if (server !== null) {
         console.log("Stopping Minecraft server...");
-        spawn('./server.sh', ['stop']);
+        await waitForProcessExit(spawn('./server.sh', ['stop']));
         server = null;
     }
 }

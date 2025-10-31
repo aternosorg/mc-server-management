@@ -1,4 +1,4 @@
-import {getServer} from "./utils";
+import {getServer} from "./setup/connections";
 import {expect, test} from "vitest";
 import {Difficulty, GameMode, IncorrectTypeError, ServerSettings} from "../../src";
 import TestConnection from "../TestConnection";
