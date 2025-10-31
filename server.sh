@@ -83,6 +83,14 @@ function logs() {
     docker logs "mc-management-protocol-server" "$@"
 }
 
+function is-running() {
+    if [ "$(docker ps -q -f name=mc-management-protocol-server)" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function spec() {
     EXTRA_ARGS="--reports" JVM_OPTS="-DbundlerMainClass=net.minecraft.data.Main" run
     mv "$SERVER_DIR/generated/reports/json-rpc-api-schema.json" "$PROJECT_DIR"
