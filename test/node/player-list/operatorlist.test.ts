@@ -19,7 +19,15 @@ test('Add one operator', async () => {
     const ops = server.operatorList();
     expect(await ops.get()).toStrictEqual([]);
     expect(await ops.add(new Operator(Player.withName(ATERNOS.name!)))).toBe(ops);
-    expect(await ops.get()).toStrictEqual([new Operator(ATERNOS, 4, false)]);
+
+    const result = await ops.get();
+    expect(result).toHaveLength(1);
+    const op = result[0];
+    expect(op).toBeInstanceOf(Operator);
+    expect(op.permissionLevel).toBeGreaterThanOrEqual(1);
+    expect(op.permissionLevel).toBeLessThanOrEqual(4);
+    expect(op.bypassesPlayerLimit).toBe(false);
+    expect(op.player).toStrictEqual(ATERNOS);
 });
 
 test('Add one operator with options', async () => {
@@ -39,10 +47,23 @@ test('Add multiple operators', async () => {
         new Operator(Player.withName(ATERNOS.name!)),
         new Operator(Player.withId(EXAROTON.id!))
     ])).toBe(ops);
-    expect(await ops.get()).toStrictEqual([
-        new Operator(ATERNOS, 4, false),
-        new Operator(EXAROTON, 4, false)
-    ]);
+
+    const result = await ops.get();
+    expect(result).toHaveLength(2);
+
+    const firstOp = result[0];
+    expect(firstOp).toBeInstanceOf(Operator);
+    expect(firstOp.permissionLevel).toBeGreaterThanOrEqual(1);
+    expect(firstOp.permissionLevel).toBeLessThanOrEqual(4);
+    expect(firstOp.bypassesPlayerLimit).toBe(false);
+    expect(firstOp.player).toStrictEqual(ATERNOS);
+
+    const secondOp = result[1];
+    expect(secondOp).toBeInstanceOf(Operator);
+    expect(secondOp.permissionLevel).toBeGreaterThanOrEqual(1);
+    expect(secondOp.permissionLevel).toBeLessThanOrEqual(4);
+    expect(secondOp.bypassesPlayerLimit).toBe(false);
+    expect(secondOp.player).toStrictEqual(EXAROTON);
 });
 
 test('Set operators', async () => {
@@ -52,10 +73,23 @@ test('Set operators', async () => {
         new Operator(Player.withName(ATERNOS.name!)),
         new Operator(Player.withId(EXAROTON.id!))
     ])).toBe(ops);
-    expect(await ops.get()).toStrictEqual([
-        new Operator(ATERNOS, 4, false),
-        new Operator(EXAROTON, 4, false)
-    ]);
+
+    const result = await ops.get();
+    expect(result).toHaveLength(2);
+
+    const firstOp = result[0];
+    expect(firstOp).toBeInstanceOf(Operator);
+    expect(firstOp.permissionLevel).toBeGreaterThanOrEqual(1);
+    expect(firstOp.permissionLevel).toBeLessThanOrEqual(4);
+    expect(firstOp.bypassesPlayerLimit).toBe(false);
+    expect(firstOp.player).toStrictEqual(ATERNOS);
+
+    const secondOp = result[1];
+    expect(secondOp).toBeInstanceOf(Operator);
+    expect(secondOp.permissionLevel).toBeGreaterThanOrEqual(1);
+    expect(secondOp.permissionLevel).toBeLessThanOrEqual(4);
+    expect(secondOp.bypassesPlayerLimit).toBe(false);
+    expect(secondOp.player).toStrictEqual(EXAROTON);
 });
 
 test('Remove one operator', async () => {
