@@ -21,8 +21,15 @@ jobs:
       - name: Check types
         run: npm run check
 
+      - name: Start Minecraft server
+        run: npm run server:start
+
       - name: Run tests
         run: npm test
+
+      - name: Stop Minecraft server
+        run: npm run server:stop
+        if: always()
 
   release:
     runs-on: ubuntu-latest
