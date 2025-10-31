@@ -72,20 +72,20 @@ export default class TypedGameRule<T extends GameRuleType> extends GameRule<Game
                 }
 
                 if (typeof value !== 'string') {
-                    throw new IncorrectTypeError("string|number", typeof value, result, ...path);
+                    throw new IncorrectTypeError("string|integer", typeof value, result, ...path);
                 }
 
                 const parsed = Number(value);
                 if (Number.isInteger(parsed)) {
                     return parsed;
                 }
-                throw new IncorrectTypeError("integer", typeof value, result, ...path);
+                throw new IncorrectTypeError("string|integer", typeof value, result, ...path);
         }
     }
 
     /**
      * @param type Type of the game rule.
-     * @param key Key of the game rule (e.g., "doDaylightCycle", "maxEntityCramming").
+     * @param key Key of the game rule (e.g., "minecraft:advance_time", "maxEntityCramming").
      * @param value Value of the game rule. Must match the type of the game rule.
      */
     constructor(type: T, key: string, value: GameRuleValue<T>) {

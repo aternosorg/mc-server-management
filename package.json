@@ -1,6 +1,6 @@
 {
     "name": "mc-server-management",
-    "version": "3.1.0",
+    "version": "3.2.0-beta.1",
     "description": "A library for the Minecraft server management protocol added in 25w35a",
     "keywords": [
         "minecraft",
@@ -55,6 +55,7 @@
         "server:logs": "./server.sh logs",
         "check": "tsc",
         "test": "vitest",
+        "coverage": "vitest --coverage",
         "build": "tsdown"
     },
     "dependencies": {

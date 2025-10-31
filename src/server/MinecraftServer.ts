@@ -306,7 +306,7 @@ export default class MinecraftServer extends EventEmitter<EventData> {
      */
     public async hasGameRulesRegistry(): Promise<boolean> {
         const discovery = await this.#connection.discover();
-        return semver.gte("2.0.0", discovery.info.version)
+        return semver.gte(discovery.info.version, "2.0.0")
     }
 
     /**

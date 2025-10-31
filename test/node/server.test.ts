@@ -11,6 +11,10 @@ import {
     Player,
     TypedGameRule
 } from "../../src";
+import KickPlayer from "../../src/schemas/player/KickPlayer";
+import DiscoveryResponse from "../../src/schemas/discovery/DiscoveryResponse";
+import ProtocolInfo from "../../src/schemas/discovery/ProtocolInfo";
+import {wait} from "./utils";
 
 const server = await getServer();
 const randomTickSpeed = await server.hasGameRulesRegistry() ? "minecraft:random_tick_speed" : "randomTickSpeed";
@@ -80,6 +84,7 @@ test('Kick player', async () => {
         ATERNOS.name!,
         Player.withName(ATERNOS.name!),
         [Player.withName(ATERNOS.name!), Player.withId(EXAROTON.id!)],
+        new KickPlayer(ATERNOS, Message.literal("You have been kicked")),
     ]) {
         const response = await server.kickPlayers(argument)
         expect(response).toStrictEqual([]);
@@ -167,6 +172,54 @@ test('Update game rules', async () => {
 
     res = await server.updateGameRule(doDaylightCycle, false);
     expect(res.key).toStrictEqual(doDaylightCycle);
+    expect(res.value).toStrictEqual(false);
+    expect(res.type).toStrictEqual(GameRuleType.BOOLEAN);
+});
+
+test('Check if server has gamerules registry', async () => {
+    const connection = new TestConnection();
+    const server = new MinecraftServer(connection);
+
+    connection.setDiscoveryResponse(new DiscoveryResponse("1.0.0", new ProtocolInfo("Minecraft Server Management", "1.0.0")));
+    await wait(1);
+    expect(await server.hasGameRulesRegistry()).toStrictEqual(false);
+
+    connection.setDiscoveryResponse(new DiscoveryResponse("1.0.0", new ProtocolInfo("Minecraft Server Management", "2.0.0")));
+    await wait(1);
+    expect(await server.hasGameRulesRegistry()).toStrictEqual(true);
+});
+
+test('Update legacy game rules', async () => {
+    const connection = new TestConnection();
+    connection.setDiscoveryResponse(new DiscoveryResponse("1.0.0", new ProtocolInfo("Minecraft Server Management", "1.0.0")));
+    const server = new MinecraftServer(connection);
+    connection.addSuccess({
+        key: "randomTickSpeed",
+        value: "0",
+        type: "integer",
+    });
+    let res = await server.updateGameRule("randomTickSpeed", 0);
+    expect(res.key).toStrictEqual("randomTickSpeed");
+    expect(res.value).toStrictEqual(0);
+    expect(res.type).toStrictEqual(GameRuleType.INTEGER);
+
+    connection.addSuccess({
+        key: "randomTickSpeed",
+        value: "3",
+        type: "integer",
+    });
+    res = await server.updateGameRule("randomTickSpeed", 3);
+    expect(res.key).toStrictEqual("randomTickSpeed");
+    expect(res.value).toStrictEqual(3);
+    expect(res.type).toStrictEqual(GameRuleType.INTEGER);
+
+    connection.addSuccess({
+        key: "doDaylightCycle",
+        value: "false",
+        type: "boolean",
+    });
+    res = await server.updateGameRule("doDaylightCycle", false);
+    expect(res.key).toStrictEqual("doDaylightCycle");
     expect(res.value).toStrictEqual(false);
     expect(res.type).toStrictEqual(GameRuleType.BOOLEAN);
 });

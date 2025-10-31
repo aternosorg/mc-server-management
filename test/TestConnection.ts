@@ -11,6 +11,10 @@ export type RequestHistoryEntry = {
 export default class TestConnection extends Connection {
     private responseQueue: CallResponse[] = [];
     private requestHistory: RequestHistoryEntry[] = [];
+    private discoveryResponse: unknown = new DiscoveryResponse(
+        "1.3.1",
+        new ProtocolInfo("Minecraft Server Management", "2.0.0")
+    );
 
     public addSuccess<T>(result: T): T {
         this.responseQueue.push({success: true, data: result});
@@ -26,11 +30,16 @@ export default class TestConnection extends Connection {
         return this.requestHistory.shift() ?? null;
     }
 
+    public setDiscoveryResponse(response: unknown): void {
+        this.discoveryResponse = response;
+        this.emit('open')
+    }
+
     async callRaw(method: string, parameters: object | Array<unknown>): Promise<CallResponse> {
         if (method === 'rpc.discover') {
             return {
                 success: true,
-                data: new DiscoveryResponse("1.3.1", new ProtocolInfo("Minecraft Server Management", "2.0.0")),
+                data: this.discoveryResponse,
             };
         }
 

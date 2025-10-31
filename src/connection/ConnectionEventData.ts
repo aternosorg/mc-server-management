@@ -4,6 +4,7 @@ type ConnectionEventData = {
     'open': [],
     'close': [number, string],
     'error': [Error],
+    'max_reconnects_reached': [code: number, reason: string],
     [Notifications.SERVER_STARTED]: unknown,
     [Notifications.SERVER_STOPPING]: unknown,
     [Notifications.SERVER_SAVING]: unknown,

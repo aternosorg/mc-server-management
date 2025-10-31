@@ -11,16 +11,9 @@ export default class BrowserWebSocketConnection extends CommonWebSocketConnectio
     static async connect(url: string, token: string, options?: IWSClientAdditionalOptions & WebSocketBrowserOptions): Promise<BrowserWebSocketConnection> {
         options ??= {};
         options.protocols ??= ["minecraft-v1", token];
-        const client = new Client(url, options);
-        const connection = new BrowserWebSocketConnection(client);
-        await new Promise<void>((resolve, reject) => {
-            client.once('open', () => {
-                client.removeListener('error', reject);
-                resolve();
-            });
-            client.once('error', reject);
-        });
-        return connection;
+
+        return new BrowserWebSocketConnection(new Client(url, options))
+            .initialConnect(options.reconnect);
     }
 
     /**

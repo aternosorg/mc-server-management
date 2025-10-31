@@ -1,6 +1,8 @@
 export default class GameRule<T> {
     /**
-     * Key of the game rule (e.g., "doDaylightCycle", "maxEntityCramming").
+     * Key of the game rule (e.g., "minecraft:advance_time", "minecraft:max_entity_cramming").
+     * On 1.21.10 or older the names are camelCase and there's no minecraft: prefix (e.g. "doDaylightCycle", "maxEntityCramming").
+     * @see {MinecraftServer#hasGameRuleRegistry()}
      */
     key: string;
     /**

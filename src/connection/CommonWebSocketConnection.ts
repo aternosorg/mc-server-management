@@ -1,5 +1,5 @@
 import Connection, {CallResponse} from "./Connection";
-import {Client, CommonClient} from "rpc-websockets";
+import {Client, CommonClient, type IWSClientAdditionalOptions} from "rpc-websockets";
 import Notifications from "../server/Notifications";
 
 export default abstract class CommonWebSocketConnection extends Connection {
@@ -20,9 +20,38 @@ export default abstract class CommonWebSocketConnection extends Connection {
             }
         });
         this.client.on('close', (code, reason) => this.emit('close', code, reason));
+        this.client.on('max_reconnects_reached', (code, reason) => this.emit('max_reconnects_reached', code, reason));
         for (const notification of Object.values(Notifications)) {
             this.client.on(notification, (data: unknown) => this.emit(notification, data));
         }
+    }
+
+    /**
+     * @internal
+     */
+    async initialConnect(reconnect?: boolean): Promise<this> {
+        const promise = new Promise<this>((resolve, reject) => {
+            let lastError: Error | null = null;
+            const errorHandler = (e: Error) => {
+                if (reconnect ?? true) {
+                    lastError = e;
+                    return;
+                }
+                reject(e);
+            };
+            this.once('open', () => {
+                this.removeListener('max_reconnects_reached', reject);
+                this.removeListener('error', errorHandler);
+                resolve(this);
+            });
+            this.once('max_reconnects_reached', (code: number, reason: string) => {
+                reject(lastError);
+            });
+            this.on('error', errorHandler);
+        });
+        this.client.connect();
+
+        return await promise;
     }
 
     async callRaw(method: string, parameters: object | Array<unknown>): Promise<CallResponse> {

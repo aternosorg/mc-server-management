@@ -1,4 +1,4 @@
-import {expect, test} from "vitest";
+import {expect, test, vi} from "vitest";
 import {Client} from "rpc-websockets";
 import {WS_TOKEN, WS_URL} from "../../constants";
 import {getConnection} from "../setup/connections";
@@ -44,8 +44,9 @@ test('Close event is forwarded', async () => {
 });
 
 test('Error event is forwarded', async () => {
-    const client = new Client(WS_URL, {autoconnect: false});
+    const client = new Client(WS_URL, {autoconnect: false, reconnect: false});
     const ws = new WebSocketConnection(client);
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
 
     await new Promise<void>((resolve, reject) => {
         let timeout = setTimeout(() => {
@@ -65,4 +66,32 @@ test('Error event is forwarded', async () => {
 
         client.connect();
     });
+    expect(error).not.toHaveBeenCalled();
+});
+
+test('Connection fails with retires', async () => {
+    const connection = WebSocketConnection.connect(WS_URL, "");
+    await expect(connection).rejects.toThrow();
+});
+
+test('Connection fails without retires', async () => {
+    const connection = WebSocketConnection.connect(WS_URL, "", {reconnect: false});
+    await expect(connection).rejects.toThrow();
+});
+
+test('Errors are logged if no handler is registered', async () => {
+    const connection = await getConnection();
+
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    connection.client.emit('error', { error: new Error("Connection error") });
+    expect(error).toHaveBeenCalled();
+});
+
+test('Errors encountered during callRaw are forwarded', async () => {
+    const connection = await getConnection();
+    const error = new Error("Call error");
+    connection.client.call = () => {
+        return Promise.reject(error);
+    };
+    await expect(connection.callRaw("some.method", {})).resolves.toStrictEqual({success: false, error: error});
 });

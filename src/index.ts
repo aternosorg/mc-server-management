@@ -10,6 +10,7 @@ export { default as IncorrectTypeError } from "./error/IncorrectTypeError.js";
 export { default as InvalidResponseError } from "./error/InvalidResponseError.js";
 export { default as JsonRPCError, JsonRPCErrorCode } from "./error/JsonRPCError.js";
 export { default as MissingPropertyError } from "./error/MissingPropertyError.js";
+export { default as UnknownEnumVariantError } from "./error/UnknownEnumVariantError.js";
 
 export { default as AllowList } from "./player-list/AllowList.js";
 export { default as BanList } from "./player-list/BanList.js";

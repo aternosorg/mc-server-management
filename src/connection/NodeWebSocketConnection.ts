@@ -13,16 +13,9 @@ export default class NodeWebSocketConnection extends CommonWebSocketConnection {
         options ??= {};
         options.headers ??= {};
         options.headers['Authorization'] ??= `Bearer ${token}`;
-        const client = new Client(url, options);
-        const connection = new NodeWebSocketConnection(client);
-        await new Promise<void>((resolve, reject) => {
-            client.once('open', () => {
-                client.removeListener('error', reject);
-                resolve();
-            });
-            client.once('error', reject);
-        });
-        return connection;
+
+        return new NodeWebSocketConnection(new Client(url, options))
+            .initialConnect(options.reconnect);
     }
 
     /**
