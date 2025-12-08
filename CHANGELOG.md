@@ -1,3 +1,10 @@
+# 3.2.1
+
+## Fixes
+- Fix an incorrect import for `semver`
+
+--- 
+
 # 3.2.0
 ## Improvements
 - Allow discovering the server management protocol version via `connection.discover()`
