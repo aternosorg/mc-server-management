@@ -24,7 +24,7 @@ import UntypedGameRule from "../schemas/gamerule/UntypedGameRule";
 import ConnectionEventData from "../connection/ConnectionEventData";
 import EventArgs = EventEmitter.EventArgs;
 import EventNames = EventEmitter.EventNames;
-import semver from "semver/preload";
+import * as semver from "semver";
 
 /**
  * This is the main entrypoint for interacting with the Minecraft server management protocol.
