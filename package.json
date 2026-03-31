@@ -69,8 +69,8 @@
         "@types/ws": "^8.18.1",
         "@vitest/browser-playwright": "^4.0.4",
         "@vitest/coverage-v8": "^4.0.4",
-        "tsdown": "^0.15.0",
-        "typescript": "^5.9.2",
+        "tsdown": "^0.21.7",
+        "typescript": "^6.0.2",
         "unplugin-unused": "^0.5.3",
         "vitest": "^4.0.4"
     },
