@@ -62,7 +62,6 @@ function run() {
     mkdir -p "$SERVER_DIR"
     update-properties
     docker run \
-        --rm \
         --name "mc-management-protocol-server" \
         -v "./$SERVER_DIR:/data" \
         -e EULA=true \

@@ -1,5 +1,5 @@
 import {createConnection, wait, waitForProcessExit} from "../utils";
-import {ChildProcess, spawn, execFile} from 'child_process';
+import {ChildProcess, spawn} from 'child_process';
 
 let server: ChildProcess | null = null;
 
@@ -31,6 +31,9 @@ async function waitForConnectable(): Promise<void> {
         }
 
         if (!await isRunning()) {
+            console.log("The server we were waiting for shut down:");
+            await waitForProcessExit(spawn('./server.sh', ['logs'], {stdio: 'inherit'}));
+            console.log("Trying to start it again...");
             clearTimeout(timeout);
             return await startServer();
         }
