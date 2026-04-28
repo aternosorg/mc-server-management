@@ -77,7 +77,7 @@ export default abstract class Connection extends EventEmitter<ConnectionEventDat
     async #discoverCapabilities() {
         try {
             const response = await this.#discover();
-            if (!semver.satisfies(response.info.version, "^1 || ^2")) {
+            if (!semver.satisfies(response.info.version, "^1 || ^2 || ^3")) {
                 console.warn("Warning: The server you're connecting to provides server management protocol version " +
                     response.info.version + ". This version is not supported by mc-server-management, some features " +
                     "may not work as expected.");

@@ -1,3 +1,10 @@
+# 3.2.2
+
+## Fixes
+- Officially list management protocol version 3.x as supported
+
+---
+
 # 3.2.1
 
 ## Fixes
