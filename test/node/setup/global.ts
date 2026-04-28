@@ -1,5 +1,5 @@
 import {createConnection, wait, waitForProcessExit} from "../utils";
-import {ChildProcess, spawn} from 'child_process';
+import {ChildProcess, spawn, execFile} from 'child_process';
 
 let server: ChildProcess | null = null;
 
@@ -12,8 +12,12 @@ async function isConnectable(): Promise<boolean> {
     }
 }
 
+function callServerScript(...args: string[]): ChildProcess {
+    return spawn('./server.sh', args);
+}
+
 async function isRunning(): Promise<boolean> {
-    const process = spawn('./server.sh', ['is-running']);
+    const process = callServerScript('is-running');
     return await waitForProcessExit(process) === 0;
 }
 
@@ -48,7 +52,7 @@ function serverStartTimeout(log?: string): NodeJS.Timeout {
 async function startServer(): Promise<void> {
     console.log("Starting Minecraft server...");
 
-    server = spawn('./server.sh', ['run']);
+    server = callServerScript('run');
     let log = '';
     server.stdout?.on('data', (data) => {
         log += data.toString();
@@ -98,7 +102,7 @@ export async function teardown() {
 
     if (server !== null) {
         console.log("Stopping Minecraft server...");
-        await waitForProcessExit(spawn('./server.sh', ['stop']));
+        await waitForProcessExit(callServerScript('stop'));
         server = null;
     }
 }
