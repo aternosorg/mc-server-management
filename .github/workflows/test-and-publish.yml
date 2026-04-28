@@ -59,14 +59,10 @@ jobs:
 
       - name: Publish to npm (beta)
         if: contains(github.ref, '-beta.')
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --provenance --access public --tag beta
 
       - name: Publish to npm (latest)
         if: ${{ !contains(github.ref, '-beta.') }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --provenance --access public
 
       - name: Create GitHub Release
