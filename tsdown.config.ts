@@ -3,7 +3,7 @@ import type { UserConfig } from 'tsdown';
 import { access } from "node:fs/promises";
 import { F_OK } from "node:constants";
 
-const config: UserConfig = [{
+const config: UserConfig[] = [{
     name: 'Main build',
     dts: true,
     sourcemap: true,

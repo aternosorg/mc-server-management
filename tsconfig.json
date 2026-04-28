@@ -4,13 +4,16 @@
         "noEmit": true,
         "target": "es2022",
         "module": "ESNext",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "verbatimModuleSyntax": false,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "skipLibCheck": true,
         "stripInternal": true,
-        "isolatedModules": true
+        "isolatedModules": true,
+        "paths": {
+            "rpc-websockets": ["./node_modules/rpc-websockets/dist/index.d.ts"]
+        }
     }
 }
