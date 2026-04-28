@@ -12,7 +12,7 @@ export enum JsonRPCErrorCode {
      */
     PARSE_ERROR = -32700,
     /**
-     * The JSON sent is not a valid Request object.
+     * The JSON sent is not a valid Request object or can't be handled in the current server state.
      */
     INVALID_REQUEST = -32600,
     /**
