@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 set -e
 
 PROJECT_DIR="$(dirname "${BASH_SOURCE[0]}")"
@@ -50,7 +50,7 @@ function update-properties() {
         VALUE="${PROPERTY#*=}"
         # if key exists, update value
         if grep -q "^${KEY}=" "$SERVER_DIR/server.properties" 2>/dev/null; then
-            sed -i "s/^${KEY}=.*/${KEY}=${VALUE}/" "$SERVER_DIR/server.properties"
+            sed -i '' "s/^${KEY}=.*/${KEY}=${VALUE}/" "$SERVER_DIR/server.properties"
         else
             echo "${KEY}=${VALUE}" >> "$SERVER_DIR/server.properties"
         fi
