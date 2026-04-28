@@ -1,14 +1,21 @@
 import {createConnection, wait, waitForProcessExit} from "../utils";
 import {ChildProcess, spawn} from 'child_process';
+import {NodeWebSocketConnection} from "../../../src/index.node";
+import {MinecraftServer} from "../../../src";
 
 let server: ChildProcess | null = null;
 
-async function isConnectable(): Promise<boolean> {
+async function isStarted(): Promise<boolean> {
+    let connection: NodeWebSocketConnection|null = null;
     try {
-        (await createConnection()).close();
-        return true;
+        connection = await createConnection();
+        const server = new MinecraftServer(connection);
+        const status = await server.getStatus();
+        return status.started;
     } catch (e) {
         return false;
+    } finally {
+        connection?.close();
     }
 }
 
@@ -21,11 +28,11 @@ async function isRunning(): Promise<boolean> {
     return await waitForProcessExit(process) === 0;
 }
 
-async function waitForConnectable(): Promise<void> {
+async function waitForStarted(): Promise<void> {
     console.log(`Server is already running. Waiting for management websocket to come online...`);
     const timeout = serverStartTimeout();
     while (true) {
-        if (await isConnectable()) {
+        if (await isStarted()) {
             clearTimeout(timeout);
             return;
         }
@@ -71,7 +78,7 @@ async function startServer(): Promise<void> {
             console.log(log);
             process.exit(1);
         }
-        if (await isConnectable()) {
+        if (await isStarted()) {
             clearTimeout(timeout);
             return;
         }
@@ -85,12 +92,12 @@ export async function setup() {
         return;
     }
 
-    if (await isConnectable()) {
+    if (await isStarted()) {
         return;
     }
 
     if (await isRunning()) {
-        await waitForConnectable();
+        await waitForStarted();
         return;
     }
 
