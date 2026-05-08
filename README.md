@@ -55,6 +55,8 @@ not exposed to the internet, or you are using a reverse proxy, the easiest optio
 management-server-tls-enabled=false
 ```
 
+If you don't use TLS, you must use a ws:// URL to connect instead of wss://.
+
 #### Using a custom certificate
 If you want to use TLS, you need to provide a PKCS12 keystore file containing the certificate. To convert an existing
 certificate and private key to a PKCS12 file you can use OpenSSL:
