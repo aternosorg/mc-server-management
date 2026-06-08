@@ -14,7 +14,6 @@ PROPERTIES=(
  "management-server-tls-enabled=false"
  "management-server-secret=jrpXKVsPgpCFF3JVVbQUDsEcvDw378gvezbcKqnK"
  "management-server-allowed-origins=http\:\/\/localhost\:63315"
- "status-heartbeat-interval=1000" # The default option is broken: https://bugs.mojang.com/browse/MC/issues/MC-307780
 )
 
 function error() {
@@ -63,6 +62,7 @@ function run() {
     mkdir -p "$SERVER_DIR"
     update-properties
     docker run \
+        --rm \
         --name "mc-management-protocol-server" \
         -v "./$SERVER_DIR:/data" \
         -e EULA=true \
