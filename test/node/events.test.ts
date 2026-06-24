@@ -37,6 +37,8 @@ test('Events without data are forwarded', async () => {
         Notifications.SERVER_SAVING,
         Notifications.SERVER_SAVED,
         Notifications.SERVER_ACTIVITY,
+        Notifications.WORLD_UPGRADE_STARTED,
+        Notifications.WORLD_UPGRADE_FINISHED,
     ]) {
         let called = false;
         server.once(event, () => {
@@ -355,6 +357,26 @@ test('Remove IP ban incorrect type', async () => {
     expect(called).toBe(true);
 });
 
+test('World upgrade progress is forwarded', async () => {
+    let called = false;
+    server.once(Notifications.WORLD_UPGRADE_PROGRESS, progress => {
+        called = true;
+        expect(progress).toBe(0.5);
+    });
+    connection.emit(Notifications.WORLD_UPGRADE_PROGRESS, [0.5]);
+    expect(called).toBe(true);
+});
+
+test('World upgrade failed is forwarded', async () => {
+    let called = false;
+    server.once(Notifications.WORLD_UPGRADE_FAILED, reason => {
+        called = true;
+        expect(reason).toBe('The world upgrade failed while reading level.dat');
+    });
+    connection.emit(Notifications.WORLD_UPGRADE_FAILED, ['The world upgrade failed while reading level.dat']);
+    expect(called).toBe(true);
+});
+
 test('Missing parameter', async () => {
     let called = false;
     server.on('error', e => {
@@ -364,4 +386,3 @@ test('Missing parameter', async () => {
     connection.emit(Notifications.BAN_REMOVED)
     expect(called).toBe(true);
 });
-

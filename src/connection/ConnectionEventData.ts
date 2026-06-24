@@ -22,6 +22,10 @@ type ConnectionEventData = {
     [Notifications.BAN_REMOVED]: unknown,
     [Notifications.GAME_RULE_UPDATED]: unknown,
     [Notifications.SERVER_STATUS]: unknown,
+    [Notifications.WORLD_UPGRADE_STARTED]: unknown,
+    [Notifications.WORLD_UPGRADE_PROGRESS]: unknown,
+    [Notifications.WORLD_UPGRADE_FINISHED]: unknown,
+    [Notifications.WORLD_UPGRADE_FAILED]: unknown,
 };
 
 export default ConnectionEventData;

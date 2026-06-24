@@ -124,6 +124,22 @@ export default class MinecraftServer extends EventEmitter<EventData> {
             this.#state = ServerState.parse(param, data, ...path);
             this.emit(Notifications.SERVER_STATUS, this.#state);
         });
+        this.#onConnectionEvent(Notifications.WORLD_UPGRADE_STARTED, () => this.emit(Notifications.WORLD_UPGRADE_STARTED));
+        this.#onConnectionEvent(Notifications.WORLD_UPGRADE_PROGRESS, (data: unknown) => {
+            const [, param] = this.#getByNameOrPos(data, "progress");
+            if (typeof param !== 'number') {
+                throw new IncorrectTypeError("number", typeof param, data);
+            }
+            this.emit(Notifications.WORLD_UPGRADE_PROGRESS, param);
+        });
+        this.#onConnectionEvent(Notifications.WORLD_UPGRADE_FINISHED, () => this.emit(Notifications.WORLD_UPGRADE_FINISHED));
+        this.#onConnectionEvent(Notifications.WORLD_UPGRADE_FAILED, (data: unknown) => {
+            const [, param] = this.#getByNameOrPos(data, "reason");
+            if (typeof param !== 'string') {
+                throw new IncorrectTypeError("string", typeof param, data);
+            }
+            this.emit(Notifications.WORLD_UPGRADE_FAILED, param);
+        });
     }
 
     /**

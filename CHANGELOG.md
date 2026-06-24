@@ -1,3 +1,8 @@
+# 3.3.0
+
+## New Features
+- Add notifications for world upgrades
+
 # 3.2.2
 
 ## Fixes
