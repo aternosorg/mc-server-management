@@ -26,6 +26,16 @@ type EventData = {
     [Notifications.BAN_REMOVED]: [Player],
     [Notifications.GAME_RULE_UPDATED]: [TypedGameRule<GameRuleType>],
     [Notifications.SERVER_STATUS]: [ServerState],
+    [Notifications.WORLD_UPGRADE_STARTED]: [],
+    /**
+     * The progress is a floating point number between 0 and 1.
+     */
+    [Notifications.WORLD_UPGRADE_PROGRESS]: [progress: number],
+    [Notifications.WORLD_UPGRADE_FINISHED]: [],
+    /**
+     * The reason is a human-readable sentence (e.g., "The world upgrade failed while reading level.dat").
+     */
+    [Notifications.WORLD_UPGRADE_FAILED]: [reason: string],
 }
 
 export default EventData;

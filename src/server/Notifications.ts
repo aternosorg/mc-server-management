@@ -20,6 +20,14 @@ enum Notifications {
     BAN_REMOVED = 'minecraft:notification/bans/removed',
     GAME_RULE_UPDATED = 'minecraft:notification/gamerules/updated',
     SERVER_STATUS = 'minecraft:notification/server/status',
+
+    /**
+     * The following notifications were added in 26.3-snapshot-1
+     */
+    WORLD_UPGRADE_STARTED = 'minecraft:notification/world/upgrade_started',
+    WORLD_UPGRADE_PROGRESS = 'minecraft:notification/world/upgrade_progress',
+    WORLD_UPGRADE_FINISHED = 'minecraft:notification/world/upgrade_finished',
+    WORLD_UPGRADE_FAILED = 'minecraft:notification/world/upgrade_failed',
 }
 
 export default Notifications;
